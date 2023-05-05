@@ -1,0 +1,121 @@
+
+.vantage__header {
+   display: flex;
+}
+
+.vantage__header-content {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    margin-right: 5rem;
+    
+}
+
+.vantage__header-content h1 {
+     font-weight: 500;
+     font-size: 30px;
+     line-height: 36px;
+}
+
+.vantage__header-content_input {
+    width: 100%;
+    margin: 2rem 0 1rem;
+    display: flex;
+}
+
+.vantage__header-content_input input {
+    flex: 2;
+    width: 100%;
+    min-height: 40px;
+    background-color: var(--color-footer);
+    font-size: 16px;
+    line-height: 22px;
+    border: 2px solid var(--color-footer);
+    outline: none;
+    padding: 0 1rem;
+    color: #fff;
+    border-radius: 5px 0 0 5px;
+}
+
+.vantage__header-content_input button {
+    flex: 0.6;
+    width: 100%;
+    min-height: 40px;
+    font-size: 12px;
+    line-height: 26px;
+    font-weight: 600;
+    background-color: var(--color-subtext);
+    border: none;
+    color: #fff;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    padding: 0 1rem;
+}
+
+.vantage__header-content_input button:hover {
+    background: #b72424;
+}
+
+.vantage__header-image {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Change dimensions of image */
+
+.vantage__header-image img {
+    width: 100%;
+    height: 100%;
+    border-radius: 2px;
+    object-fit: cover;
+    
+}
+
+/* .vantage__header-image img:hover {
+ 
+} */
+
+
+@media screen and (max-width: 999px) {
+    .vantage__header {
+        flex-direction: column;
+    }
+    .vantage__header-content {
+        margin: 0 0 2rem;
+    }
+}
+
+@media screen and (max-width: 650px) {
+    .vantage__header h1 {
+        font-size: 24px;
+        line-height: 30px;
+    }
+
+    .vantage__header-content_input input,
+    .vantage__header-content_input button {
+        font-size: 12px;
+        line-height: 16px;
+    }
+   
+}
+
+@media screen and (max-width: 490px) {
+    .vantage__header h1 {
+        font-size: 20px;
+        line-height: 24px;
+    }
+
+    .vantage__header-content_input input,
+    .vantage__header-content_input button {
+        font-size: 12px;
+        line-height: 16px;
+    }
+   
+}
+
+
+

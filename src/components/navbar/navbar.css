@@ -1,0 +1,146 @@
+
+.vantage__navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    height: 70px;
+}
+
+.vantage__navbar-links {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.vantage__navbar-links_logo {
+    margin-right: auto;
+}
+
+.vantage__navbar-links_logo img {
+    width: 150px;
+    height: 80%;
+    object-fit: cover;
+    
+}
+
+.vantage__navbar-links__container {
+    display: flex;
+    flex-direction: row;
+}
+
+.vantage__navbar-links__container p,
+.vantage__navbar-menu__container p {
+    color: #fff ;
+    /* font-family: var(--font-family); */
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 25px;
+    text-transform: uppercase;
+    margin: 0 1rem;
+}
+
+.vantage__navbar-contact button,
+.vantage__navbar-menu_container button {
+    padding: 0.5rem 0.5rem;
+    text-transform: uppercase;
+    font-size: 10px;
+    line-height: 14px;
+    border-radius: 16px;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    background: var(--color-subtext);
+    font-weight: 500;
+    box-shadow: 0 0 5 rgba(0, 0, 0, 0.2);
+    color: #fff;
+}
+
+.vantage__navbar-contact button {
+    margin-left: 30px;
+}
+
+.vantage__navbar-contact:hover {
+    transform: scale(1.08);
+}
+
+.vantage__navbar-contact button:hover {
+    background: #d42c23ef;
+}
+
+.vantage__navbar-menu {
+    margin-left: 1rem;
+    display: none;
+    position: relative;
+}
+
+
+.vantage__navbar-menu svg {
+    cursor: pointer;
+}
+
+.vantage__navbar-menu_container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    flex-direction: column;
+    text-align: end;
+    background: var(--color-footer);
+    padding: 2rem;
+    position: absolute;
+    top: 40px;
+    right: 0;
+    margin-top: 1rem;
+    min-width: 220px;
+    border-radius: 5px;
+    box-shadow: 0 0 5 rgba(0, 0, 0, 0.2);
+    color: #fff;
+}
+
+.vantage__navbar-menu_container p {
+    margin: 1rem 0;
+}
+
+
+/* Media Queries */
+
+@media screen and (max-width: 999px) {
+    .vantage__navbar-links__container {
+        display: none;
+    }
+
+    .vantage__navbar-menu {
+        display: flex;
+    }
+
+   .vantage__navbar-menu_container button {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .vantage__navbar {
+        margin: 2rem 4rem;
+    }
+    
+}
+
+@media screen and (max-width: 550px) {
+    .vantage__navbar {
+        margin: 2rem;
+    }
+
+    .vantage__navbar-contact {
+        display: none;
+    }
+    .vantage__navbar-menu_container {
+        top: 20px;
+    }
+
+    .vantage__navbar-menu_container button {
+        display: block;
+        margin-right: 0;
+        cursor: pointer;
+    }
+}
