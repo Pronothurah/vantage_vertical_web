@@ -12,8 +12,8 @@ function App() {
         <Navbar />
         <Header />
       </div>
-      {/* <Brand />
-      <Blog /> */}
+      <Brand />
+      <Blog />
       <Footer />
     </div>
   );
