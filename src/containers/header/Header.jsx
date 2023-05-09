@@ -1,5 +1,5 @@
 import React from 'react';
-import drone from '../../assets/drone_on_air.jpg'
+import drone from '../../assets/aerial_drone.jpg'
 
 
 import './header.css'

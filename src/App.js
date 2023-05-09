@@ -1,6 +1,7 @@
 import React from 'react';
+import {BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import {Brand, Navbar} from './components';
+import {Brand, Navbar, About} from './components';
 import {Footer, Blog, Header} from './containers';
 
 import './App.css';
@@ -13,7 +14,13 @@ function App() {
         <Header />
       </div>
       <Brand />
-      <Blog />
+      <BrowserRouter>
+      <Routes>
+        
+        <Route exact path="/about" component={<About />} />
+        {/* <Blog /> */}
+      </Routes>
+      </BrowserRouter>
       <Footer />
     </div>
   );

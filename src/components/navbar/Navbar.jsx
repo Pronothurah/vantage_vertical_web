@@ -1,27 +1,44 @@
 import React from 'react';
+import { BrowserRouter, Link } from 'react-router-dom';
 import { RiMenu3Line, RiCloseLine } from 'react-icons/ri';
 import logo from '../../assets/vantage_logo_checkedbg.png'
 
 import './navbar.css'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const Menu = () => (
     <>
-        <p><a href="#home">Home</a></p>
-        <p><a href="#home">About</a></p>
-        <p><a href="#home">Portfolio</a></p>
-        <p><a href="#home">Technology</a></p>
-        <p><a href="#home">Training</a></p>
-        <p><a href="#home">Blog</a></p>
+        <p><Link to="/">Home</Link></p>
+        <p><Link to="/about">About</Link></p>
+        <p><Link to="/portfolio">Portfolio</Link></p>
+        <p><Link to="/technology">Technology</Link></p>
+        <p><Link to="/training">Training</Link></p>
+        <p><Link to="/blog">Blog</Link></p>
     </>
 )
 
 
 const Navbar = () => {
     const [toggleMenu, setToggleMenu] = useState(false);
+
+    const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset;
+      setIsScrolled(scrollTop > 0);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
     return(
-        <>
-        <div className='vantage__navbar'>
+       <BrowserRouter>
+        <div className={`vantage__navbar ${isScrolled ? 'fixed-nav' : ''}`}>
             <div className='vantage__navbar-links'>
                 <div className='vantage__navbar-links_logo'>
                     <img src={logo} alt="logo" />
@@ -50,7 +67,7 @@ const Navbar = () => {
                 </div>
             </div>
         </div>
-        </>
+        </BrowserRouter> 
     );
 };
 
