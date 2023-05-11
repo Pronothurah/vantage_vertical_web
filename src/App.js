@@ -1,8 +1,8 @@
 import React from 'react';
-import {BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
-import {Brand, Navbar, About} from './components';
-import {Footer, Header} from './containers';
+import {Navbar, About, Home} from './components';
+import {Footer} from './containers';
 
 import './App.css';
 
@@ -11,16 +11,11 @@ function App() {
     <div className="App">
       <div className='gradient__bg'>
         <Navbar />
-        <Header />
       </div>
-      <Brand />
-      <BrowserRouter>
-      <Routes>
-        
-        <Route exact path="/about" component={<About />} />
-        {/* <Blog /> */}
-      </Routes>
-      </BrowserRouter>
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path="about" element={<About />} />
+        </Routes>
       <Footer />
     </div>
   );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { RiMenu3Line, RiCloseLine } from 'react-icons/ri';
 import logo from '../../assets/vantage_logo_checkedbg.png'
 
@@ -8,12 +8,12 @@ import { useState, useEffect } from 'react';
 
 const Menu = () => (
     <>
-        <p><Link to="/">Home</Link></p>
-        <p><Link to="/about">About</Link></p>
-        <p><Link to="/portfolio">Portfolio</Link></p>
-        <p><Link to="/technology">Technology</Link></p>
-        <p><Link to="/training">Training</Link></p>
-        <p><Link to="/blog">Blog</Link></p>
+        <p><NavLink to="/">Home</NavLink></p>
+        <p><NavLink to="/about">About</NavLink></p>
+        <p><NavLink to="/portfolio">Portfolio</NavLink></p>
+        <p><NavLink to="/technology">Technology</NavLink></p>
+        <p><NavLink to="/training">Training</NavLink></p>
+        <p><NavLink to="/blog">Blog</NavLink></p>
     </>
 )
 
@@ -37,7 +37,6 @@ const Navbar = () => {
   }, []);
 
     return(
-       <BrowserRouter>
         <div className={`vantage__navbar ${isScrolled ? 'fixed-nav' : ''}`}>
             <div className='vantage__navbar-links'>
                 <div className='vantage__navbar-links_logo'>
@@ -67,7 +66,6 @@ const Navbar = () => {
                 </div>
             </div>
         </div>
-        </BrowserRouter> 
     );
 };
 
