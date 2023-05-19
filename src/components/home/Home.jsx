@@ -1,12 +1,14 @@
 import React from 'react';
 import { Header } from '../../containers';
 import { Brand } from '..';
+import Banner from '../banner/Banner';
 
 function Home() {
   return (
-    <div className='gradient__bg'>
+    <div >
         <Header />
         <Brand />
+        <Banner />
     </div>
   )
 }

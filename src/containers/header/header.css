@@ -15,6 +15,7 @@
 }
 
 .vantage__header-content h1 {
+    color: #fff;
      font-weight: 500;
      font-size: 30px;
      line-height: 36px;
@@ -31,7 +32,9 @@
     width: 100%;
     min-height: 40px;
     background-color: var(--color-footer);
+    font-family: var(--font-family);
     font-size: 16px;
+    color: #fff;
     line-height: 22px;
     border: 2px solid var(--color-footer);
     outline: none;
@@ -44,9 +47,10 @@
     flex: 0.6;
     width: 100%;
     min-height: 40px;
-    font-size: 12px;
+    font-family: var(--font-family);
+    font-size: 14px;
     line-height: 26px;
-    font-weight: 600;
+    font-weight: 400;
     background-color: var(--color-subtext);
     border: none;
     color: #fff;

@@ -12,12 +12,14 @@
   --color-blog: #34495e;
   --color-text: #b3cce4;
   --color-subtext: #cb4343;
+  --color-paragraph: #a09488;
 }
 
 
 body {
   margin: 0;
-  font-family: var(--font-family)
+  font-family: var(--font-family);
+  overflow-x: hidden;
 }
 
 
