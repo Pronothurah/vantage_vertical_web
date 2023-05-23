@@ -1,0 +1,97 @@
+
+.vantage__technology-landing {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.arrows {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 10px;
+    box-sizing: border-box;
+    z-index: 1;
+}
+
+.arrow {
+    font-size: 1.25rem;
+    padding: 0.5rem;
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.arrow.left {
+    order: 1;
+}
+
+.arrow.right {
+    order: 2;
+}
+
+.content__container {
+    display: flex;
+    width: 300%;
+    height: 100%;
+    transition: transform 0.5s ease-in-out;
+}
+
+.content__section {
+    position: relative;
+    flex-shrink: 0;
+    width: 33.33%;
+    height: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.content__section.active{
+    opacity: 1;
+}
+
+.content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.content h1 {
+    color: #fff;
+    font-size: 30px;
+    line-height: 36px;
+    margin-bottom: 1rem;
+}
+
+.content button {
+    padding: 10px 20px;
+    border: none;
+    outline: none;
+    border-radius: 16px;
+    cursor: pointer;
+
+}
+
+.content button:hover {
+    transform: scale(1.1);
+}
+
+.vantage__technology-details {
+    background-color: #fff;
+}
+
+ul {
+    list-style: none;
+}
