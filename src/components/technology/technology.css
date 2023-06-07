@@ -1,38 +1,23 @@
 
-.vantage__technology-landing {
-    position: relative;
+.vantage__technology-heading {
     height: 100vh;
     overflow: hidden;
-}
-
-.arrows {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+    color: var(--color-text);
     display: flex;
-    justify-content: space-between;
-    width: 100%;
-    padding: 0 10px;
-    box-sizing: border-box;
-    z-index: 1;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
 }
 
-.arrow {
-    font-size: 1.25rem;
-    padding: 0.5rem;
-    background: transparent;
-    border: none;
-    color: white;
-    cursor: pointer;
+.vantage__technology-heading h1 {
+    border-bottom: 2px solid var(--color-text);
+    padding-bottom: 1rem;
 }
 
-.arrow.left {
-    order: 1;
+.vantage__technology-heading p {
+    padding-top: 1rem;
 }
 
-.arrow.right {
-    order: 2;
-}
 
 .content__container {
     display: flex;
@@ -94,4 +79,8 @@
 
 ul {
     list-style: none;
+}
+
+li {
+    margin-bottom: 1rem;
 }

@@ -1,9 +1,16 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import vantageLogo from '../../assets/vantage_logo_whitebg.jpg'
 
 import './footer.css'
 
 const Footer = () => {
+    const navigate = useNavigate();
+
+    const handleFormValidationClick = () => {
+      navigate('/form-validation');
+    };
+
     return(
         <div className='vantage__footer section__padding'>
             <div className='vantage__footer-heading'>
@@ -11,7 +18,7 @@ const Footer = () => {
                 Do you want to step in to the future before others
                 </h1>
             </div>
-            <div className='vantage__footer-btn'>
+            <div className='vantage__footer-btn' onClick={handleFormValidationClick}>
                 <p>Request Our Services</p>
             </div>
 

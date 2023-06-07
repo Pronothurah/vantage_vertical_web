@@ -1,4 +1,4 @@
-.vantage__blog-heading {
+.vantage__portfolio-heading {
     height: 100vh;
     overflow: hidden;
     color: var(--color-text);
@@ -8,11 +8,11 @@
     flex-direction: column;
 }
 
-.vantage__blog-heading h1 {
+.vantage__portfolio-heading h1 {
     border-bottom: 2px solid var(--color-text);
     padding-bottom: 1rem;
 }
 
-.vantage__blog-heading p {
+.vantage__portfolio-heading p {
     padding-top: 1rem;
 }

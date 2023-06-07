@@ -1,11 +1,16 @@
 import React from 'react';
 
-import './blog.css'
+import './blog.css';
 
 const Blog = () => {
     return(
         <>
-        <h2>Blog</h2>
+        <div className='vantage__blog'>
+            <div className="vantage__blog-heading section__padding gradient__bg">  
+                    <h1>BLOG</h1>
+                    <p>MEDIA | NEWS | ANNOUNCEMENTS</p>        
+            </div>
+        </div>
         </>
     );
 };

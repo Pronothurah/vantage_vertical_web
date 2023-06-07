@@ -1,10 +1,12 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+
 import { RiMenu3Line, RiCloseLine } from 'react-icons/ri';
 import logo from '../../assets/vantage_logo_checkedbg.png'
 
 import './navbar.css'
-import { useState, useEffect } from 'react';
+
 
 const Menu = () => (
     <>
@@ -20,33 +22,41 @@ const Menu = () => (
 
 const Navbar = () => {
     const [toggleMenu, setToggleMenu] = useState(false);
-
     const [isScrolled, setIsScrolled] = useState(false);
+    const navigate = useNavigate();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.pageYOffset;
-      setIsScrolled(scrollTop > 0);
+    useEffect(() => {
+        const handleScroll = () => {
+        const scrollTop = window.pageYOffset;
+        setIsScrolled(scrollTop > 0);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+        window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
+    const handleFormValidationClick = () => {
+        navigate('/form-validation');
+      };
+
+    const handleHomeNavigation = () => {
+        navigate('/')
     };
-
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
 
     return(
         <div className={`vantage__navbar ${isScrolled ? 'fixed-nav' : ''}`}>
             <div className='vantage__navbar-links'>
-                <div className='vantage__navbar-links_logo'>
+                <div className='vantage__navbar-links_logo' onClick={handleHomeNavigation} >
                     <img src={logo} alt="logo" />
                 </div>
                 <div className='vantage__navbar-links__container'>
                     <Menu />
                 </div>
                 <div className='vantage__navbar-contact'>
-                    <button type='button' className='scale-up-center'>Contact Us</button>
+                    <button type='button' className='scale-up-center' onClick={handleFormValidationClick}>Contact Us</button>
                 </div>
                 <div className="vantage__navbar-menu">
                     {toggleMenu
@@ -57,7 +67,7 @@ const Navbar = () => {
                         <div className='vantage__navbar-menu_container scale-up-center'>
                             <div className='vantage__navbar-menu_container-links'>
                             <Menu />
-                            <button type='button' className='scale-up-center'>Contact Us</button>
+                            <button type='button' className='scale-up-center' >Contact Us</button>
                             </div>
                         </div>
                     )
