@@ -26,7 +26,7 @@ const FormValidation = () => {
     }
 
     // Validate email
-    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!email.match(emailRegex)) {
       setEmailError("Invalid email address.");
       return;
