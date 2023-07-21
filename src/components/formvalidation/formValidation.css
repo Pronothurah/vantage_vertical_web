@@ -62,9 +62,15 @@ label {
     color: white;
     border: none;
     font-family: var(--font-family);
+    font-weight: 800;
     padding: 10px 20px;
-    border-radius: 5px;
+    border-radius: 20px;
     align-self: center;
+}
+
+.form_button:hover {
+    transform: scale(1.08);
+    background: #d42c23ef;
 }
 
 

@@ -6,4 +6,5 @@ export { default as Technology } from './technology/Technology';
 export { default as FormValidation } from './formvalidation/FormValidation';
 export { default as Training } from './training/Training';
 export { default as Portfolio } from './portfolio/Portfolio';
+export { default as ScrollToTop } from './scroll/ScrollToTop';
 

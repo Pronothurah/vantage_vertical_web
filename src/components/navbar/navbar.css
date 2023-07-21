@@ -45,7 +45,7 @@
 .vantage__navbar-contact button,
 .vantage__navbar-menu_container button {
     font-family: var(--font-family);
-    padding: 0.5rem 0.5rem;
+    padding: 0.5rem 0.75rem;
     text-transform: uppercase;
     font-size: 10px;
     line-height: 14px;

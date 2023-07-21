@@ -14,7 +14,7 @@ const Footer = () => {
     return(
         <div className='vantage__footer section__padding'>
             <div className='vantage__footer-heading'>
-                <h1 className='gradient__text'>
+                <h1>
                 Do you want to step in to the future before others
                 </h1>
             </div>

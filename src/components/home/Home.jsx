@@ -5,7 +5,7 @@ import Banner from '../banner/Banner';
 
 function Home() {
   return (
-    <div >
+    <div id='home'>
         <Header />
         <Brand />
         <Banner />

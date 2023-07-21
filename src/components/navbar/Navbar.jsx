@@ -3,19 +3,20 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 import { RiMenu3Line, RiCloseLine } from 'react-icons/ri';
-import logo from '../../assets/vantage_logo_checkedbg.png'
+import logo from '../../assets/vantage_logo_checkedbg.png';
+import scrollToTop from '../scroll/ScrollToTop';
 
-import './navbar.css'
+import './navbar.css';
 
 
 const Menu = () => (
     <>
-        <p><NavLink to="/">Home</NavLink></p>
-        <p><NavLink to="/about">About</NavLink></p>
-        <p><NavLink to="/portfolio">Portfolio</NavLink></p>
-        <p><NavLink to="/technology">Technology</NavLink></p>
-        <p><NavLink to="/training">Training</NavLink></p>
-        <p><NavLink to="/blog">Blog</NavLink></p>
+        <p><NavLink to="/" onClick={scrollToTop}>Home</NavLink></p>
+        <p><NavLink to="/about" onClick={scrollToTop}>About</NavLink></p>
+        <p><NavLink to="/portfolio" onClick={scrollToTop}>Portfolio</NavLink></p>
+        <p><NavLink to="/technology" onClick={scrollToTop}>Technology</NavLink></p>
+        <p><NavLink to="/training" onClick={scrollToTop}>Training</NavLink></p>
+        <p><NavLink to="/blog" onClick={scrollToTop}>Blog</NavLink></p>
     </>
 )
 
@@ -56,7 +57,7 @@ const Navbar = () => {
                     <Menu />
                 </div>
                 <div className='vantage__navbar-contact'>
-                    <button type='button' className='scale-up-center' onClick={handleFormValidationClick}>Contact Us</button>
+                    <button type='button' className='scale-up-center' onClick={handleFormValidationClick}>Contact</button>
                 </div>
                 <div className="vantage__navbar-menu">
                     {toggleMenu
@@ -67,7 +68,7 @@ const Navbar = () => {
                         <div className='vantage__navbar-menu_container scale-up-center'>
                             <div className='vantage__navbar-menu_container-links'>
                             <Menu />
-                            <button type='button' className='scale-up-center' >Contact Us</button>
+                            <button type='button' className='scale-up-center' >Contact</button>
                             </div>
                         </div>
                     )
