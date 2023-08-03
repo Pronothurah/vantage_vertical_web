@@ -106,11 +106,11 @@ const About = () => {
                 <img src={avatar} alt="Avatar" />
               </div>
               <div className="vantage__about-team_description">
-                <h4>Michael</h4>
+                <h4>Michel</h4>
                 <h6>Managing Director / Founder</h6>
                 <p>
-                Michael founded Vantage Vertical in 2022 as a way of combining his love of technology 
-                with a passion for drones and aircrafts. With over 2 years of experience Michael brings 
+                Michel founded Vantage Vertical in 2022 as a way of combining his love of technology 
+                with a passion for drones and aircrafts. With over 2 years of experience Michel brings 
                 a wealth of knowledge to each project and is always at the forefront of emerging trends and tech. 
                 </p>
               </div>
@@ -121,10 +121,10 @@ const About = () => {
                 <img src={avatar} alt="Avatar" />
               </div>
               <div className="vantage__about-team_description">
-                <h4>Ian</h4>
+                <h4>David</h4>
                 <h6>Director</h6>
                 <p>
-                  Ian is the head of creative service video and content production. He has worked with 
+                  David is the head of creative service video and content production. He has worked with 
                   international brands and 
                   knows how to bring the wow-factor to any project.
                 </p>
