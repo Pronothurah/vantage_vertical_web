@@ -9,14 +9,14 @@ import scrollToTop from '../scroll/ScrollToTop';
 import './navbar.css';
 
 
-const Menu = () => (
+const Menu = ({ closeMenu }) => (
     <>
-        <p><NavLink to="/" onClick={scrollToTop}>Home</NavLink></p>
-        <p><NavLink to="/about" onClick={scrollToTop}>About</NavLink></p>
-        <p><NavLink to="/portfolio" onClick={scrollToTop}>Portfolio</NavLink></p>
-        <p><NavLink to="/technology" onClick={scrollToTop}>Technology</NavLink></p>
-        <p><NavLink to="/training" onClick={scrollToTop}>Training</NavLink></p>
-        <p><NavLink to="/blog" onClick={scrollToTop}>Blog</NavLink></p>
+        <p><NavLink to="/" onClick={() => {scrollToTop(); closeMenu();}}>Home</NavLink></p>
+        <p><NavLink to="/about" onClick={() => {scrollToTop(); closeMenu();}}>About</NavLink></p>
+        <p><NavLink to="/portfolio" onClick={() => {scrollToTop(); closeMenu();}}>Portfolio</NavLink></p>
+        <p><NavLink to="/technology" onClick={() => {scrollToTop(); closeMenu();}}>Technology</NavLink></p>
+        <p><NavLink to="/training" onClick={() => {scrollToTop(); closeMenu();}}>Training</NavLink></p>
+        <p><NavLink to="/blog" onClick={() => {scrollToTop(); closeMenu();}}>Blog</NavLink></p>
     </>
 )
 
@@ -47,6 +47,14 @@ const Navbar = () => {
         navigate('/')
     };
 
+    const handleToggleMenu = () => {
+        setToggleMenu(!toggleMenu);
+    };
+
+    const handleCloseMenu = () => {
+        setToggleMenu(false);
+    };
+
     return(
         <div className={`vantage__navbar ${isScrolled ? 'fixed-nav' : ''}`}>
             <div className='vantage__navbar-links'>
@@ -54,21 +62,21 @@ const Navbar = () => {
                     <img src={logo} alt="logo" />
                 </div>
                 <div className='vantage__navbar-links__container'>
-                    <Menu />
+                    <Menu closeMenu={handleCloseMenu}/>
                 </div>
                 <div className='vantage__navbar-contact'>
                     <button type='button' className='scale-up-center' onClick={handleFormValidationClick}>Contact</button>
                 </div>
                 <div className="vantage__navbar-menu">
                     {toggleMenu
-                        ? <RiCloseLine color='#fff' size={27} onClick={ () => setToggleMenu(false)} />
-                        : <RiMenu3Line color='#fff' size={27} onClick={ () => setToggleMenu(true)} />
+                        ? <RiCloseLine color='#fff' size={27} onClick={handleToggleMenu} />
+                        : <RiMenu3Line color='#fff' size={27} onClick={handleToggleMenu} />
                     }
                     {toggleMenu && (
                         <div className='vantage__navbar-menu_container scale-up-center'>
                             <div className='vantage__navbar-menu_container-links'>
-                            <Menu />
-                            <button type='button' className='scale-up-center' >Contact</button>
+                            <Menu closeMenu={handleCloseMenu}/>
+                            <button onClick={() => {handleFormValidationClick(); handleCloseMenu()}} type='button' className='scale-up-center' >Contact</button>
                             </div>
                         </div>
                     )

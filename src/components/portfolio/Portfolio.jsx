@@ -16,15 +16,19 @@ const Portfolio = () => {
               <h1>PORTFOLIO</h1>
               <p>UNLOCKING BOUNDLESS CREATIVITY</p>
             </div>
-            <motion.div className='vantage__portfolio-partners section__padding gradient__bg'>
-                <div className='vantage__portfolio-partner'>
-                      <img src={dji} alt="dji"/>
-                </div>
-                <div className='vantage__portfolio-partner'>
-                      <img src={baofeng} alt="baofeng"/>
-                </div>
-                <div className='vantage__portfolio-partner'>
-                      <img src={kolida} alt="kolida"/>
+            
+            <motion.div className='partners section__padding gradient__bg'>
+              <p>OUR BRAND PARTNERS</p>
+                <div className='vantage__portfolio-partners'>
+                  <div className='vantage__portfolio-partner'>
+                        <img src={dji} alt="dji"/>
+                  </div>
+                  <div className='vantage__portfolio-partner'>
+                        <img src={baofeng} alt="baofeng"/>
+                  </div>
+                  <div className='vantage__portfolio-partner'>
+                        <img src={kolida} alt="kolida"/>
+                  </div>
                 </div>
               </motion.div>
         </div>

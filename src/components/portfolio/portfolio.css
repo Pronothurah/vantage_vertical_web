@@ -17,6 +17,12 @@
     padding-top: 1rem;
 }
 
+.partners p {
+    color: var(--color-text);
+    padding-bottom: 1.5rem;
+    align-self: center;
+}
+
 .vantage__portfolio-partners {
     display: flex;
     align-items: center;
@@ -35,6 +41,8 @@
     object-fit: cover;
     border-radius: 6px;
 }
+
+
 
 @media screen and (max-width: 490px) {
     .vantage__portfolio-partners {
