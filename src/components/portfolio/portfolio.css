@@ -16,3 +16,37 @@
 .vantage__portfolio-heading p {
     padding-top: 1rem;
 }
+
+.vantage__portfolio-partners {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.vantage__portfolio-partner {
+    width: 25%;
+    
+}
+
+.vantage__portfolio-partner img{
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+@media screen and (max-width: 490px) {
+    .vantage__portfolio-partners {
+        flex-direction: column;
+    }
+
+    .vantage__portfolio-partner {
+        width: 60%;
+        margin-top: 20px;
+    }
+
+    .section__padding {
+        padding: 2rem;
+    }
+}
