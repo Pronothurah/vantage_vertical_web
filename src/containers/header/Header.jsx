@@ -60,7 +60,7 @@ const Header = () => {
                 </p>
                 <p>
                     Vantage Vertical is licensed and registered with the Kenya 
-                    Civil Aviation Authority (KCAA) to condut Aerial operations in Kenya
+                    Civil Aviation Authority (KCAA) to conduct Aerial operations in Kenya
                 </p>
                 <div className='vantage__header-info-img'>
                     <img src={kcaa} alt="kcaa" />
