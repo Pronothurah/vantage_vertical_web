@@ -6,6 +6,7 @@ import React from 'react';
 // import droneOnRiverImage from '../../assets/drone_on_river.jpg';
 
 import './technology.css'
+import Banner from '../banner/Banner';
 
 
 const Technology = () => {
@@ -45,7 +46,7 @@ const Technology = () => {
                 Positive feedback can help build credibility and trust in your product.</li>
             </ul>
         </div>
-
+        <Banner />
     </div>
   )
 }

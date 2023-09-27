@@ -1,6 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import vantageLogo from '../../assets/vantage_logo_whitebg.jpg'
+
+import vantageLogo from '../../assets/vantage_logo_whitebg.jpg';
+import { BsTwitter } from "react-icons/bs";
+import { IoLogoInstagram } from "react-icons/io";
+import { RiChat1Line } from "react-icons/ri";
+import { FaFacebookF } from "react-icons/fa";
 
 import './footer.css'
 
@@ -15,7 +20,7 @@ const Footer = () => {
         <div className='vantage__footer section__padding'>
             <div className='vantage__footer-heading'>
                 <h1>
-                Do you want to step in to the future before others
+                Do you want to step in to the future before others?
                 </h1>
             </div>
             <div className='vantage__footer-btn' onClick={handleFormValidationClick}>
@@ -25,17 +30,16 @@ const Footer = () => {
             <div className='vantage__footer-links'>
                 <div className='vantage__footer-links__logo'>
                     <img src={vantageLogo} alt="" />
-                    <p>Garden Estate, Nairobi, Kenya. All rights reserved.</p>
-                </div>
-                <div className="vantage__footer-links__div">
-                    <h4>Links</h4>
-                    <p>Overons</p>
-                    <p>Social Media</p>
-                    <p>Contact</p>
-                    <p>Overons</p>
+                    <div className='vantage__footer-icons'>
+                        <BsTwitter />
+                        <IoLogoInstagram />
+                        <RiChat1Line/>
+                        <FaFacebookF />
+                    </div>
                 </div>
                 <div className="vantage__footer-links__div">
                     <h4>Company</h4>
+                    <p>About</p>
                     <p>Terms & conditions</p>
                     <p>Privacy Policy</p>
                     <p>Contact</p>
@@ -50,7 +54,7 @@ const Footer = () => {
             </div>
 
             <div className="vantage__footer-copyright">
-                    <p>@Vantage Vertical, 2023. All rights reserved.</p>
+                <p>@Vantage Vertical, 2023. All rights reserved.</p>
             </div>
             
         </div>

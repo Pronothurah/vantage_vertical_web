@@ -1,4 +1,7 @@
 import React from 'react';
+import { motion } from 'framer-motion';
+// import { useScroll, useTransform } from 'framer-motion';
+
 
 
 import { FaCamera } from 'react-icons/fa';
@@ -11,9 +14,15 @@ import { GiWindTurbine } from 'react-icons/gi';
 import './brand.css'
 
 const Brand = () => {
+    // const { scrollYProgress } = useScroll();
+    // const scale = useTransform(scrollYProgress, [0, 1], [0.2, 2]);
+
     return(
         <>
-        <div className="vantage__brand section__padding">
+        <motion.div 
+            className="vantage__brand section__padding"
+            // style={{ scaleX: scrollYProgress }}
+        >
             <h2>ABOUT US</h2>
             <p>Vantage Vertical is a leading provider of cutting-edge drone and unmanned 
                 aircraft solutions for a wide range of industries. Our mission is to deliver 
@@ -21,7 +30,9 @@ const Brand = () => {
                  to work smarter, faster, and more efficiently.</p>
             <p>At Vantage Vertical, we specialize in providing customized drone and unmanned aircraft 
                 solutions for a variety of applications, including:</p>
-            <div className="vantage__brand-items">
+            <motion.div className="vantage__brand-items"
+              
+            >
                 <div className="vantage__brand-item">
                     <div className="vantage__brand-item_image">
                         <FaCamera className='icon' />
@@ -57,9 +68,9 @@ const Brand = () => {
                     <p>Industrial inspections and monitoring</p>
                 </div>
                 
-            </div>
+            </motion.div>
 
-        </div>
+        </motion.div>
 
         </>
     );

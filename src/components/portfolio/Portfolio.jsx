@@ -7,6 +7,7 @@ import './portfolio.css';
 import dji from '../../assets/dji.jpg';
 import kolida from '../../assets/kolida.jpg'
 import baofeng from '../../assets/baofeng.jpg'
+import Banner from '../banner/Banner';
 
 const Portfolio = () => {
   return (
@@ -30,7 +31,8 @@ const Portfolio = () => {
                         <img src={kolida} alt="kolida"/>
                   </div>
                 </div>
-              </motion.div>
+            </motion.div>
+            <Banner />
         </div>
     </div>
   )

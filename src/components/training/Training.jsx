@@ -1,6 +1,7 @@
 import React from 'react';
 
 import './training.css';
+import Banner from '../banner/Banner';
 
 const Training = () => {
   return (
@@ -10,7 +11,8 @@ const Training = () => {
                     <h1>BLOG</h1>
                     <p>ELEVATE YOUR SKILLS TO NEW HEIGHTS</p>        
             </div>
-        </div>
+      </div>
+      <Banner />
     </div>
   )
 }
