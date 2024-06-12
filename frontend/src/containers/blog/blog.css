@@ -1,0 +1,18 @@
+.vantage__blog-heading {
+    height: 100vh;
+    overflow: hidden;
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.vantage__blog-heading h1 {
+    border-bottom: 2px solid var(--color-text);
+    padding-bottom: 1rem;
+}
+
+.vantage__blog-heading p {
+    padding-top: 1rem;
+}

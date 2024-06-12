@@ -1,0 +1,86 @@
+
+.vantage__technology-heading {
+    height: 100vh;
+    overflow: hidden;
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.vantage__technology-heading h1 {
+    border-bottom: 2px solid var(--color-text);
+    padding-bottom: 1rem;
+}
+
+.vantage__technology-heading p {
+    padding-top: 1rem;
+}
+
+
+.content__container {
+    display: flex;
+    width: 300%;
+    height: 100%;
+    transition: transform 0.5s ease-in-out;
+}
+
+.content__section {
+    position: relative;
+    flex-shrink: 0;
+    width: 33.33%;
+    height: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.content__section.active{
+    opacity: 1;
+}
+
+.content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.content h1 {
+    color: #fff;
+    font-size: 30px;
+    line-height: 36px;
+    margin-bottom: 1rem;
+}
+
+.content button {
+    padding: 10px 20px;
+    border: none;
+    outline: none;
+    border-radius: 16px;
+    cursor: pointer;
+
+}
+
+.content button:hover {
+    transform: scale(1.1);
+}
+
+.vantage__technology-details {
+    background-color: #fff;
+}
+
+ul {
+    list-style: none;
+}
+
+li {
+    margin-bottom: 1rem;
+}
