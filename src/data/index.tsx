@@ -234,6 +234,184 @@ export const urgencyLevels = [
   { value: 'high', label: 'Urgent (24-48 hours)', color: 'text-red-600' },
 ];
 
+// Company information
+export const companyInfo = {
+  name: 'Vantage Vertical',
+  tagline: 'See More. Do More. From Above.',
+  mission: 'To revolutionize industries through innovative aerial intelligence solutions, empowering businesses and communities across Kenya with cutting-edge drone technology.',
+  vision: 'To be East Africa\'s leading provider of drone services, setting the standard for excellence in aerial mapping, surveillance, and agricultural technology.',
+  founded: '2019',
+  headquarters: 'Nairobi, Kenya',
+  employees: '25+',
+  projectsCompleted: '500+',
+  certifications: [
+    'KCAA Remote Pilot License (RPL)',
+    'KCAA Operator Certificate (ROC)',
+    'ISO 9001:2015 Quality Management',
+    'Professional Drone Pilot Certification'
+  ],
+  values: [
+    {
+      title: 'Safety First',
+      description: 'We prioritize safety in every operation, maintaining the highest standards of aviation safety and regulatory compliance.',
+      icon: 'shield'
+    },
+    {
+      title: 'Innovation',
+      description: 'We continuously adopt cutting-edge technology and innovative approaches to deliver superior results for our clients.',
+      icon: 'lightbulb'
+    },
+    {
+      title: 'Excellence',
+      description: 'We are committed to delivering exceptional quality in every project, exceeding client expectations consistently.',
+      icon: 'star'
+    },
+    {
+      title: 'Integrity',
+      description: 'We conduct business with honesty, transparency, and ethical practices, building trust with clients and partners.',
+      icon: 'handshake'
+    },
+    {
+      title: 'Sustainability',
+      description: 'We promote environmentally responsible practices and help clients optimize resource usage through precision technology.',
+      icon: 'leaf'
+    },
+    {
+      title: 'Community Impact',
+      description: 'We are dedicated to contributing to Kenya\'s economic growth and technological advancement through our services.',
+      icon: 'heart'
+    }
+  ]
+};
+
+// Team members
+export const teamMembers = [
+  {
+    id: '1',
+    name: 'David Kimani',
+    role: 'Chief Executive Officer & Lead Pilot',
+    bio: 'David is a certified KCAA pilot with over 8 years of experience in aviation and drone operations. He founded Vantage Vertical with a vision to transform industries through aerial intelligence.',
+    image: '/profile.png',
+    certifications: [
+      'KCAA Remote Pilot License (RPL)',
+      'KCAA Operator Certificate (ROC)',
+      'Commercial Pilot License',
+      'Drone Safety Management Certification'
+    ],
+    specialties: ['Aerial Mapping', 'Commercial Operations', 'Safety Management'],
+    experience: '8+ years',
+    projects: '200+'
+  },
+  {
+    id: '2',
+    name: 'Grace Wanjiku',
+    role: 'Head of Agricultural Services',
+    bio: 'Grace specializes in precision agriculture and agritech solutions. With a background in agricultural engineering, she leads our agricultural drone services division.',
+    image: '/profile.png',
+    certifications: [
+      'KCAA Remote Pilot License (RPL)',
+      'Precision Agriculture Certification',
+      'Agricultural Engineering Degree',
+      'NDVI Analysis Specialist'
+    ],
+    specialties: ['Precision Agriculture', 'Crop Monitoring', 'NDVI Analysis'],
+    experience: '6+ years',
+    projects: '150+'
+  },
+  {
+    id: '3',
+    name: 'Michael Ochieng',
+    role: 'Technical Operations Manager',
+    bio: 'Michael oversees technical operations and equipment maintenance. His expertise in drone technology and data analysis ensures optimal performance in all missions.',
+    image: '/profile.png',
+    certifications: [
+      'KCAA Remote Pilot License (RPL)',
+      'Drone Maintenance Certification',
+      'GIS Analysis Certification',
+      'Technical Operations Management'
+    ],
+    specialties: ['Technical Operations', 'Data Analysis', 'Equipment Maintenance'],
+    experience: '7+ years',
+    projects: '180+'
+  },
+  {
+    id: '4',
+    name: 'Sarah Muthoni',
+    role: 'Surveillance & Security Specialist',
+    bio: 'Sarah leads our surveillance and security operations with extensive experience in security systems and drone-based monitoring solutions.',
+    image: '/profile.png',
+    certifications: [
+      'KCAA Remote Pilot License (RPL)',
+      'Security Operations Certification',
+      'Thermal Imaging Specialist',
+      'Emergency Response Training'
+    ],
+    specialties: ['Drone Surveillance', 'Security Operations', 'Thermal Imaging'],
+    experience: '5+ years',
+    projects: '120+'
+  }
+];
+
+// Company achievements and milestones
+export const achievements = [
+  {
+    year: '2019',
+    title: 'Company Founded',
+    description: 'Vantage Vertical established with a mission to revolutionize aerial services in Kenya.'
+  },
+  {
+    year: '2020',
+    title: 'KCAA Certification',
+    description: 'Obtained full KCAA certification for commercial drone operations across Kenya.'
+  },
+  {
+    year: '2021',
+    title: '100+ Projects Milestone',
+    description: 'Successfully completed over 100 projects across agriculture, security, and commercial sectors.'
+  },
+  {
+    year: '2022',
+    title: 'Agricultural Innovation Award',
+    description: 'Recognized for outstanding contribution to precision agriculture in Kenya.'
+  },
+  {
+    year: '2023',
+    title: 'Team Expansion',
+    description: 'Expanded team to 25+ certified professionals and opened training academy.'
+  },
+  {
+    year: '2024',
+    title: '500+ Projects Completed',
+    description: 'Reached milestone of 500+ successful projects with 98% client satisfaction rate.'
+  }
+];
+
+// KCAA licensing information
+export const kcaaInfo = {
+  operatorCertificate: 'ROC-2020-VV-001',
+  validUntil: '2025-12-31',
+  authorizedOperations: [
+    'Aerial Work Operations',
+    'Commercial Photography/Videography',
+    'Surveillance and Monitoring',
+    'Agricultural Applications',
+    'Survey and Mapping',
+    'Training Operations'
+  ],
+  operationalLimits: {
+    maxAltitude: '400 feet AGL',
+    dayOperations: 'Authorized',
+    nightOperations: 'Authorized with special approval',
+    beyondVisualLineOfSight: 'Authorized with special approval',
+    overPeople: 'Authorized with risk assessment'
+  },
+  insuranceCoverage: {
+    liability: 'KES 50,000,000',
+    hull: 'KES 10,000,000',
+    provider: 'Kenya Aviation Insurance'
+  }
+};
+
 // Validation rule types
 interface ValidationRule {
   required?: string;
