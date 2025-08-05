@@ -31,10 +31,7 @@ app.get('/health', (req, res) => {
 
 // MongoDB Connection
 const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/vantage_vertical';
-mongoose.connect(mongoURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose.connect(mongoURI)
   .then(() => {
     console.log('✅ MongoDB Connected Successfully');
     console.log(`📍 Database: ${mongoose.connection.name}`);

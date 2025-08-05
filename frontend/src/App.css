@@ -1,4 +1,6 @@
-*, *::after, *::before{
+*,
+*::after,
+*::before {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -15,23 +17,23 @@ a {
 }
 
 .gradient__bg {
-    /* ff 3.6+ */
-    background:-moz-linear-gradient(149deg, rgba(0, 40, 83, 1) 0%, rgba(50, 70, 91, 1) 100%); 
+  /* ff 3.6+ */
+  background: -moz-linear-gradient(149deg, rgba(0, 40, 83, 1) 0%, rgba(50, 70, 91, 1) 100%);
 
-    /* safari 5.1+,chrome 10+ */
-    background:-webkit-linear-gradient(149deg, rgba(0, 40, 83, 1) 0%, rgba(50, 70, 91, 1) 100%);
+  /* safari 5.1+,chrome 10+ */
+  background: -webkit-linear-gradient(149deg, rgba(0, 40, 83, 1) 0%, rgba(50, 70, 91, 1) 100%);
 
-    /* opera 11.10+ */
-    background:-o-linear-gradient(149deg, rgba(0, 40, 83, 1) 0%, rgba(50, 70, 91, 1) 100%);
+  /* opera 11.10+ */
+  background: -o-linear-gradient(149deg, rgba(0, 40, 83, 1) 0%, rgba(50, 70, 91, 1) 100%);
 
-    /* ie 6-9 */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#32465B', endColorstr='#002853', GradientType=1 );
+  /* ie 6-9 */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#32465B', endColorstr='#002853', GradientType=1);
 
-    /* ie 10+ */
-    background:-ms-linear-gradient(149deg, rgba(0, 40, 83, 1) 0%, rgba(50, 70, 91, 1) 100%);
+  /* ie 10+ */
+  background: -ms-linear-gradient(149deg, rgba(0, 40, 83, 1) 0%, rgba(50, 70, 91, 1) 100%);
 
-    /* global 94%+ browsers support */
-    background:linear-gradient(149deg, rgba(0, 40, 83, 1) 0%, rgba(50, 70, 91, 1) 100%);
+  /* global 94%+ browsers support */
+  background: linear-gradient(149deg, rgba(0, 40, 83, 1) 0%, rgba(50, 70, 91, 1) 100%);
 }
 
 
@@ -52,28 +54,31 @@ a {
 }
 
 .scale-up-center {
-	-webkit-animation: scale-up-center 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
-	        animation: scale-up-center 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+  -webkit-animation: scale-up-center 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+  animation: scale-up-center 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
 }
 
 @-webkit-keyframes scale-up-center {
   0% {
     -webkit-transform: scale(0.5);
-            transform: scale(0.5);
+    transform: scale(0.5);
   }
+
   100% {
     -webkit-transform: scale(1);
-            transform: scale(1);
+    transform: scale(1);
   }
 }
+
 @keyframes scale-up-center {
   0% {
     -webkit-transform: scale(0.5);
-            transform: scale(0.5);
+    transform: scale(0.5);
   }
+
   100% {
     -webkit-transform: scale(1);
-            transform: scale(1);
+    transform: scale(1);
   }
 }
 

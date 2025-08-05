@@ -1,12 +1,36 @@
 {
     "name": "vantage_vertical_web",
     "version": "1.0.0",
+    "description": "Professional drone services website featuring aerial photography, mapping, surveillance, and training programs",
+    "main": "backend/index.js",
     "scripts": {
       "start": "concurrently \"npm run server\" \"npm run client\"",
+      "dev": "concurrently \"npm run server\" \"npm run client\"",
       "server": "node backend/index.js",
-      "client": "npm start --prefix frontend"
+      "client": "npm start --prefix frontend",
+      "build": "npm run build --prefix frontend",
+      "install-all": "npm install && npm install --prefix frontend && npm install --prefix backend"
+    },
+    "keywords": [
+      "drone",
+      "aerial-photography",
+      "mapping",
+      "surveillance",
+      "react",
+      "nodejs",
+      "mongodb"
+    ],
+    "author": "Vantage Vertical",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/Pronothurah/vantage_vertical_web.git"
     },
     "dependencies": {
       "concurrently": "^7.0.0"
+    },
+    "engines": {
+      "node": ">=14.0.0",
+      "npm": ">=6.0.0"
     }
   }
