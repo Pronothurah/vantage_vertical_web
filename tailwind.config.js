@@ -34,9 +34,9 @@ module.exports = {
         info: '#17A2B8',
       },
       fontFamily: {
-        heading: ['Poppins', 'sans-serif'],  // Bold, modern headings
-        body: ['Inter', 'sans-serif'],       // Clean, readable body text
-        sans: ['Inter', 'sans-serif'],       // Default sans-serif
+        heading: ['var(--font-urbanist)', 'Urbanist', 'sans-serif'],  // Modern, versatile headings
+        body: ['var(--font-urbanist)', 'Urbanist', 'sans-serif'],     // Clean, readable body text
+        sans: ['var(--font-urbanist)', 'Urbanist', 'sans-serif'],     // Default sans-serif
       },
       fontSize: {
         'xs': ['12px', { lineHeight: '16px' }],    // Small labels, captions

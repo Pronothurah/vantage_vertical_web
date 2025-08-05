@@ -65,19 +65,19 @@
     - _Requirements: 7.1, 6.5_
 
 - [ ] 5. Implement Home page with service showcases
-  - [ ] 5.1 Create Home page hero section
+  - [x] 5.1 Create Home page hero section
     - Build hero section with "See More. Do More. From Above." tagline
     - Implement drone imagery background with CTA buttons
     - Add animated elements and responsive design
     - _Requirements: 1.3, 2.4, 3.4_
 
-  - [ ] 5.2 Add services overview section
+  - [x] 5.2 Add services overview section
     - Create services grid showcasing aerial mapping, agritech, surveillance, and commercial services
     - Implement service cards with descriptions and CTAs
     - Add "Industries We Serve" section with Agriculture, Security, Construction, Real Estate, Events
     - _Requirements: 1.1, 6.1, 6.2_
 
-  - [ ] 5.3 Build "Why Choose Us" section
+  - [x] 5.3 Build "Why Choose Us" section
     - Create section highlighting certified pilots, advanced technology, and customizable packages
     - Add KCAA certification display and trust indicators
     - Implement client testimonials or results showcase

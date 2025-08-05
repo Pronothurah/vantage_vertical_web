@@ -3,18 +3,21 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import ServiceIcon from '@/components/ui/ServiceIcon';
 
 interface ServiceCardProps {
   title: string;
   description: string;
   icon?: string;
-  iconSvg?: React.ReactNode;
+  iconSvg?: React.ReactNode | (() => React.ReactNode);
+  iconType?: string;
   features: string[];
   ctaText: string;
   ctaLink: string;
   image?: string;
   variant?: 'default' | 'featured' | 'compact';
   className?: string;
+  style?: React.CSSProperties;
 }
 
 export default function ServiceCard({
@@ -22,12 +25,14 @@ export default function ServiceCard({
   description,
   icon,
   iconSvg,
+  iconType,
   features,
   ctaText,
   ctaLink,
   image,
   variant = 'default',
-  className = ''
+  className = '',
+  style
 }: ServiceCardProps) {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -40,6 +45,7 @@ export default function ServiceCard({
   return (
     <div
       className={`${cardClasses[variant]} ${className}`}
+      style={style}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -60,11 +66,22 @@ export default function ServiceCard({
 
       {/* Icon Section */}
       <div className="flex items-center mb-4">
-        {iconSvg ? (
+        {iconType ? (
           <div className={`flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-lg bg-primary/10 text-primary transition-all duration-300 ${
             isHovered ? 'bg-primary text-white scale-110' : ''
           }`}>
-            {iconSvg}
+            <ServiceIcon 
+              type={iconType} 
+              className={`w-6 h-6 transition-colors duration-300 ${
+                isHovered ? 'text-white' : 'text-primary'
+              }`}
+            />
+          </div>
+        ) : iconSvg ? (
+          <div className={`flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-lg bg-primary/10 text-primary transition-all duration-300 ${
+            isHovered ? 'bg-primary text-white scale-110' : ''
+          }`}>
+            {typeof iconSvg === 'function' ? iconSvg() : iconSvg}
           </div>
         ) : icon ? (
           <div className={`flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden transition-transform duration-300 ${
@@ -82,21 +99,12 @@ export default function ServiceCard({
           <div className={`flex-shrink-0 w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center transition-all duration-300 ${
             isHovered ? 'bg-primary scale-110' : ''
           }`}>
-            <svg
+            <ServiceIcon 
+              type="default" 
               className={`w-6 h-6 transition-colors duration-300 ${
                 isHovered ? 'text-white' : 'text-primary'
               }`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 10V3L4 14h7v7l9-11h-7z"
-              />
-            </svg>
+            />
           </div>
         )}
 

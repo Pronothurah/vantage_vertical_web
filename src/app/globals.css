@@ -2,12 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap');
-
 @layer base {
   :root {
-    --font-inter: 'Inter', sans-serif;
-    --font-poppins: 'Poppins', sans-serif;
+    --font-urbanist: 'Urbanist', sans-serif;
   }
   
   html {
@@ -15,12 +12,12 @@
   }
   
   body {
-    font-family: var(--font-inter);
+    font-family: var(--font-urbanist);
     line-height: 1.6;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-poppins);
+    font-family: var(--font-urbanist);
     font-weight: 600;
     line-height: 1.2;
   }

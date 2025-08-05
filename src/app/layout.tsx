@@ -1,18 +1,12 @@
 import type { Metadata } from 'next';
-import { Inter, Poppins } from 'next/font/google';
+import { Urbanist } from 'next/font/google';
 import './globals.css';
 import { Navbar, Footer } from '@/components/layout';
 
-const inter = Inter({ 
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
-});
-
-const poppins = Poppins({ 
+const urbanist = Urbanist({ 
   subsets: ['latin'],
   weight: ['300', '400', '500', '600', '700', '800'],
-  variable: '--font-poppins',
+  variable: '--font-urbanist',
   display: 'swap',
 });
 
@@ -102,8 +96,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
-      <body className={`${inter.className} antialiased min-h-screen flex flex-col`}>
+    <html lang="en" className={urbanist.variable}>
+      <body className={`${urbanist.className} antialiased min-h-screen flex flex-col`}>
         <Navbar />
         <main className="flex-1 pt-16 lg:pt-20">
           {children}

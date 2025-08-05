@@ -178,22 +178,47 @@ export default function Footer() {
               </div>
 
               {/* KCAA Certification */}
-              <div className="flex items-center space-x-3 p-4 bg-gray-800 rounded-lg">
-                <div className="relative w-8 h-8">
-                  <Image
-                    src="/kcaa-logo.png"
-                    alt="KCAA Certification"
-                    fill
-                    className="object-contain"
-                    onError={(e) => {
-                      // Fallback to a generic certification icon
-                      e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23D72638' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'/%3E%3C/svg%3E";
-                    }}
-                  />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-white">KCAA Certified</p>
-                  <p className="text-xs text-gray-400">Licensed Drone Operators</p>
+              <div className="bg-gray-800 rounded-xl p-6 mb-6">
+                <div className="flex flex-col sm:flex-row items-center justify-between">
+                  <div className="flex-1 mb-4 sm:mb-0 sm:mr-6">
+                    <h4 className="font-heading font-semibold text-lg text-white mb-2">
+                      KCAA Certified & Compliant
+                    </h4>
+                    <p className="text-gray-300 text-sm leading-relaxed mb-3">
+                      We are fully certified by the Kenya Civil Aviation Authority (KCAA) and maintain 
+                      strict compliance with all aviation regulations.
+                    </p>
+                    <div className="flex flex-wrap items-center gap-4 text-xs">
+                      <div className="flex items-center text-green-400">
+                        <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Licensed Operators
+                      </div>
+                      <div className="flex items-center text-green-400">
+                        <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Insured Operations
+                      </div>
+                      <div className="flex items-center text-green-400">
+                        <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Safety Compliant
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex-shrink-0">
+                    <div className="relative w-20 h-20 bg-white rounded-lg shadow-medium p-2">
+                      <Image
+                        src="/kcaa.png"
+                        alt="KCAA Certification"
+                        fill
+                        className="object-contain p-1"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
