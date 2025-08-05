@@ -17,8 +17,25 @@ export const urgencyLevels = [
   { value: 'high', label: 'Urgent (24-48 hours)', color: 'text-red-600' },
 ];
 
+// Validation rule types
+interface ValidationRule {
+  required?: string;
+  pattern?: {
+    value: RegExp;
+    message: string;
+  };
+  minLength?: {
+    value: number;
+    message: string;
+  };
+  maxLength?: {
+    value: number;
+    message: string;
+  };
+}
+
 // Contact form validation rules
-export const contactFormValidation = {
+export const contactFormValidation: Record<string, ValidationRule> = {
   name: {
     required: 'Name is required',
     minLength: { value: 2, message: 'Name must be at least 2 characters' },

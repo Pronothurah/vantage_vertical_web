@@ -2,6 +2,23 @@ import { useState, useCallback } from 'react';
 import { ContactFormData, FormState, FormFieldError } from '@/types/forms';
 import { contactFormValidation } from '@/data';
 
+// Validation rule types
+interface ValidationRule {
+  required?: string;
+  pattern?: {
+    value: RegExp;
+    message: string;
+  };
+  minLength?: {
+    value: number;
+    message: string;
+  };
+  maxLength?: {
+    value: number;
+    message: string;
+  };
+}
+
 export function useFormValidation() {
   const [formState, setFormState] = useState<FormState>({
     isSubmitting: false,
@@ -12,7 +29,7 @@ export function useFormValidation() {
   });
 
   const validateField = useCallback((name: keyof ContactFormData, value: string): FormFieldError | null => {
-    const rules = contactFormValidation[name];
+    const rules = contactFormValidation[name] as ValidationRule;
     if (!rules) return null;
 
     // Required validation

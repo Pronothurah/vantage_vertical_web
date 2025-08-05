@@ -38,3 +38,22 @@ export interface UrgencyLevel {
   label: string;
   color: string;
 }
+
+export interface NewsletterFormData {
+  email: string;
+}
+
+export interface NewsletterFormProps {
+  variant?: 'inline' | 'footer' | 'modal';
+  placeholder?: string;
+  buttonText?: string;
+  className?: string;
+  onSuccess?: (email: string) => void;
+}
+
+export interface NewsletterFormState {
+  isSubmitting: boolean;
+  isSubmitted: boolean;
+  error?: string;
+  success?: boolean;
+}
