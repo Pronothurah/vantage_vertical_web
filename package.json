@@ -1,36 +1,53 @@
 {
-    "name": "vantage_vertical_web",
-    "version": "1.0.0",
-    "description": "Professional drone services website featuring aerial photography, mapping, surveillance, and training programs",
-    "main": "backend/index.js",
-    "scripts": {
-      "start": "concurrently \"npm run server\" \"npm run client\"",
-      "dev": "concurrently \"npm run server\" \"npm run client\"",
-      "server": "node backend/index.js",
-      "client": "npm start --prefix frontend",
-      "build": "npm run build --prefix frontend",
-      "install-all": "npm install && npm install --prefix frontend && npm install --prefix backend"
-    },
-    "keywords": [
-      "drone",
-      "aerial-photography",
-      "mapping",
-      "surveillance",
-      "react",
-      "nodejs",
-      "mongodb"
-    ],
-    "author": "Vantage Vertical",
-    "license": "MIT",
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/Pronothurah/vantage_vertical_web.git"
-    },
-    "dependencies": {
-      "concurrently": "^7.0.0"
-    },
-    "engines": {
-      "node": ">=14.0.0",
-      "npm": ">=6.0.0"
-    }
+  "name": "vantage_vertical_web",
+  "version": "1.0.0",
+  "description": "Professional drone services website featuring aerial photography, mapping, surveillance, and training programs",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "drone",
+    "aerial-photography",
+    "mapping",
+    "surveillance",
+    "nextjs",
+    "typescript",
+    "tailwindcss"
+  ],
+  "author": "Vantage Vertical",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Pronothurah/vantage_vertical_web.git"
+  },
+  "dependencies": {
+    "@next/swc-linux-x64-gnu": "^15.4.5",
+    "next": "14.2.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/typography": "^0.5.13",
+    "@types/node": "^20.14.10",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.19",
+    "clsx": "^2.1.1",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.2.5",
+    "postcss": "^8.4.39",
+    "tailwind-merge": "^2.4.0",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.5.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   }
+}
