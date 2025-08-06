@@ -201,7 +201,7 @@
     - Add tests for utility functions and data transformations
     - _Requirements: 8.1, 8.2_
 
-  - [-] 15.2 Implement integration testing
+  - [ ] 15.2 Implement integration testing
     - Test complete page renders and user journeys
     - Add end-to-end testing for contact forms and navigation
     - Test responsive design across different screen sizes
