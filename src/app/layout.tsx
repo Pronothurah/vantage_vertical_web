@@ -2,6 +2,11 @@ import type { Metadata } from 'next';
 import { Urbanist } from 'next/font/google';
 import './globals.css';
 import { Navbar, Footer } from '@/components/layout';
+import SkipLinks from '@/components/layout/SkipLinks';
+import { generateMetadata, pageConfigs, generateOrganizationSchema } from '@/lib/seo';
+import GoogleAnalytics from '@/components/analytics/GoogleAnalytics';
+import PerformanceMonitor from '@/components/analytics/PerformanceMonitor';
+import PerformanceDashboard from '@/components/analytics/PerformanceDashboard';
 
 const urbanist = Urbanist({ 
   subsets: ['latin'],
@@ -11,82 +16,15 @@ const urbanist = Urbanist({
 });
 
 export const metadata: Metadata = {
-  title: {
-    default: 'Vantage Vertical - Professional Drone Services in Kenya',
-    template: '%s | Vantage Vertical',
-  },
-  description: 'Leading drone services company in Kenya offering aerial mapping, surveillance, agritech solutions, commercial photography, and drone training programs. KCAA certified pilots with advanced technology.',
-  keywords: [
-    'drone services Kenya',
-    'aerial mapping Kenya',
-    'drone surveillance company Kenya',
-    'agritech drone solutions',
-    'precision agriculture Kenya',
-    'commercial drone photography',
-    'drone training Kenya',
-    'NDVI crop health scans',
-    'buy drones Kenya',
-    'drone crop spraying',
-    'KCAA certified drone pilots',
-    'aerial intelligence Kenya',
-    'construction drone surveys',
-    'real estate drone photography',
-    'security drone surveillance'
-  ],
-  authors: [{ name: 'Vantage Vertical' }],
-  creator: 'Vantage Vertical',
-  publisher: 'Vantage Vertical',
-  category: 'Technology',
-  classification: 'Drone Services',
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
-  metadataBase: new URL('https://vantagevertical.co.ke'),
-  alternates: {
-    canonical: '/',
-  },
-  openGraph: {
-    type: 'website',
-    locale: 'en_KE',
-    url: 'https://vantagevertical.co.ke',
-    title: 'Vantage Vertical - Professional Drone Services in Kenya',
-    description: 'Leading drone services company in Kenya offering aerial mapping, surveillance, agritech solutions, commercial photography, and drone training programs. KCAA certified pilots with advanced technology.',
-    siteName: 'Vantage Vertical',
-    images: [
-      {
-        url: '/og-image.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Vantage Vertical - Professional Drone Services in Kenya',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    site: '@vantagevertical',
-    creator: '@vantagevertical',
-    title: 'Vantage Vertical - Professional Drone Services in Kenya',
-    description: 'Leading drone services company in Kenya offering aerial mapping, surveillance, agritech solutions, commercial photography, and drone training programs.',
-    images: ['/og-image.jpg'],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    nocache: false,
-    googleBot: {
-      index: true,
-      follow: true,
-      noimageindex: false,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
+  ...generateMetadata(pageConfigs.home),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://vantagevertical.co.ke'),
   verification: {
-    google: 'your-google-verification-code',
-    // Add other verification codes as needed
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+    yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
+    yahoo: process.env.NEXT_PUBLIC_YAHOO_VERIFICATION,
+    other: {
+      'msvalidate.01': process.env.NEXT_PUBLIC_BING_VERIFICATION || '',
+    },
   },
 };
 
@@ -95,14 +33,34 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const organizationSchema = generateOrganizationSchema();
+
   return (
     <html lang="en" className={urbanist.variable}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema),
+          }}
+        />
+      </head>
       <body className={`${urbanist.className} antialiased min-h-screen flex flex-col`}>
-        <Navbar />
-        <main className="flex-1 pt-16 lg:pt-20">
+        {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+          <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+        )}
+        <PerformanceMonitor enabled={process.env.NODE_ENV === 'production'} />
+        <SkipLinks />
+        <header id="navigation">
+          <Navbar />
+        </header>
+        <main id="main-content" className="flex-1 pt-16 lg:pt-20" tabIndex={-1}>
           {children}
         </main>
-        <Footer />
+        <footer id="footer">
+          <Footer />
+        </footer>
+        <PerformanceDashboard />
       </body>
     </html>
   );

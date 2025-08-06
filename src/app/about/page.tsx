@@ -1,23 +1,16 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
+import { OptimizedImage } from '@/components/ui';
+import { imageSizes, imageQuality } from '@/lib/imageUtils';
 import { 
   companyInfo, 
   teamMembers, 
   achievements, 
   kcaaInfo 
 } from '@/data';
+import { generateMetadata, pageConfigs } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'About Vantage Vertical - Kenya\'s Leading Drone Services Company',
-  description: 'Learn about Vantage Vertical\'s mission, KCAA-certified team, and commitment to excellence in aerial mapping, surveillance, and agricultural drone services across Kenya.',
-  keywords: 'about vantage vertical, drone company kenya, KCAA certified pilots, aerial services team, drone technology experts',
-  openGraph: {
-    title: 'About Vantage Vertical - Kenya\'s Leading Drone Services Company',
-    description: 'Meet our KCAA-certified team and learn about our mission to revolutionize industries through innovative aerial intelligence solutions.',
-    images: ['/og-image.jpg'],
-  },
-};
+export const metadata: Metadata = generateMetadata(pageConfigs.about);
 
 // Icon components for values and certifications
 const IconShield = () => (
@@ -125,12 +118,15 @@ export default function AboutPage() {
               </p>
             </div>
             <div className="relative">
-              <Image
+              <OptimizedImage
                 src="/drone_home.jpg"
                 alt="Vantage Vertical drone operations"
                 width={600}
                 height={400}
                 className="rounded-2xl shadow-large"
+                quality={imageQuality.hero}
+                sizes={imageSizes.halfWidth}
+                fallbackSrc="/images/placeholder-drone.svg"
               />
               <div className="absolute -bottom-6 -right-6 bg-primary text-white p-6 rounded-xl shadow-large">
                 <div className="text-2xl font-bold">5+ Years</div>
@@ -178,12 +174,15 @@ export default function AboutPage() {
               <div key={member.id} className="card p-8">
                 <div className="flex flex-col sm:flex-row gap-6">
                   <div className="flex-shrink-0">
-                    <Image
+                    <OptimizedImage
                       src={member.image}
                       alt={member.name}
                       width={120}
                       height={120}
                       className="rounded-full mx-auto sm:mx-0"
+                      quality={imageQuality.thumbnail}
+                      sizes={imageSizes.avatar}
+                      fallbackSrc="/images/placeholder-drone.svg"
                     />
                   </div>
                   <div className="flex-1">
@@ -380,12 +379,15 @@ export default function AboutPage() {
             {/* KCAA Logo Section */}
             <div className="text-center mt-16">
               <div className="bg-gray-50 rounded-2xl p-8 inline-block">
-                <Image
-                  src="/kcaa-logo.png"
+                <OptimizedImage
+                  src="/kcaa.png"
                   alt="Kenya Civil Aviation Authority (KCAA)"
                   width={200}
                   height={100}
                   className="mx-auto mb-4"
+                  quality={imageQuality.thumbnail}
+                  sizes={imageSizes.logo}
+                  fallbackSrc="/images/placeholder-drone.svg"
                 />
                 <p className="text-gray-600 max-w-md">
                   Certified and regulated by the Kenya Civil Aviation Authority, ensuring the highest standards of safety and professionalism in all our operations.

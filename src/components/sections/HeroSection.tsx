@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
+import { OptimizedImage } from '@/components/ui';
+import { imageSizes, imageQuality } from '@/lib/imageUtils';
 
 interface HeroSectionProps {
   title: string;
@@ -53,22 +54,28 @@ export default function HeroSection({
             <source src={backgroundVideo} type="video/mp4" />
             {/* Fallback to background image if video fails */}
             {backgroundImage && (
-              <Image
+              <OptimizedImage
                 src={backgroundImage}
                 alt="Hero background"
                 fill
                 className="object-cover"
                 priority
+                quality={imageQuality.hero}
+                sizes={imageSizes.hero}
+                fallbackSrc="/images/placeholder-drone.svg"
               />
             )}
           </video>
         ) : backgroundImage ? (
-          <Image
+          <OptimizedImage
             src={backgroundImage}
             alt="Hero background"
             fill
             className="object-cover"
             priority
+            quality={imageQuality.hero}
+            sizes={imageSizes.hero}
+            fallbackSrc="/images/placeholder-drone.svg"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-gray-900 to-charcoal" />

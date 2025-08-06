@@ -1,9 +1,7 @@
 import type { Metadata } from 'next';
+import { generateMetadata, pageConfigs } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Technology & Services',
-  description: 'Discover our advanced drone technology, aerial mapping services, surveillance solutions, and agritech capabilities.',
-};
+export const metadata: Metadata = generateMetadata(pageConfigs.technology);
 
 export default function TechnologyPage() {
   return (

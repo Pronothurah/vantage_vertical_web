@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useId } from 'react';
 import { ContactFormData, ContactFormProps } from '@/types/forms';
 import { serviceOptions, urgencyLevels } from '@/data';
 import { useFormValidation } from '@/lib/useFormValidation';
+import { ariaAttributes, generateId, announceToScreenReader } from '@/lib/accessibility';
+import { AccessibleButton } from '@/components/ui';
 
 export default function ContactForm({ 
   variant = 'full', 
@@ -18,6 +20,17 @@ export default function ContactForm({
     message: '',
     urgency: 'medium',
   });
+
+  // Generate unique IDs for accessibility
+  const formId = useId();
+  const nameId = `${formId}-name`;
+  const emailId = `${formId}-email`;
+  const phoneId = `${formId}-phone`;
+  const serviceId = `${formId}-service`;
+  const messageId = `${formId}-message`;
+  const urgencyId = `${formId}-urgency`;
+  const errorId = `${formId}-error`;
+  const successId = `${formId}-success`;
 
   const {
     formState,
@@ -139,7 +152,12 @@ export default function ContactForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className={`space-y-6 ${className}`}>
+    <form 
+      onSubmit={handleSubmit} 
+      className={`space-y-6 ${className}`}
+      {...ariaAttributes.form(undefined, formState.submitError ? errorId : undefined, !!formState.submitError)}
+      noValidate
+    >
       {variant === 'full' && (
         <div className="text-center mb-8">
           <h2 className="text-3xl font-heading font-bold text-gray-900 mb-2">
@@ -154,42 +172,44 @@ export default function ContactForm({
       {/* Name and Email Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor={nameId} className="block text-sm font-medium text-gray-700 mb-2">
             Full Name *
           </label>
           <input
             type="text"
-            id="name"
+            id={nameId}
             value={formData.name}
             onChange={(e) => handleInputChange('name', e.target.value)}
             onBlur={() => handleBlur('name')}
             className={getFieldClasses('name')}
             placeholder="Enter your full name"
             disabled={formState.isSubmitting}
+            {...ariaAttributes.textbox(!!formState.errors.name, true, formState.errors.name ? `${nameId}-error` : undefined)}
           />
           {formState.errors.name && (
-            <p className="mt-1 text-sm text-red-600 animate-slide-down">
+            <p id={`${nameId}-error`} className="mt-1 text-sm text-red-600 animate-slide-down" role="alert">
               {formState.errors.name.message}
             </p>
           )}
         </div>
 
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor={emailId} className="block text-sm font-medium text-gray-700 mb-2">
             Email Address *
           </label>
           <input
             type="email"
-            id="email"
+            id={emailId}
             value={formData.email}
             onChange={(e) => handleInputChange('email', e.target.value)}
             onBlur={() => handleBlur('email')}
             className={getFieldClasses('email')}
             placeholder="Enter your email address"
             disabled={formState.isSubmitting}
+            {...ariaAttributes.textbox(!!formState.errors.email, true, formState.errors.email ? `${emailId}-error` : undefined)}
           />
           {formState.errors.email && (
-            <p className="mt-1 text-sm text-red-600 animate-slide-down">
+            <p id={`${emailId}-error`} className="mt-1 text-sm text-red-600 animate-slide-down" role="alert">
               {formState.errors.email.message}
             </p>
           )}
@@ -198,21 +218,22 @@ export default function ContactForm({
 
       {/* Phone Number */}
       <div>
-        <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor={phoneId} className="block text-sm font-medium text-gray-700 mb-2">
           Phone Number *
         </label>
         <input
           type="tel"
-          id="phone"
+          id={phoneId}
           value={formData.phone}
           onChange={(e) => handleInputChange('phone', e.target.value)}
           onBlur={() => handleBlur('phone')}
           className={getFieldClasses('phone')}
           placeholder="Enter your phone number"
           disabled={formState.isSubmitting}
+          {...ariaAttributes.textbox(!!formState.errors.phone, true, formState.errors.phone ? `${phoneId}-error` : undefined)}
         />
         {formState.errors.phone && (
-          <p className="mt-1 text-sm text-red-600 animate-slide-down">
+          <p id={`${phoneId}-error`} className="mt-1 text-sm text-red-600 animate-slide-down" role="alert">
             {formState.errors.phone.message}
           </p>
         )}

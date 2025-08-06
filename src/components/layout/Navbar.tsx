@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
+import { ariaAttributes, keyboardHandlers, trapFocus, announceToScreenReader } from '@/lib/accessibility';
 
 interface NavLink {
   href: string;
@@ -24,6 +25,8 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,6 +37,27 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Handle focus trapping in mobile menu
+  useEffect(() => {
+    if (isMobileMenuOpen && mobileMenuRef.current) {
+      const cleanup = trapFocus(mobileMenuRef.current);
+      return cleanup;
+    }
+  }, [isMobileMenuOpen]);
+
+  // Handle escape key to close mobile menu
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isMobileMenuOpen) {
+        closeMobileMenu();
+        menuButtonRef.current?.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isMobileMenuOpen]);
+
   const isActiveLink = (href: string) => {
     if (href === '/') {
       return pathname === '/';
@@ -42,11 +66,19 @@ export default function Navbar() {
   };
 
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+    const newState = !isMobileMenuOpen;
+    setIsMobileMenuOpen(newState);
+    
+    // Announce to screen readers
+    announceToScreenReader(
+      newState ? 'Mobile menu opened' : 'Mobile menu closed',
+      'polite'
+    );
   };
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
+    announceToScreenReader('Mobile menu closed', 'polite');
   };
 
   return (
@@ -85,7 +117,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-8" role="navigation" aria-label="Main navigation">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -97,6 +129,7 @@ export default function Navbar() {
                     ? 'text-gray-700 hover:text-primary'
                     : 'text-white hover:text-accent'
                 } group`}
+                {...ariaAttributes.link(isActiveLink(link.href))}
               >
                 {link.label}
                 <span
@@ -105,6 +138,7 @@ export default function Navbar() {
                       ? 'scale-x-100'
                       : 'scale-x-0 group-hover:scale-x-100'
                   }`}
+                  aria-hidden="true"
                 />
               </Link>
             ))}
@@ -122,9 +156,13 @@ export default function Navbar() {
 
           {/* Mobile Menu Button */}
           <button
+            ref={menuButtonRef}
             onClick={toggleMobileMenu}
+            onKeyDown={keyboardHandlers.onEnterOrSpace(toggleMobileMenu)}
             className="lg:hidden p-2 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-            aria-label="Toggle mobile menu"
+            aria-label={isMobileMenuOpen ? 'Close mobile menu' : 'Open mobile menu'}
+            {...ariaAttributes.button(undefined, isMobileMenuOpen)}
+            aria-controls="mobile-menu"
           >
             <div className="w-6 h-6 relative">
               <span
@@ -148,9 +186,14 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         <div
+          id="mobile-menu"
+          ref={mobileMenuRef}
           className={`lg:hidden overflow-hidden transition-all duration-300 ${
             isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
           }`}
+          aria-hidden={!isMobileMenuOpen}
+          role="navigation"
+          aria-label="Mobile navigation"
         >
           <div className="py-4 space-y-2 bg-white/95 backdrop-blur-md rounded-lg mt-2 shadow-large">
             {navLinks.map((link) => (
@@ -163,6 +206,8 @@ export default function Navbar() {
                     ? 'text-primary bg-primary/5 border-r-4 border-primary'
                     : 'text-gray-700 hover:text-primary hover:bg-gray-50'
                 }`}
+                {...ariaAttributes.link(isActiveLink(link.href))}
+                tabIndex={isMobileMenuOpen ? 0 : -1}
               >
                 {link.label}
               </Link>
@@ -172,6 +217,7 @@ export default function Navbar() {
                 href="/contact"
                 onClick={closeMobileMenu}
                 className="btn-primary w-full text-center block"
+                tabIndex={isMobileMenuOpen ? 0 : -1}
               >
                 Get Quote
               </Link>

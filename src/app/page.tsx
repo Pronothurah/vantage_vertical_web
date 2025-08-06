@@ -4,16 +4,37 @@ import { ServiceGrid } from '@/components/sections/ServiceCard';
 import TestimonialSlider from '@/components/sections/TestimonialSlider';
 import ServiceIcon from '@/components/ui/ServiceIcon';
 import { mainServices, industries, whyChooseUsFeatures, testimonials } from '@/data';
-import Image from 'next/image';
+import { generateMetadata, pageConfigs, generateServiceSchema } from '@/lib/seo';
+import { OptimizedImage } from '@/components/ui';
+import { imageSizes, imageQuality } from '@/lib/imageUtils';
 
-export const metadata: Metadata = {
-  title: 'Vantage Vertical - Professional Drone Services in Kenya',
-  description: 'Professional drone services in Kenya - aerial mapping, surveillance, agritech solutions, and commercial photography by certified pilots.',
-};
+export const metadata: Metadata = generateMetadata(pageConfigs.home);
 
 export default function HomePage() {
+  // Generate structured data for main services
+  const servicesSchema = mainServices.map(service => 
+    generateServiceSchema({
+      name: service.title,
+      description: service.description,
+      serviceType: service.title,
+      areaServed: 'Kenya',
+    })
+  );
+
   return (
-    <main>
+    <>
+      {/* Structured Data */}
+      {servicesSchema.map((schema, index) => (
+        <script
+          key={index}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(schema),
+          }}
+        />
+      ))}
+      
+      <main>
       {/* Hero Section */}
       <HeroSection
         title="See More. Do More. From Above."
@@ -225,11 +246,14 @@ export default function HomePage() {
               </div>
               <div className="flex-shrink-0">
                 <div className="relative w-32 h-32 bg-white rounded-xl shadow-medium p-4">
-                  <Image
+                  <OptimizedImage
                     src="/kcaa.png"
                     alt="KCAA Certification"
                     fill
                     className="object-contain p-2"
+                    quality={imageQuality.thumbnail}
+                    sizes={imageSizes.logo}
+                    fallbackSrc="/images/placeholder-drone.svg"
                   />
                 </div>
               </div>
@@ -258,6 +282,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-    </main>
+      </main>
+    </>
   );
 }
