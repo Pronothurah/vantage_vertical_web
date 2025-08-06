@@ -56,9 +56,8 @@ export default function ServiceCard({
             src={image}
             alt={title}
             fill
-            className={`object-cover transition-transform duration-300 ${
-              isHovered ? 'scale-110' : 'scale-100'
-            }`}
+            className={`object-cover transition-transform duration-300 ${isHovered ? 'scale-110' : 'scale-100'
+              }`}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
         </div>
@@ -67,26 +66,22 @@ export default function ServiceCard({
       {/* Icon Section */}
       <div className="flex items-center mb-4">
         {iconType ? (
-          <div className={`flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-lg bg-primary/10 text-primary transition-all duration-300 ${
-            isHovered ? 'bg-primary text-white scale-110' : ''
-          }`}>
-            <ServiceIcon 
-              type={iconType} 
-              className={`w-6 h-6 transition-colors duration-300 ${
-                isHovered ? 'text-white' : 'text-primary'
-              }`}
+          <div className={`flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-lg bg-primary/10 text-primary transition-all duration-300 ${isHovered ? 'bg-primary text-white scale-110' : ''
+            }`}>
+            <ServiceIcon
+              type={iconType}
+              className={`w-6 h-6 transition-colors duration-300 ${isHovered ? 'text-white' : 'text-primary'
+                }`}
             />
           </div>
         ) : iconSvg ? (
-          <div className={`flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-lg bg-primary/10 text-primary transition-all duration-300 ${
-            isHovered ? 'bg-primary text-white scale-110' : ''
-          }`}>
+          <div className={`flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-lg bg-primary/10 text-primary transition-all duration-300 ${isHovered ? 'bg-primary text-white scale-110' : ''
+            }`}>
             {typeof iconSvg === 'function' ? iconSvg() : iconSvg}
           </div>
         ) : icon ? (
-          <div className={`flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden transition-transform duration-300 ${
-            isHovered ? 'scale-110' : ''
-          }`}>
+          <div className={`flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden transition-transform duration-300 ${isHovered ? 'scale-110' : ''
+            }`}>
             <Image
               src={icon}
               alt={`${title} icon`}
@@ -96,31 +91,27 @@ export default function ServiceCard({
             />
           </div>
         ) : (
-          <div className={`flex-shrink-0 w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center transition-all duration-300 ${
-            isHovered ? 'bg-primary scale-110' : ''
-          }`}>
-            <ServiceIcon 
-              type="default" 
-              className={`w-6 h-6 transition-colors duration-300 ${
-                isHovered ? 'text-white' : 'text-primary'
-              }`}
+          <div className={`flex-shrink-0 w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center transition-all duration-300 ${isHovered ? 'bg-primary scale-110' : ''
+            }`}>
+            <ServiceIcon
+              type="default"
+              className={`w-6 h-6 transition-colors duration-300 ${isHovered ? 'text-white' : 'text-primary'
+                }`}
             />
           </div>
         )}
 
         <div className="ml-4">
-          <h3 className={`font-heading font-semibold transition-colors duration-300 ${
-            variant === 'compact' ? 'text-lg' : 'text-xl'
-          } ${isHovered ? 'text-primary' : 'text-gray-900'}`}>
+          <h3 className={`font-heading font-semibold transition-colors duration-300 ${variant === 'compact' ? 'text-lg' : 'text-xl'
+            } ${isHovered ? 'text-primary' : 'text-gray-900'}`}>
             {title}
           </h3>
         </div>
       </div>
 
       {/* Description */}
-      <p className={`text-gray-600 mb-6 leading-relaxed ${
-        variant === 'compact' ? 'text-sm' : 'text-base'
-      }`}>
+      <p className={`text-gray-600 mb-6 leading-relaxed ${variant === 'compact' ? 'text-sm' : 'text-base'
+        }`}>
         {description}
       </p>
 
@@ -131,14 +122,12 @@ export default function ServiceCard({
             {features.map((feature, index) => (
               <li
                 key={index}
-                className={`flex items-start transition-all duration-300 delay-${index * 100} ${
-                  isHovered ? 'translate-x-1' : ''
-                }`}
+                className={`flex items-start transition-all duration-300 delay-${index * 100} ${isHovered ? 'translate-x-1' : ''
+                  }`}
               >
                 <svg
-                  className={`flex-shrink-0 w-5 h-5 text-primary mt-0.5 mr-3 transition-transform duration-300 ${
-                    isHovered ? 'scale-110' : ''
-                  }`}
+                  className={`flex-shrink-0 w-5 h-5 text-primary mt-0.5 mr-3 transition-transform duration-300 ${isHovered ? 'scale-110' : ''
+                    }`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -150,9 +139,8 @@ export default function ServiceCard({
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span className={`text-gray-700 ${
-                  variant === 'compact' ? 'text-sm' : 'text-base'
-                }`}>
+                <span className={`text-gray-700 ${variant === 'compact' ? 'text-sm' : 'text-base'
+                  }`}>
                   {feature}
                 </span>
               </li>
@@ -165,17 +153,15 @@ export default function ServiceCard({
       <div className="mt-auto">
         <Link
           href={ctaLink}
-          className={`group inline-flex items-center justify-center w-full px-6 py-3 text-center font-semibold rounded-lg transition-all duration-300 ${
-            variant === 'featured'
-              ? 'bg-primary text-white hover:bg-red-700 hover:shadow-lg'
-              : 'border-2 border-primary text-primary hover:bg-primary hover:text-white'
-          } ${isHovered ? 'transform -translate-y-1 shadow-medium' : ''}`}
+          className={`group inline-flex items-center justify-center w-full px-6 py-3 text-center font-semibold rounded-lg transition-all duration-300 ${variant === 'featured'
+            ? 'bg-primary text-white hover:bg-red-700 hover:shadow-lg'
+            : 'border-2 border-primary text-primary hover:bg-primary hover:text-white'
+            } ${isHovered ? 'transform -translate-y-1 shadow-medium' : ''}`}
         >
           {ctaText}
           <svg
-            className={`ml-2 w-4 h-4 transition-transform duration-300 ${
-              isHovered ? 'translate-x-1' : ''
-            }`}
+            className={`ml-2 w-4 h-4 transition-transform duration-300 ${isHovered ? 'translate-x-1' : ''
+              }`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -192,9 +178,8 @@ export default function ServiceCard({
 
       {/* Hover Effect Overlay */}
       <div
-        className={`absolute inset-0 rounded-xl pointer-events-none transition-all duration-300 ${
-          isHovered ? 'ring-2 ring-primary ring-opacity-50' : ''
-        }`}
+        className={`absolute inset-0 rounded-xl pointer-events-none transition-all duration-300 ${isHovered ? 'ring-2 ring-primary ring-opacity-50' : ''
+          }`}
       />
     </div>
   );
@@ -207,10 +192,10 @@ interface ServiceGridProps {
   className?: string;
 }
 
-export function ServiceGrid({ 
-  services, 
-  columns = 3, 
-  className = '' 
+export function ServiceGrid({
+  services,
+  columns = 3,
+  className = ''
 }: ServiceGridProps) {
   const gridClasses = {
     1: 'grid-cols-1',

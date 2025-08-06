@@ -37,7 +37,7 @@ export default function TrainingPage() {
       <HeroSection
         title="Master the Skies"
         subtitle="Professional Drone Training Programs"
-        backgroundImage="/kid_holding_drone.jpg"
+        backgroundImage="/hands_on_drone.jpg"
         ctaText="Start Your Journey"
         ctaLink="#programs"
         tagline="From Beginner to Professional Pilot"

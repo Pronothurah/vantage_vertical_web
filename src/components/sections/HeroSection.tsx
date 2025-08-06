@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { OptimizedImage } from '@/components/ui';
 import { imageSizes, imageQuality } from '@/lib/imageUtils';
 
@@ -67,16 +68,26 @@ export default function HeroSection({
             )}
           </video>
         ) : backgroundImage ? (
-          <OptimizedImage
-            src={backgroundImage}
-            alt="Hero background"
-            fill
-            className="object-cover"
-            priority
-            quality={imageQuality.hero}
-            sizes={imageSizes.hero}
-            fallbackSrc="/images/placeholder-drone.svg"
-          />
+          <>
+            {/* Temporarily use Next.js Image directly for testing */}
+            <Image
+              src={backgroundImage}
+              alt="Hero background"
+              fill
+              className="object-cover"
+              priority
+              quality={imageQuality.hero}
+              sizes={imageSizes.hero}
+            />
+            {/* Debug: Add a regular img tag to test if the image loads */}
+            <img 
+              src={backgroundImage} 
+              alt="Debug background" 
+              className="absolute inset-0 w-full h-full object-cover opacity-0 pointer-events-none"
+              onLoad={() => console.log('Background image loaded successfully:', backgroundImage)}
+              onError={() => console.error('Background image failed to load:', backgroundImage)}
+            />
+          </>
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-gray-900 to-charcoal" />
         )}
