@@ -4,18 +4,18 @@ import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 
 interface Testimonial {
-  id: string;
+  id?: string;
   name: string;
   company: string;
   role?: string;
   content: string;
   image?: string;
   rating?: number;
+  service?: string;
   metrics?: {
-    label: string;
+    improvement: string;
     value: string;
-    improvement?: string;
-  }[];
+  };
 }
 
 interface TestimonialSliderProps {
@@ -183,21 +183,22 @@ export default function TestimonialSlider({
               {/* Metrics */}
               {showMetrics && currentTestimonial.metrics && (
                 <div className="hidden md:flex space-x-6">
-                  {currentTestimonial.metrics.map((metric, index) => (
-                    <div key={index} className="text-center">
-                      <div className="text-2xl font-bold text-primary font-heading">
-                        {metric.value}
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        {metric.label}
-                      </div>
-                      {metric.improvement && (
-                        <div className="text-xs text-green-600 font-medium">
-                          {metric.improvement}
-                        </div>
-                      )}
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary font-heading">
+                      {currentTestimonial.metrics.value}
                     </div>
-                  ))}
+                    <div className="text-sm text-gray-600">
+                      Result
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs text-green-600 font-medium">
+                      {currentTestimonial.metrics.improvement}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      Improvement
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
@@ -205,21 +206,22 @@ export default function TestimonialSlider({
             {/* Mobile Metrics */}
             {showMetrics && currentTestimonial.metrics && (
               <div className="md:hidden mt-6 grid grid-cols-2 gap-4">
-                {currentTestimonial.metrics.map((metric, index) => (
-                  <div key={index} className="text-center p-3 bg-gray-50 rounded-lg">
-                    <div className="text-xl font-bold text-primary font-heading">
-                      {metric.value}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      {metric.label}
-                    </div>
-                    {metric.improvement && (
-                      <div className="text-xs text-green-600 font-medium">
-                        {metric.improvement}
-                      </div>
-                    )}
+                <div className="text-center p-3 bg-gray-50 rounded-lg">
+                  <div className="text-xl font-bold text-primary font-heading">
+                    {currentTestimonial.metrics.value}
                   </div>
-                ))}
+                  <div className="text-sm text-gray-600">
+                    Result
+                  </div>
+                </div>
+                <div className="text-center p-3 bg-gray-50 rounded-lg">
+                  <div className="text-xs text-green-600 font-medium">
+                    {currentTestimonial.metrics.improvement}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    Improvement
+                  </div>
+                </div>
               </div>
             )}
           </div>

@@ -194,8 +194,8 @@
     - Create performance budgets and monitoring alerts
     - _Requirements: 8.1, 8.5_
 
-- [-] 15. Testing and quality assurance
-  - [-] 15.1 Write unit tests for components
+- [ ] 15. Testing and quality assurance
+  - [x] 15.1 Write unit tests for components
     - Create unit tests for all UI components using Jest and React Testing Library
     - Test form validation and submission functionality
     - Add tests for utility functions and data transformations

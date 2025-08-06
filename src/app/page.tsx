@@ -39,7 +39,7 @@ export default function HomePage() {
       <HeroSection
         title="See More. Do More. From Above."
         subtitle="Leading drone services company in Kenya offering professional aerial mapping, surveillance, agritech solutions, commercial photography, and comprehensive drone training programs."
-        backgroundImage="/drone_home.jpg"
+        backgroundImage="/black_drone_back_background.jpg"
         ctaText="Book a Drone Service"
         ctaLink="/contact"
         secondaryCtaText="Browse Our Drones"

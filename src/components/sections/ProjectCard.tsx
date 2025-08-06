@@ -41,7 +41,7 @@ export default function ProjectCard({ project, onViewDetails }: ProjectCardProps
       <div className="relative h-64 overflow-hidden">
         {!imageError ? (
           <Image
-            src={project.featuredImage}
+            src={project.featuredImage || project.image}
             alt={project.title}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"

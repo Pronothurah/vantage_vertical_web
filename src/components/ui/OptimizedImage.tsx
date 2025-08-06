@@ -49,7 +49,7 @@ export default function OptimizedImage({
   aspectRatio,
   objectFit = 'cover',
   loading = 'lazy',
-  fallbackSrc = '/images/placeholder-drone.jpg',
+  fallbackSrc = '/images/placeholder-drone.svg',
 }: OptimizedImageProps) {
   const [imgSrc, setImgSrc] = useState(src);
   const [isLoading, setIsLoading] = useState(true);
@@ -66,6 +66,12 @@ export default function OptimizedImage({
 
   // Generate blur placeholder for better loading experience
   const generateBlurDataURL = (w: number = 10, h: number = 10) => {
+    // Check if we're in a browser environment
+    if (typeof window === 'undefined') {
+      // Return a static base64 blur placeholder for SSR
+      return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHZpZXdCb3g9IjAgMCAxMCAxMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZjNmNGY2Ii8+Cjwvc3ZnPgo=';
+    }
+    
     const canvas = document.createElement('canvas');
     canvas.width = w;
     canvas.height = h;

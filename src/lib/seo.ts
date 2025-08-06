@@ -1,416 +1,207 @@
 import type { Metadata } from 'next';
 
-// SEO Configuration and Utilities
+// SEO configuration and utilities
 
-export interface SEOConfig {
+export interface PageConfig {
   title: string;
   description: string;
-  keywords?: string[];
-  canonical?: string;
-  noindex?: boolean;
-  nofollow?: boolean;
+  keywords: string[];
   openGraph?: {
     title?: string;
     description?: string;
     image?: string;
-    type?: 'website' | 'article' | 'product';
-    publishedTime?: string;
-    modifiedTime?: string;
-    author?: string;
-    section?: string;
-    tags?: string[];
-  };
-  twitter?: {
-    title?: string;
-    description?: string;
-    image?: string;
-    creator?: string;
+    type?: string;
   };
   structuredData?: any;
 }
 
-// Base site configuration
-export const siteConfig = {
-  name: 'Vantage Vertical',
-  description: 'Leading drone services company in Kenya offering aerial mapping, surveillance, agritech solutions, commercial photography, and drone training programs. KCAA certified pilots with advanced technology.',
-  url: 'https://vantagevertical.co.ke',
-  ogImage: '/og-image.jpg',
-  twitterHandle: '@vantagevertical',
-  keywords: [
-    'drone services Kenya',
-    'aerial mapping Kenya',
-    'drone surveillance company Kenya',
-    'agritech drone solutions',
-    'precision agriculture Kenya',
-    'commercial drone photography',
-    'drone training Kenya',
-    'NDVI crop health scans',
-    'buy drones Kenya',
-    'drone crop spraying',
-    'KCAA certified drone pilots',
-    'aerial intelligence Kenya',
-    'construction drone surveys',
-    'real estate drone photography',
-    'security drone surveillance'
-  ]
-};
-
-// Generate metadata for Next.js pages
-export function generateMetadata(config: SEOConfig): Metadata {
-  const {
-    title,
-    description,
-    keywords = [],
-    canonical,
-    noindex = false,
-    nofollow = false,
-    openGraph,
-    twitter,
-  } = config;
-
-  const fullTitle = title.includes(siteConfig.name) ? title : `${title} | ${siteConfig.name}`;
-  const canonicalUrl = canonical ? `${siteConfig.url}${canonical}` : undefined;
-
-  return {
-    title: fullTitle,
-    description,
-    keywords: [...siteConfig.keywords, ...keywords],
-    robots: {
-      index: !noindex,
-      follow: !nofollow,
-      nocache: false,
-      googleBot: {
-        index: !noindex,
-        follow: !nofollow,
-        noimageindex: false,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
-      },
-    },
-    alternates: canonicalUrl ? {
-      canonical: canonicalUrl,
-    } : undefined,
-    openGraph: {
-      type: (openGraph?.type === 'product' ? 'website' : openGraph?.type) || 'website',
-      locale: 'en_KE',
-      url: canonicalUrl || siteConfig.url,
-      title: openGraph?.title || fullTitle,
-      description: openGraph?.description || description,
-      siteName: siteConfig.name,
-      images: [
-        {
-          url: openGraph?.image || siteConfig.ogImage,
-          width: 1200,
-          height: 630,
-          alt: openGraph?.title || fullTitle,
-        },
-      ],
-      ...(openGraph?.type === 'article' && {
-        publishedTime: openGraph.publishedTime,
-        modifiedTime: openGraph.modifiedTime,
-        authors: openGraph.author ? [openGraph.author] : undefined,
-        section: openGraph.section,
-        tags: openGraph.tags,
-      }),
-    },
-    twitter: {
-      card: 'summary_large_image',
-      site: siteConfig.twitterHandle,
-      creator: twitter?.creator || siteConfig.twitterHandle,
-      title: twitter?.title || fullTitle,
-      description: twitter?.description || description,
-      images: [twitter?.image || openGraph?.image || siteConfig.ogImage],
-    },
-  };
-}
-
-// Page-specific SEO configurations
-export const pageConfigs = {
+export const pageConfigs: Record<string, PageConfig> = {
   home: {
     title: 'Vantage Vertical - Professional Drone Services in Kenya',
-    description: 'Leading drone services company in Kenya offering aerial mapping, surveillance, agritech solutions, commercial photography, and drone training programs. KCAA certified pilots with advanced technology.',
+    description: 'Leading drone services provider in Kenya offering aerial mapping, surveillance, agritech solutions, and commercial drone services. KCAA certified pilots.',
     keywords: [
       'drone services Kenya',
       'aerial mapping',
       'drone surveillance',
       'agritech solutions',
-      'commercial drone photography',
-      'KCAA certified pilots'
+      'commercial drone services',
+      'KCAA certified',
+      'precision agriculture',
+      'aerial photography'
     ],
-    canonical: '/',
+    openGraph: {
+      title: 'Vantage Vertical - Professional Drone Services',
+      description: 'See More. Do More. From Above. Professional drone services for aerial mapping, surveillance, and agritech solutions in Kenya.',
+      image: '/og-image.jpg',
+      type: 'website'
+    }
   },
   about: {
-    title: 'About Vantage Vertical - Kenya\'s Leading Drone Services Company',
-    description: 'Learn about Vantage Vertical\'s mission, KCAA-certified team, and commitment to excellence in aerial mapping, surveillance, and agricultural drone services across Kenya.',
-    keywords: [
-      'about vantage vertical',
-      'drone company kenya',
-      'KCAA certified pilots',
-      'aerial services team',
-      'drone technology experts'
-    ],
-    canonical: '/about',
+    title: 'About Us - Vantage Vertical Drone Services',
+    description: 'Learn about Vantage Vertical, Kenya\'s leading drone services company. Our KCAA certified team provides professional aerial solutions.',
+    keywords: ['about vantage vertical', 'drone company Kenya', 'KCAA certified pilots', 'aerial services team'],
   },
   portfolio: {
-    title: 'Portfolio - Drone Projects & Case Studies | Vantage Vertical',
-    description: 'Explore our portfolio of successful drone projects including aerial mapping, agricultural surveys, surveillance operations, and commercial photography across Kenya.',
-    keywords: [
-      'drone portfolio Kenya',
-      'aerial mapping projects',
-      'drone case studies',
-      'agricultural drone surveys',
-      'commercial drone photography'
-    ],
-    canonical: '/portfolio',
+    title: 'Portfolio - Vantage Vertical Projects',
+    description: 'Explore our portfolio of successful drone projects including aerial mapping, surveillance, and agritech solutions across Kenya.',
+    keywords: ['drone portfolio', 'aerial mapping projects', 'surveillance projects', 'agritech case studies'],
   },
   technology: {
-    title: 'Technology & Services - Advanced Drone Solutions | Vantage Vertical',
-    description: 'Discover our advanced drone technology, aerial mapping services, surveillance solutions, and agritech capabilities. Professional equipment and certified operations.',
-    keywords: [
-      'drone technology Kenya',
-      'aerial mapping services',
-      'drone surveillance solutions',
-      'agritech drone capabilities',
-      'professional drone equipment'
-    ],
-    canonical: '/technology',
+    title: 'Technology & Services - Vantage Vertical',
+    description: 'Discover our advanced drone technology and comprehensive services including aerial mapping, surveillance, agritech, and commercial solutions.',
+    keywords: ['drone technology', 'aerial mapping services', 'drone surveillance', 'agritech solutions', 'commercial drone services'],
   },
   training: {
-    title: 'Professional Drone Training Programs | Vantage Vertical',
-    description: 'Master drone operations with KCAA-certified training programs. From basic pilot certification to advanced agricultural and commercial operations. Expert instructors, modern facilities.',
-    keywords: [
-      'drone training Kenya',
-      'KCAA drone certification',
-      'pilot training programs',
-      'drone operator courses',
-      'aerial photography training'
-    ],
-    canonical: '/training',
+    title: 'Drone Training Programs - Vantage Vertical',
+    description: 'Professional drone training programs and certification courses. Learn from KCAA certified instructors and advance your drone skills.',
+    keywords: ['drone training Kenya', 'KCAA certification', 'drone pilot training', 'aerial photography course'],
   },
   blog: {
-    title: 'Blog - Drone Industry Insights & News | Vantage Vertical',
-    description: 'Stay updated with the latest drone technology trends, industry insights, project case studies, and agricultural innovation news from Kenya\'s leading drone experts.',
-    keywords: [
-      'drone blog Kenya',
-      'aerial technology news',
-      'agritech insights',
-      'drone industry trends',
-      'precision agriculture news'
-    ],
-    canonical: '/blog',
+    title: 'Blog - Vantage Vertical Insights',
+    description: 'Stay updated with the latest drone technology trends, industry insights, and best practices from Vantage Vertical experts.',
+    keywords: ['drone blog', 'aerial technology news', 'drone industry insights', 'precision agriculture tips'],
   },
   contact: {
-    title: 'Contact Vantage Vertical - Get Professional Drone Services Quote',
-    description: 'Contact Kenya\'s leading drone services company for aerial mapping, surveillance, agritech solutions, and training. KCAA certified pilots ready to help with your project.',
-    keywords: [
-      'contact drone services Kenya',
-      'drone services quote',
-      'aerial mapping consultation',
-      'drone project inquiry',
-      'KCAA certified drone operators'
-    ],
-    canonical: '/contact',
-  },
-  drones: {
-    title: 'Professional Drones for Sale - Vantage Vertical Kenya',
-    description: 'Buy professional drones in Kenya. Commercial, agricultural, and surveillance drones with specifications, pricing, and expert consultation. KCAA compliant equipment.',
-    keywords: [
-      'buy drones Kenya',
-      'professional drones for sale',
-      'commercial drones Kenya',
-      'agricultural drones',
-      'surveillance drones',
-      'drone equipment Kenya'
-    ],
-    canonical: '/drones',
-  },
+    title: 'Contact Us - Vantage Vertical',
+    description: 'Get in touch with Vantage Vertical for professional drone services. Request a quote or consultation for your aerial project needs.',
+    keywords: ['contact drone services', 'drone quote Kenya', 'aerial services consultation', 'drone project inquiry'],
+  }
 };
 
-// Structured data generators
+export function generateMetadata(config: PageConfig): Metadata {
+  return {
+    title: config.title,
+    description: config.description,
+    keywords: config.keywords.join(', '),
+    openGraph: {
+      title: config.openGraph?.title || config.title,
+      description: config.openGraph?.description || config.description,
+      images: config.openGraph?.image ? [config.openGraph.image] : undefined,
+      type: config.openGraph?.type as any || 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: config.openGraph?.title || config.title,
+      description: config.openGraph?.description || config.description,
+      images: config.openGraph?.image ? [config.openGraph.image] : undefined,
+    },
+  };
+}
+
+export interface ServiceSchemaData {
+  name: string;
+  description: string;
+  serviceType: string;
+  areaServed: string;
+  provider?: {
+    name: string;
+    url: string;
+  };
+}
+
+export function generateServiceSchema(data: ServiceSchemaData) {
+  return {
+    '@type': 'Service',
+    name: data.name,
+    description: data.description,
+    serviceType: data.serviceType,
+    areaServed: {
+      '@type': 'Country',
+      name: data.areaServed,
+    },
+    provider: data.provider || {
+      '@type': 'Organization',
+      name: 'Vantage Vertical',
+      url: 'https://vantagevertical.co.ke',
+    },
+  };
+}
+
 export function generateOrganizationSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'Vantage Vertical',
-    description: siteConfig.description,
-    url: siteConfig.url,
-    logo: `${siteConfig.url}/vantage_logo_whitebg.jpg`,
-    image: `${siteConfig.url}/og-image.jpg`,
-    telephone: '+254 700 123 456',
-    email: 'info@vantagevertical.co.ke',
+    url: 'https://vantagevertical.co.ke',
+    logo: 'https://vantagevertical.co.ke/logo.svg',
+    description: 'Professional drone services provider in Kenya offering aerial mapping, surveillance, agritech solutions, and commercial drone services.',
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'Westlands Business Park, Suite 402, Waiyaki Way',
-      addressLocality: 'Westlands',
-      addressRegion: 'Nairobi',
       addressCountry: 'Kenya',
+      addressLocality: 'Nairobi',
     },
-    geo: {
-      '@type': 'GeoCoordinates',
-      latitude: -1.2634,
-      longitude: 36.8063,
+    contactPoint: {
+      '@type': 'ContactPoint',
+      telephone: '+254-XXX-XXXX',
+      contactType: 'customer service',
+      availableLanguage: ['English', 'Swahili'],
     },
-    areaServed: {
-      '@type': 'Country',
-      name: 'Kenya',
-    },
-    serviceType: [
-      'Aerial Mapping',
-      'Drone Surveillance',
-      'Agricultural Drone Services',
-      'Commercial Drone Photography',
-      'Drone Training',
-      'Drone Sales'
-    ],
-    foundingDate: '2019',
-    numberOfEmployees: '15',
     sameAs: [
-      'https://linkedin.com/company/vantage-vertical',
-      'https://twitter.com/vantagevertical',
       'https://facebook.com/vantagevertical',
-      'https://instagram.com/vantagevertical',
+      'https://twitter.com/vantagevertical',
+      'https://linkedin.com/company/vantagevertical',
     ],
-    hasCredential: {
-      '@type': 'EducationalOccupationalCredential',
-      name: 'KCAA Drone Operator Certificate',
-      credentialCategory: 'Aviation License',
-      recognizedBy: {
-        '@type': 'Organization',
-        name: 'Kenya Civil Aviation Authority',
-      },
-    },
   };
 }
 
-export function generateServiceSchema(service: {
-  name: string;
-  description: string;
-  serviceType: string;
-  areaServed?: string;
-  offers?: {
-    price?: string;
-    priceCurrency?: string;
-    availability?: string;
-  };
-}) {
+export function generateBreadcrumbSchema(items: Array<{ name: string; url: string }>) {
   return {
     '@context': 'https://schema.org',
-    '@type': 'Service',
-    name: service.name,
-    description: service.description,
-    serviceType: service.serviceType,
-    provider: {
-      '@type': 'Organization',
-      name: 'Vantage Vertical',
-      url: siteConfig.url,
-    },
-    areaServed: service.areaServed || 'Kenya',
-    ...(service.offers && {
-      offers: {
-        '@type': 'Offer',
-        price: service.offers.price,
-        priceCurrency: service.offers.priceCurrency || 'KES',
-        availability: service.offers.availability || 'https://schema.org/InStock',
-      },
-    }),
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: item.url,
+    })),
   };
 }
 
-export function generateArticleSchema(article: {
+export interface ArticleSchemaData {
   title: string;
   description: string;
   author: string;
-  publishedAt: string;
-  modifiedAt?: string;
+  publishedAt: Date;
+  modifiedAt?: Date;
   image: string;
   url: string;
-  keywords?: string[];
-}) {
+  keywords: string[];
+}
+
+export function generateArticleSchema(data: ArticleSchemaData) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Article',
-    headline: article.title,
-    description: article.description,
-    image: article.image,
-    url: article.url,
-    datePublished: article.publishedAt,
-    dateModified: article.modifiedAt || article.publishedAt,
+    headline: data.title,
+    description: data.description,
+    image: data.image,
     author: {
       '@type': 'Person',
-      name: article.author,
+      name: data.author,
     },
     publisher: {
       '@type': 'Organization',
       name: 'Vantage Vertical',
       logo: {
         '@type': 'ImageObject',
-        url: `${siteConfig.url}/vantage_logo_whitebg.jpg`,
+        url: 'https://vantagevertical.co.ke/logo.svg',
       },
     },
-    keywords: article.keywords?.join(', '),
+    datePublished: data.publishedAt.toISOString(),
+    dateModified: (data.modifiedAt || data.publishedAt).toISOString(),
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': article.url,
+      '@id': data.url,
     },
+    keywords: data.keywords.join(', '),
   };
 }
 
-export function generateProductSchema(product: {
-  name: string;
-  description: string;
-  image: string;
-  brand: string;
-  model?: string;
-  price?: number;
-  currency?: string;
-  availability?: string;
-  condition?: string;
-  sku?: string;
-}) {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'Product',
-    name: product.name,
-    description: product.description,
-    image: product.image,
-    brand: {
-      '@type': 'Brand',
-      name: product.brand,
-    },
-    model: product.model,
-    sku: product.sku,
-    offers: {
-      '@type': 'Offer',
-      price: product.price,
-      priceCurrency: product.currency || 'KES',
-      availability: product.availability || 'https://schema.org/InStock',
-      itemCondition: product.condition || 'https://schema.org/NewCondition',
-      seller: {
-        '@type': 'Organization',
-        name: 'Vantage Vertical',
-      },
-    },
-  };
-}
-
-// SEO utility functions
-export function generatePageTitle(title: string, includeCompany: boolean = true): string {
-  return includeCompany && !title.includes(siteConfig.name) 
-    ? `${title} | ${siteConfig.name}` 
-    : title;
-}
-
-export function truncateDescription(description: string, maxLength: number = 160): string {
-  if (description.length <= maxLength) return description;
-  return description.substring(0, maxLength - 3).trim() + '...';
-}
-
-export function generateKeywords(baseKeywords: string[], additionalKeywords: string[] = []): string[] {
-  const combined = [...baseKeywords, ...additionalKeywords];
-  return Array.from(new Set(combined));
-}
-
-export function generateCanonicalUrl(path: string): string {
-  return `${siteConfig.url}${path}`;
-}
+export const defaultSEOConfig = {
+  siteName: 'Vantage Vertical',
+  siteUrl: 'https://vantagevertical.co.ke',
+  defaultTitle: 'Vantage Vertical - Professional Drone Services in Kenya',
+  defaultDescription: 'Leading drone services provider in Kenya offering aerial mapping, surveillance, agritech solutions, and commercial drone services.',
+  defaultImage: '/og-image.jpg',
+  twitterHandle: '@vantagevertical',
+};
