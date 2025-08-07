@@ -95,6 +95,13 @@ function generateConfirmationToken(): string {
 }
 
 async function sendConfirmationEmail(email: string, confirmationToken: string): Promise<void> {
+  // Check if email credentials are configured
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    console.log('Email credentials not configured. Skipping email send for:', email);
+    console.log('Confirmation token would be:', confirmationToken);
+    return; // Skip email sending if credentials are not configured
+  }
+
   // Create transporter
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.gmail.com',
