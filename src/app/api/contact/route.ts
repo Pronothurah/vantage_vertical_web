@@ -160,6 +160,7 @@ async function sendNotificationEmail(formData: ContactFormData): Promise<void> {
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <div style="background-color: #D72638; color: white; padding: 20px; text-align: center;">
+        <img src="https://vantagevertical.co.ke/vantage-logo-white.jpg" alt="Vantage Vertical Logo" style="height: 60px; margin-bottom: 10px;" />
         <h1 style="margin: 0;">New Contact Form Submission</h1>
         <p style="margin: 5px 0 0 0;">Vantage Vertical Website</p>
       </div>

@@ -126,22 +126,14 @@ export default function Footer() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
             {/* Company Info */}
             <div className="lg:col-span-2">
-              <Link href="/" className="flex items-center space-x-2 mb-6">
-                <div className="relative w-10 h-10">
+              <Link href="/" className="flex items-center mb-6">
+                <div className="relative w-32 h-32">
                   <Image
-                    src="/logo.svg"
+                    src="/vantage-logo-white.jpg"
                     alt="Vantage Vertical Logo"
                     fill
                     className="object-contain"
                   />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-xl font-bold font-heading">
-                    Vantage Vertical
-                  </span>
-                  <span className="text-sm text-gray-400">
-                    Aerial Intelligence
-                  </span>
                 </div>
               </Link>
               

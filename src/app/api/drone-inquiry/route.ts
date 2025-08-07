@@ -119,6 +119,7 @@ function generateInquiryEmail(data: DroneInquiryData) {
       <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
         <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background: #D72638; color: white; padding: 20px; text-align: center;">
+            <img src="https://vantagevertical.co.ke/vantage-logo-white.jpg" alt="Vantage Vertical Logo" style="height: 60px; margin-bottom: 10px;" />
             <h1 style="margin: 0;">New Drone Inquiry</h1>
             <p style="margin: 5px 0 0 0;">Vantage Vertical Sales Lead</p>
           </div>
@@ -214,6 +215,7 @@ function generateInquiryEmail(data: DroneInquiryData) {
       <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
         <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background: #D72638; color: white; padding: 20px; text-align: center;">
+            <img src="https://vantagevertical.co.ke/vantage-logo-white.jpg" alt="Vantage Vertical Logo" style="height: 60px; margin-bottom: 10px;" />
             <h1 style="margin: 0;">Thank You for Your Inquiry</h1>
             <p style="margin: 5px 0 0 0;">Vantage Vertical - Professional Drone Services</p>
           </div>

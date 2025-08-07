@@ -111,6 +111,7 @@ async function sendConfirmationEmail(email: string, confirmationToken: string): 
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <div style="background-color: #D72638; color: white; padding: 30px; text-align: center;">
+        <img src="https://vantagevertical.co.ke/vantage-logo-white.jpg" alt="Vantage Vertical Logo" style="height: 60px; margin-bottom: 15px;" />
         <h1 style="margin: 0; font-size: 28px;">Welcome to Vantage Vertical!</h1>
         <p style="margin: 10px 0 0 0; font-size: 16px;">Confirm your newsletter subscription</p>
       </div>

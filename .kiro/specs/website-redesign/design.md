@@ -334,6 +334,7 @@ colors: {
   gray: '#343A40',         // Steel Gray - secondary text
   accent: '#DCCA87',       // Golden - special highlights
   charcoal: '#212529',     // Dark backgrounds, footers
+  deepBlue: '#1E3A8A',     // Deep Blue - navbar hover effects
 }
 ```
 

@@ -194,26 +194,32 @@
     - Create performance budgets and monitoring alerts
     - _Requirements: 8.1, 8.5_
 
-- [-] 15. Testing and quality assurance
-  - [x] 15.1 Write unit tests for components
+- [x] 15. Enhance navbar with deep blue hover effects
+  - Update Tailwind configuration to include deep blue color
+  - Modify navbar component to use deep blue for hover states
+  - Test hover effects across different screen sizes and states
+  - _Requirements: 2.5, 3.3_
+
+- [-] 16. Testing and quality assurance
+  - [x] 16.1 Write unit tests for components
     - Create unit tests for all UI components using Jest and React Testing Library
     - Test form validation and submission functionality
     - Add tests for utility functions and data transformations
     - _Requirements: 8.1, 8.2_
 
-  - [ ] 15.2 Implement integration testing
+  - [ ] 16.2 Implement integration testing
     - Test complete page renders and user journeys
     - Add end-to-end testing for contact forms and navigation
     - Test responsive design across different screen sizes
     - _Requirements: 3.2, 8.2, 8.4_
 
-  - [ ] 15.3 Conduct accessibility and performance audits
+  - [ ] 16.3 Conduct accessibility and performance audits
     - Run Lighthouse audits for performance, accessibility, and SEO
     - Test with screen readers and keyboard navigation
     - Verify WCAG 2.1 AA compliance across all pages
     - _Requirements: 8.1, 8.2, 8.4, 8.5_
 
-- [ ] 16. Deployment and launch preparation
+- [ ] 17. Deployment and launch preparation
   - [ ] 16.1 Set up production deployment
     - Configure Vercel or Netlify deployment with custom domain
     - Set up environment variables for production

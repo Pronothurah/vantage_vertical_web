@@ -26,6 +26,7 @@ module.exports = {
         },
         accent: '#DCCA87',       // Golden - special highlights
         charcoal: '#212529',     // Dark backgrounds, footers
+        deepBlue: '#1E3A8A',     // Deep Blue - navbar hover effects
         
         // Semantic colors
         success: '#28A745',

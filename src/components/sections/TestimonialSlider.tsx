@@ -294,7 +294,7 @@ export default function TestimonialSlider({
 
       {/* Progress Bar */}
       {isPlaying && testimonials.length > 1 && (
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-200 rounded-b-2xl overflow-hidden">
+        <div className="mt-4 h-1 bg-gray-200 rounded-full overflow-hidden">
           <div
             className="h-full bg-primary transition-all duration-100 ease-linear"
             style={{

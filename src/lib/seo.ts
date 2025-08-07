@@ -123,7 +123,7 @@ export function generateOrganizationSchema() {
     '@type': 'Organization',
     name: 'Vantage Vertical',
     url: 'https://vantagevertical.co.ke',
-    logo: 'https://vantagevertical.co.ke/logo.svg',
+    logo: 'https://vantagevertical.co.ke/vantage-logo.png',
     description: 'Professional drone services provider in Kenya offering aerial mapping, surveillance, agritech solutions, and commercial drone services.',
     address: {
       '@type': 'PostalAddress',
@@ -184,7 +184,7 @@ export function generateArticleSchema(data: ArticleSchemaData) {
       name: 'Vantage Vertical',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://vantagevertical.co.ke/logo.svg',
+        url: 'https://vantagevertical.co.ke/vantage-logo.png',
       },
     },
     datePublished: data.publishedAt.toISOString(),

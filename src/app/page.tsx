@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import HeroSection from '@/components/sections/HeroSection';
 import { ServiceGrid } from '@/components/sections/ServiceCard';
 import TestimonialSlider from '@/components/sections/TestimonialSlider';
@@ -246,14 +247,11 @@ export default function HomePage() {
               </div>
               <div className="flex-shrink-0">
                 <div className="relative w-32 h-32 bg-white rounded-xl shadow-medium p-4">
-                  <OptimizedImage
+                  <Image
                     src="/kcaa.png"
                     alt="KCAA Certification"
                     fill
                     className="object-contain p-2"
-                    quality={imageQuality.thumbnail}
-                    sizes={imageSizes.logo}
-                    fallbackSrc="/images/placeholder-drone.svg"
                   />
                 </div>
               </div>

@@ -40,7 +40,7 @@ export default function HeroSection({
   }, []);
 
   return (
-    <section className={`relative min-h-screen flex items-center justify-center overflow-hidden ${className}`}>
+    <section className={`relative h-screen flex flex-col justify-center overflow-hidden ${className}`}>
       {/* Background Media */}
       <div className="absolute inset-0 z-0">
         {backgroundVideo ? (
@@ -97,7 +97,7 @@ export default function HeroSection({
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex-1 flex flex-col justify-center pb-20">
         {/* Tagline */}
         {tagline && (
           <div
@@ -188,17 +188,19 @@ export default function HeroSection({
           </div>
         </div>
 
-        {/* Scroll Indicator */}
-        <div
-          className={`absolute bottom-8 left-1/2 transform -translate-x-1/2 transition-all duration-1000 ease-out delay-1000 ${
-            isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-          }`}
-        >
-          <div className="flex flex-col items-center text-white/70 hover:text-white transition-colors duration-200">
-            <span className="text-sm font-medium mb-2">Scroll to explore</span>
-            <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
-              <div className="w-1 h-3 bg-white/50 rounded-full mt-2 animate-bounce" />
-            </div>
+      </div>
+
+      {/* Scroll Indicator - Positioned outside content container */}
+      <div
+        className={`absolute bottom-16 left-1/2 transform -translate-x-1/2 transition-all duration-1000 ease-out delay-1000 z-20 ${
+          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+        }`}
+      >
+        <div className="flex flex-col items-center text-white/70 hover:text-white transition-colors duration-200 cursor-pointer"
+             onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}>
+          <span className="text-sm font-medium mb-2 tracking-wide">Scroll to explore</span>
+          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center hover:border-white/50 transition-colors duration-200">
+            <div className="w-1 h-3 bg-white/50 rounded-full mt-2 animate-bounce" />
           </div>
         </div>
       </div>

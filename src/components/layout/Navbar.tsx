@@ -94,25 +94,17 @@ export default function Navbar() {
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center space-x-2 group"
+            className="flex items-center group"
             onClick={closeMobileMenu}
           >
-            <div className="relative w-10 h-10 lg:w-12 lg:h-12">
+            <div className="relative w-30 h-30 lg:w-36 lg:h-36">
               <Image
-                src="/logo.svg"
+                src="/vantage-logo.png"
                 alt="Vantage Vertical Logo"
                 fill
                 className="object-contain transition-transform duration-200 group-hover:scale-105"
                 priority
               />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-lg lg:text-xl font-bold font-heading text-gray-900">
-                Vantage Vertical
-              </span>
-              <span className="text-xs text-gray-600 hidden sm:block">
-                Aerial Intelligence
-              </span>
             </div>
           </Link>
 
@@ -126,8 +118,8 @@ export default function Navbar() {
                   isActiveLink(link.href)
                     ? 'text-primary'
                     : isScrolled
-                    ? 'text-gray-700 hover:text-primary'
-                    : 'text-white hover:text-accent'
+                    ? 'text-gray-700 hover:text-deepBlue'
+                    : 'text-white hover:text-deepBlue'
                 } group`}
                 {...ariaAttributes.link(isActiveLink(link.href))}
               >
@@ -204,7 +196,7 @@ export default function Navbar() {
                 className={`block px-6 py-3 text-base font-medium transition-colors duration-200 ${
                   isActiveLink(link.href)
                     ? 'text-primary bg-primary/5 border-r-4 border-primary'
-                    : 'text-gray-700 hover:text-primary hover:bg-gray-50'
+                    : 'text-gray-700 hover:text-deepBlue hover:bg-deepBlue/5'
                 }`}
                 {...ariaAttributes.link(isActiveLink(link.href))}
                 tabIndex={isMobileMenuOpen ? 0 : -1}
