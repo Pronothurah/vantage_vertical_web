@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { OptimizedImage } from '@/components/ui';
 import { imageSizes, imageQuality } from '@/lib/imageUtils';
 import { HeroSection } from '@/components/sections';
@@ -218,14 +219,11 @@ export default function TrainingPage() {
             {trainingInstructors.map((instructor) => (
               <div key={instructor.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
                 <div className="relative h-64">
-                  <OptimizedImage
+                  <Image
                     src={instructor.image}
                     alt={instructor.name}
                     fill
                     className="object-cover"
-                    quality={imageQuality.card}
-                    sizes={imageSizes.card}
-                    fallbackSrc="/images/placeholder-drone.svg"
                   />
                 </div>
                 <div className="p-6">
@@ -278,14 +276,11 @@ export default function TrainingPage() {
           <div className="grid md:grid-cols-2 gap-8">
             <div className="bg-white rounded-xl shadow-lg overflow-hidden">
               <div className="relative h-64">
-                <OptimizedImage
+                <Image
                   src="/drone_home.jpg"
                   alt="Training Classroom"
                   fill
                   className="object-cover"
-                  quality={imageQuality.card}
-                  sizes={imageSizes.card}
-                  fallbackSrc="/images/placeholder-drone.svg"
                 />
               </div>
               <div className="p-8">
@@ -326,14 +321,11 @@ export default function TrainingPage() {
 
             <div className="bg-white rounded-xl shadow-lg overflow-hidden">
               <div className="relative h-64">
-                <OptimizedImage
+                <Image
                   src="/aerial_drone.jpg"
                   alt="Flight Training Area"
                   fill
                   className="object-cover"
-                  quality={imageQuality.card}
-                  sizes={imageSizes.card}
-                  fallbackSrc="/images/placeholder-drone.svg"
                 />
               </div>
               <div className="p-8">

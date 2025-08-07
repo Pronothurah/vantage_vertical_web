@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { OptimizedImage } from '@/components/ui';
 import { imageSizes, imageQuality } from '@/lib/imageUtils';
 import { BlogSearchParams } from '@/types/forms';
@@ -87,14 +88,11 @@ export default function BlogListing({ searchParams }: BlogListingProps) {
                 <article key={post.id} className="group">
                   <Link href={generateBlogPostUrl(post.slug)} className="block">
                     <div className="relative aspect-video mb-4 overflow-hidden rounded-lg">
-                      <OptimizedImage
+                      <Image
                         src={post.featuredImage}
                         alt={post.title}
                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
-                        quality={imageQuality.card}
-                        sizes={imageSizes.card}
-                        fallbackSrc="/images/placeholder-drone.svg"
                       />
                       <div className="absolute top-4 left-4">
                         <span className="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium">
@@ -233,14 +231,11 @@ export default function BlogListing({ searchParams }: BlogListingProps) {
                 <article key={post.id} className="group">
                   <Link href={generateBlogPostUrl(post.slug)} className="block">
                     <div className="relative aspect-video mb-4 overflow-hidden rounded-lg">
-                      <OptimizedImage
+                      <Image
                         src={post.featuredImage}
                         alt={post.title}
                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
-                        quality={imageQuality.card}
-                        sizes={imageSizes.card}
-                        fallbackSrc="/images/placeholder-drone.svg"
                       />
                       {post.featured && (
                         <div className="absolute top-4 left-4">
