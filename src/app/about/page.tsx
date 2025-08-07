@@ -112,7 +112,7 @@ export default function AboutPage() {
               <p className="text-lg text-gray-600 mb-8 leading-relaxed">
                 {companyInfo.mission}
               </p>
-              <h3 className="text-subsection-title mb-4">Our Vision</h3>
+              <h2 className="text-section-title mb-4">Our Vision</h2>
               <p className="text-lg text-gray-600 leading-relaxed">
                 {companyInfo.vision}
               </p>

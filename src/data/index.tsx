@@ -273,14 +273,36 @@ export const companyInfo = {
   description: 'Leading provider of professional drone services in Kenya, specializing in aerial mapping, surveillance, agritech solutions, and commercial applications.',
   founded: '2020',
   location: 'Nairobi, Kenya',
+  employees: '15+',
+  projectsCompleted: '500+',
   mission: 'To revolutionize industries through innovative aerial intelligence solutions that enhance productivity, safety, and decision-making.',
   vision: 'To be the leading drone services provider in East Africa, setting the standard for excellence in aerial technology applications.',
   values: [
-    'Safety First',
-    'Innovation',
-    'Professional Excellence',
-    'Customer Focus',
-    'Environmental Responsibility'
+    {
+      title: 'Safety First',
+      description: 'We prioritize safety in every operation, maintaining the highest standards of aviation safety and regulatory compliance.',
+      icon: 'shield'
+    },
+    {
+      title: 'Innovation',
+      description: 'We continuously adopt cutting-edge technology and innovative approaches to deliver superior aerial intelligence solutions.',
+      icon: 'lightbulb'
+    },
+    {
+      title: 'Professional Excellence',
+      description: 'We maintain the highest standards of professionalism in all our services, ensuring exceptional quality and reliability.',
+      icon: 'star'
+    },
+    {
+      title: 'Customer Focus',
+      description: 'We put our clients at the center of everything we do, delivering customized solutions that exceed expectations.',
+      icon: 'handshake'
+    },
+    {
+      title: 'Environmental Responsibility',
+      description: 'We are committed to sustainable practices that protect the environment while delivering effective solutions.',
+      icon: 'leaf'
+    }
   ],
   certifications: [
     'KCAA Remote Pilot License',
@@ -294,27 +316,36 @@ export const companyInfo = {
 // Team members
 export const teamMembers = [
   {
+    id: 'david-kuria',
     name: 'David Kuria',
     role: 'CEO & Lead Pilot',
     image: '/profile.png',
     bio: 'KCAA certified pilot with over 8 years of experience in aerial operations and business development.',
-    certifications: ['KCAA Remote Pilot License', 'Drone Operations Certificate'],
+    experience: '8+ Years',
+    projects: '200+',
+    certifications: ['KCAA Remote Pilot License', 'Drone Operations Certificate', 'Aviation Safety Management', 'Business Leadership'],
     specialties: ['Strategic Planning', 'Flight Operations', 'Business Development']
   },
   {
+    id: 'mary-wanjiku',
     name: 'Mary Wanjiku',
     role: 'Technical Director',
     image: '/profile.png',
     bio: 'Expert in drone technology and data analysis with a background in geospatial engineering.',
-    certifications: ['GIS Professional', 'Drone Data Analysis'],
+    experience: '6+ Years',
+    projects: '150+',
+    certifications: ['GIS Professional', 'Drone Data Analysis', 'Remote Sensing Specialist', 'Technical Operations'],
     specialties: ['Data Processing', 'Technical Analysis', 'Equipment Management']
   },
   {
+    id: 'james-ochieng',
     name: 'James Ochieng',
     role: 'Operations Manager',
     image: '/profile.png',
     bio: 'Experienced operations manager ensuring smooth project execution and client satisfaction.',
-    certifications: ['Project Management', 'Safety Operations'],
+    experience: '5+ Years',
+    projects: '180+',
+    certifications: ['Project Management Professional', 'Safety Operations', 'Quality Assurance', 'Client Relations'],
     specialties: ['Project Management', 'Client Relations', 'Quality Assurance']
   }
 ];
