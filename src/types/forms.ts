@@ -76,9 +76,9 @@ export interface BlogPost {
 export interface BlogCategory {
   id: string;
   name: string;
-  slug: string;
-  description: string;
-  postCount: number;
+  value: string;
+  label: string;
+  count: number;
 }
 
 export interface EnrollmentData {
@@ -140,4 +140,40 @@ export interface PortfolioProject {
     role: string;
     company: string;
   };
+}
+
+export interface NewsletterFormData {
+  email: string;
+  name?: string;
+}
+
+export interface NewsletterFormProps {
+  variant?: 'inline' | 'modal' | 'footer';
+  onSubmit?: (data: NewsletterFormData) => Promise<void>;
+  className?: string;
+  placeholder?: string;
+  buttonText?: string;
+  onSuccess?: () => void;
+}
+
+export interface NewsletterFormState {
+  isSubmitting: boolean;
+  isSubmitted: boolean;
+  error?: string;
+  success: boolean;
+}
+
+export interface BlogSearchParams {
+  category?: string;
+  tag?: string;
+  search?: string;
+  query?: string;
+  page?: string | number;
+}export 
+interface BlogPagination {
+  currentPage: number;
+  totalPages: number;
+  totalPosts: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
 }

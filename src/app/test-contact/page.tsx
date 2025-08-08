@@ -25,8 +25,6 @@ export default function TestContactPage() {
               <div className="bg-gray-800 p-6 rounded-lg">
                 <NewsletterForm 
                   variant="footer" 
-                  placeholder="Your email address"
-                  buttonText="Join Newsletter"
                 />
               </div>
             </div>
@@ -36,8 +34,6 @@ export default function TestContactPage() {
               <div className="bg-white p-6 border rounded-lg">
                 <NewsletterForm 
                   variant="modal"
-                  placeholder="Enter email for updates"
-                  buttonText="Subscribe Now"
                 />
               </div>
             </div>

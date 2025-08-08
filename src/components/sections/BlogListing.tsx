@@ -102,7 +102,7 @@ export default function BlogListing({ searchParams }: BlogListingProps) {
                     </div>
                     <div className="space-y-3">
                       <div className="flex items-center gap-4 text-sm text-gray-600">
-                        <span>{formatPublishDate(post.publishedAt)}</span>
+                        <span>{formatPublishDate(post.publishedAt.toISOString())}</span>
                         <span>•</span>
                         <span>{formatReadTime(post.readTime)}</span>
                         <span>•</span>
@@ -247,7 +247,7 @@ export default function BlogListing({ searchParams }: BlogListingProps) {
                     </div>
                     <div className="space-y-3">
                       <div className="flex items-center gap-4 text-sm text-gray-600">
-                        <span>{formatPublishDate(post.publishedAt)}</span>
+                        <span>{formatPublishDate(post.publishedAt.toISOString())}</span>
                         <span>•</span>
                         <span>{formatReadTime(post.readTime)}</span>
                         <span>•</span>
