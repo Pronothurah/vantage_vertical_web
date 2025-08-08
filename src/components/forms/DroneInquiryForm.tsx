@@ -117,12 +117,14 @@ export default function DroneInquiryForm({
   }, [formState.errors, clearFieldError]);
 
   const handleBlur = useCallback((field: keyof DroneInquiryData) => {
+    // Basic validation for drone inquiry form
     const value = formData[field];
-    const error = validateField(field, typeof value === 'string' ? value : String(value));
-    if (error) {
-      setFieldError(field, error);
+    if (!value || (typeof value === 'string' && value.trim() === '')) {
+      setFieldError(field, { message: 'This field is required', type: 'required' });
+    } else {
+      clearFieldError(field);
     }
-  }, [formData, validateField, setFieldError]);
+  }, [formData, setFieldError, clearFieldError]);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();

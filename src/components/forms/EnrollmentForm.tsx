@@ -367,9 +367,7 @@ export default function EnrollmentForm({
             <div>
               <span className="font-medium">Level:</span> {selectedProgramData.level}
             </div>
-            <div>
-              <span className="font-medium">Certification:</span> {selectedProgramData.certification}
-            </div>
+
           </div>
         </div>
       )}
