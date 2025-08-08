@@ -15,8 +15,8 @@ export default function TypingAnimation({
   text,
   className = '',
   typingSpeed = 150,
-  pauseDuration = 3000,
-  deletingSpeed = 75,
+  pauseDuration = 4500,
+  deletingSpeed = 120,
   loop = true
 }: TypingAnimationProps) {
   const [displayText, setDisplayText] = useState('');

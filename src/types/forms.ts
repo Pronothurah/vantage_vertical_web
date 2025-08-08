@@ -36,3 +36,20 @@ export interface UrgencyLevel {
   label: string;
   color: string;
 }
+
+export interface DroneInquiryData {
+  name: string;
+  email: string;
+  phone: string;
+  company?: string;
+  droneId: string;
+  inquiryType: 'purchase' | 'quote' | 'bulk' | 'consultation';
+  quantity: number;
+  budget: string;
+  timeline: string;
+  intendedUse: string;
+  experience: 'beginner' | 'intermediate' | 'advanced';
+  trainingNeeded: boolean;
+  financingInterest: boolean;
+  message: string;
+}

@@ -1,139 +1,169 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import Image from 'next/image';
-import { droneProducts } from '@/data';
-
-interface DroneInquiryFormData {
-  name: string;
-  email: string;
-  phone: string;
-  company?: string;
-  droneId: string;
-  inquiryType: 'purchase' | 'quote' | 'bulk' | 'consultation';
-  quantity: number;
-  budget: string;
-  timeline: string;
-  intendedUse: string;
-  experience: 'beginner' | 'intermediate' | 'advanced';
-  trainingNeeded: boolean;
-  financingInterest: boolean;
-  message: string;
-}
+import { useState, useCallback, useId } from 'react';
+import { DroneInquiryData } from '@/types/forms';
+import { useFormValidation } from '@/lib/useFormValidation';
+import { ariaAttributes } from '@/lib/accessibility';
 
 interface DroneInquiryFormProps {
-  droneId?: string;
-  onSubmit?: (data: DroneInquiryFormData) => Promise<void>;
+  variant?: 'full' | 'inline' | 'modal';
+  onSubmit?: (data: DroneInquiryData) => Promise<void>;
   className?: string;
+  preselectedDroneId?: string;
 }
 
+const inquiryTypeOptions = [
+  { value: 'consultation', label: 'Free Consultation', description: 'Get expert advice on the best drone for your needs' },
+  { value: 'quote', label: 'Price Quote', description: 'Request detailed pricing information' },
+  { value: 'purchase', label: 'Ready to Purchase', description: 'I know what I want and ready to buy' },
+  { value: 'bulk', label: 'Bulk Order', description: 'Multiple units or fleet purchase' }
+];
+
+const budgetOptions = [
+  { value: 'under-200k', label: 'Under KES 200,000' },
+  { value: '200k-500k', label: 'KES 200,000 - 500,000' },
+  { value: '500k-1m', label: 'KES 500,000 - 1,000,000' },
+  { value: '1m-2m', label: 'KES 1,000,000 - 2,000,000' },
+  { value: 'above-2m', label: 'Above KES 2,000,000' },
+  { value: 'flexible', label: 'Flexible based on value' }
+];
+
+const timelineOptions = [
+  { value: 'immediate', label: 'Immediate (1-2 weeks)' },
+  { value: 'short', label: 'Short term (1 month)' },
+  { value: 'medium', label: 'Medium term (2-3 months)' },
+  { value: 'long', label: 'Long term (3+ months)' },
+  { value: 'planning', label: 'Just planning/researching' }
+];
+
+const experienceOptions = [
+  { value: 'beginner', label: 'Beginner', description: 'New to drone operations' },
+  { value: 'intermediate', label: 'Intermediate', description: 'Some drone experience' },
+  { value: 'advanced', label: 'Advanced', description: 'Experienced drone operator' }
+];
+
+// Common drone models - in a real app, this would come from your data
+const droneModels = [
+  { id: 'dji-mavic-3-enterprise', name: 'DJI Mavic 3 Enterprise' },
+  { id: 'dji-phantom-4-rtk', name: 'DJI Phantom 4 RTK' },
+  { id: 'dji-matrice-300-rtk', name: 'DJI Matrice 300 RTK' },
+  { id: 'dji-agras-t40', name: 'DJI Agras T40' },
+  { id: 'autel-evo-max-4t', name: 'Autel EVO Max 4T' },
+  { id: 'other', name: 'Other / Not Sure' }
+];
+
 export default function DroneInquiryForm({ 
-  droneId = '', 
+  variant = 'full', 
   onSubmit,
-  className = '' 
+  className = '',
+  preselectedDroneId
 }: DroneInquiryFormProps) {
-  const [formData, setFormData] = useState<DroneInquiryFormData>({
+  const [formData, setFormData] = useState<DroneInquiryData>({
     name: '',
     email: '',
     phone: '',
     company: '',
-    droneId: droneId,
-    inquiryType: 'quote',
+    droneId: preselectedDroneId || '',
+    inquiryType: 'consultation',
     quantity: 1,
     budget: '',
     timeline: '',
     intendedUse: '',
-    experience: 'intermediate',
+    experience: 'beginner',
     trainingNeeded: false,
     financingInterest: false,
-    message: '',
+    message: ''
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  // Generate unique IDs for accessibility
+  const formId = useId();
+  const nameId = `${formId}-name`;
+  const emailId = `${formId}-email`;
+  const phoneId = `${formId}-phone`;
+  const companyId = `${formId}-company`;
+  const droneId = `${formId}-drone`;
+  const inquiryTypeId = `${formId}-inquiry-type`;
+  const quantityId = `${formId}-quantity`;
+  const budgetId = `${formId}-budget`;
+  const timelineId = `${formId}-timeline`;
+  const intendedUseId = `${formId}-intended-use`;
+  const experienceId = `${formId}-experience`;
+  const messageId = `${formId}-message`;
+  const errorId = `${formId}-error`;
+  const successId = `${formId}-success`;
 
-  const selectedDrone = droneProducts.find(p => p.id === formData.droneId);
-
-  const budgetRanges = [
-    { value: 'under-200k', label: 'Under KES 200,000' },
-    { value: '200k-500k', label: 'KES 200,000 - 500,000' },
-    { value: '500k-1m', label: 'KES 500,000 - 1,000,000' },
-    { value: '1m-2m', label: 'KES 1,000,000 - 2,000,000' },
-    { value: 'above-2m', label: 'Above KES 2,000,000' },
-    { value: 'flexible', label: 'Flexible based on value' }
-  ];
-
-  const timelineOptions = [
-    { value: 'immediate', label: 'Immediate (1-2 weeks)' },
-    { value: 'short', label: 'Short term (1 month)' },
-    { value: 'medium', label: 'Medium term (2-3 months)' },
-    { value: 'long', label: 'Long term (3+ months)' },
-    { value: 'planning', label: 'Just planning/researching' }
-  ];
-
-  const inquiryTypes = [
-    { value: 'quote', label: 'Get Price Quote', description: 'Get detailed pricing for specific drone' },
-    { value: 'consultation', label: 'Free Consultation', description: 'Discuss needs and get recommendations' },
-    { value: 'bulk', label: 'Bulk Order', description: 'Multiple units or fleet purchase' },
-    { value: 'purchase', label: 'Ready to Purchase', description: 'Ready to buy with financing options' }
-  ];
+  const {
+    formState,
+    validateField,
+    validateForm,
+    setFieldError,
+    clearFieldError,
+    setSubmitting,
+    setSubmitError,
+    setSubmitSuccess,
+    resetForm,
+  } = useFormValidation();
 
   const handleInputChange = useCallback((
-    field: keyof DroneInquiryFormData,
+    field: keyof DroneInquiryData,
     value: string | number | boolean
   ) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
     // Clear field error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+    if (formState.errors[field]) {
+      clearFieldError(field);
     }
-  }, [errors]);
+  }, [formState.errors, clearFieldError]);
 
-  const validateForm = useCallback(() => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+  const handleBlur = useCallback((field: keyof DroneInquiryData) => {
+    const value = formData[field];
+    const error = validateField(field, typeof value === 'string' ? value : String(value));
+    if (error) {
+      setFieldError(field, error);
     }
-
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-
-    if (!formData.phone.trim()) {
-      newErrors.phone = 'Phone number is required';
-    }
-
-    if (!formData.droneId) {
-      newErrors.droneId = 'Please select a drone';
-    }
-
-    if (!formData.intendedUse.trim()) {
-      newErrors.intendedUse = 'Please describe your intended use';
-    }
-
-    if (formData.quantity < 1) {
-      newErrors.quantity = 'Quantity must be at least 1';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  }, [formData]);
+  }, [formData, validateField, setFieldError]);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateForm()) {
+    // Custom validation for drone inquiry form
+    const errors: Record<string, any> = {};
+    
+    if (!formData.name.trim()) {
+      errors.name = { message: 'Name is required' };
+    }
+    
+    if (!formData.email.trim()) {
+      errors.email = { message: 'Email is required' };
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = { message: 'Please enter a valid email address' };
+    }
+    
+    if (!formData.phone.trim()) {
+      errors.phone = { message: 'Phone number is required' };
+    }
+    
+    if (!formData.droneId) {
+      errors.droneId = { message: 'Please select a drone model' };
+    }
+    
+    if (!formData.intendedUse.trim()) {
+      errors.intendedUse = { message: 'Please describe your intended use' };
+    } else if (formData.intendedUse.trim().length < 10) {
+      errors.intendedUse = { message: 'Please provide more details (minimum 10 characters)' };
+    }
+    
+    const hasErrors = Object.keys(errors).length > 0;
+    
+    if (hasErrors) {
+      Object.keys(errors).forEach(field => {
+        setFieldError(field, errors[field]);
+      });
       return;
     }
 
-    setIsSubmitting(true);
-    setSubmitError(null);
+    setSubmitting(true);
 
     try {
       if (onSubmit) {
@@ -149,11 +179,30 @@ export default function DroneInquiryForm({
         });
 
         if (!response.ok) {
-          throw new Error('Failed to submit inquiry');
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to submit inquiry');
         }
       }
 
       setSubmitSuccess(true);
+      
+      // Reset form after successful submission
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        company: '',
+        droneId: preselectedDroneId || '',
+        inquiryType: 'consultation',
+        quantity: 1,
+        budget: '',
+        timeline: '',
+        intendedUse: '',
+        experience: 'beginner',
+        trainingNeeded: false,
+        financingInterest: false,
+        message: ''
+      });
     } catch (error) {
       setSubmitError(
         error instanceof Error 
@@ -161,174 +210,99 @@ export default function DroneInquiryForm({
           : 'An error occurred while submitting your inquiry. Please try again.'
       );
     } finally {
-      setIsSubmitting(false);
+      setSubmitting(false);
     }
-  }, [formData, onSubmit, validateForm]);
+  }, [formData, setFieldError, setSubmitting, setSubmitError, setSubmitSuccess, onSubmit, preselectedDroneId]);
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-KE', {
-      style: 'currency',
-      currency: 'KES',
-      minimumFractionDigits: 0,
-    }).format(price);
+  const getFieldClasses = (field: string) => {
+    const baseClasses = "w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200";
+    const errorClasses = formState.errors[field] ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "border-gray-300";
+    return `${baseClasses} ${errorClasses}`;
   };
 
-  const resetForm = () => {
-    setSubmitSuccess(false);
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      company: '',
-      droneId: droneId,
-      inquiryType: 'quote',
-      quantity: 1,
-      budget: '',
-      timeline: '',
-      intendedUse: '',
-      experience: 'intermediate',
-      trainingNeeded: false,
-      financingInterest: false,
-      message: '',
-    });
-  };
-
-  if (submitSuccess) {
-    return (
-      <div className="bg-green-50 border border-green-200 rounded-lg p-8 text-center">
-        <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full">
-          <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
-        </div>
-        <h3 className="text-xl font-semibold text-green-800 mb-2">Inquiry Submitted Successfully!</h3>
-        <p className="text-green-700 mb-6">
-          Thank you for your interest in our drones. Our sales team will contact you within 24 hours 
-          with detailed information and pricing.
-        </p>
-        <div className="space-y-2 text-sm text-green-600 mb-6">
-          <p>• Free consultation included</p>
-          <p>• KCAA compliance assistance</p>
-          <p>• Training and support options</p>
-          <p>• Flexible payment terms available</p>
-        </div>
-        <button
-          onClick={resetForm}
-          className="btn-primary px-6 py-2 text-sm font-semibold rounded-lg"
-        >
-          Submit Another Inquiry
-        </button>
+  const renderSuccessMessage = () => (
+    <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center animate-fade-in">
+      <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-green-100 rounded-full">
+        <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+        </svg>
       </div>
-    );
+      <h3 className="text-lg font-semibold text-green-800 mb-2">Inquiry Submitted Successfully!</h3>
+      <p className="text-green-700 mb-4">
+        Thank you for your interest in our drone solutions. Our sales team will contact you within 24 hours with personalized recommendations and pricing.
+      </p>
+      <button
+        onClick={resetForm}
+        className="text-primary hover:text-red-700 font-medium transition-colors duration-200"
+      >
+        Submit Another Inquiry
+      </button>
+    </div>
+  );
+
+  if (formState.submitSuccess) {
+    return renderSuccessMessage();
   }
 
   return (
-    <form onSubmit={handleSubmit} className={`space-y-6 ${className}`}>
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-heading font-bold text-gray-900 mb-2">
-          Drone Inquiry Form
-        </h2>
-        <p className="text-gray-600">
-          Get personalized recommendations and pricing for your drone needs
-        </p>
-      </div>
-
-      {/* Selected Drone Display */}
-      {selectedDrone && (
-        <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-          <div className="flex items-center space-x-4">
-            <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-white">
-              <Image
-                src={selectedDrone.featuredImage}
-                alt={selectedDrone.name}
-                fill
-                className="object-cover"
-              />
-            </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-gray-900">{selectedDrone.name}</h3>
-              <p className="text-sm text-gray-600">{selectedDrone.brand}</p>
-              <p className="text-lg font-bold text-primary">{formatPrice(selectedDrone.price)}</p>
-            </div>
-            <button
-              type="button"
-              onClick={() => handleInputChange('droneId', '')}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
+    <form 
+      onSubmit={handleSubmit} 
+      className={`space-y-6 ${className}`}
+      {...ariaAttributes.form(undefined, formState.submitError ? errorId : undefined, !!formState.submitError)}
+      noValidate
+    >
+      {variant === 'full' && (
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-heading font-bold text-gray-900 mb-2">
+            Get Your Drone Quote
+          </h2>
+          <p className="text-lg text-gray-600">
+            Tell us about your needs and we'll recommend the perfect drone solution for you.
+          </p>
         </div>
       )}
 
-      {/* Drone Selection */}
-      {!selectedDrone && (
-        <div>
-          <label htmlFor="droneId" className="block text-sm font-medium text-gray-700 mb-2">
-            Select Drone *
-          </label>
-          <select
-            id="droneId"
-            value={formData.droneId}
-            onChange={(e) => handleInputChange('droneId', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
-            required
-          >
-            <option value="">Choose a drone model</option>
-            {droneProducts.map(drone => (
-              <option key={drone.id} value={drone.id}>
-                {drone.name} - {formatPrice(drone.price)}
-              </option>
-            ))}
-          </select>
-          {errors.droneId && (
-            <p className="mt-1 text-sm text-red-600">{errors.droneId}</p>
-          )}
-        </div>
-      )}
-
-      {/* Inquiry Type */}
+      {/* Inquiry Type Selection */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-3">
-          Type of Inquiry *
+          What type of inquiry is this? *
         </label>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {inquiryTypes.map((type) => (
+          {inquiryTypeOptions.map((option) => (
             <label
-              key={type.value}
+              key={option.value}
               className={`relative flex items-start p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
-                formData.inquiryType === type.value
-                  ? 'border-primary bg-primary/5 ring-2 ring-primary'
+                formData.inquiryType === option.value
+                  ? 'border-primary bg-red-50 ring-2 ring-primary'
                   : 'border-gray-300 hover:border-gray-400'
               }`}
             >
               <input
                 type="radio"
                 name="inquiryType"
-                value={type.value}
-                checked={formData.inquiryType === type.value}
+                value={option.value}
+                checked={formData.inquiryType === option.value}
                 onChange={(e) => handleInputChange('inquiryType', e.target.value)}
                 className="sr-only"
+                disabled={formState.isSubmitting}
               />
               <div className="flex-1">
-                <div className="flex items-center mb-1">
+                <div className="flex items-center">
                   <div className={`w-4 h-4 rounded-full border-2 mr-3 ${
-                    formData.inquiryType === type.value
+                    formData.inquiryType === option.value
                       ? 'border-primary bg-primary'
                       : 'border-gray-300'
                   }`}>
-                    {formData.inquiryType === type.value && (
+                    {formData.inquiryType === option.value && (
                       <div className="w-2 h-2 bg-white rounded-full mx-auto mt-0.5"></div>
                     )}
                   </div>
                   <span className="font-medium text-gray-900">
-                    {type.label}
+                    {option.label}
                   </span>
                 </div>
-                <p className="text-sm text-gray-600 ml-7">
-                  {type.description}
+                <p className="text-sm text-gray-600 ml-7 mt-1">
+                  {option.description}
                 </p>
               </div>
             </label>
@@ -339,224 +313,300 @@ export default function DroneInquiryForm({
       {/* Personal Information */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor={nameId} className="block text-sm font-medium text-gray-700 mb-2">
             Full Name *
           </label>
           <input
             type="text"
-            id="name"
+            id={nameId}
             value={formData.name}
             onChange={(e) => handleInputChange('name', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
+            onBlur={() => handleBlur('name')}
+            className={getFieldClasses('name')}
             placeholder="Enter your full name"
-            required
+            disabled={formState.isSubmitting}
           />
-          {errors.name && (
-            <p className="mt-1 text-sm text-red-600">{errors.name}</p>
+          {formState.errors.name && (
+            <p className="mt-1 text-sm text-red-600 animate-slide-down" role="alert">
+              {formState.errors.name.message}
+            </p>
           )}
         </div>
 
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor={emailId} className="block text-sm font-medium text-gray-700 mb-2">
             Email Address *
           </label>
           <input
             type="email"
-            id="email"
+            id={emailId}
             value={formData.email}
             onChange={(e) => handleInputChange('email', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
+            onBlur={() => handleBlur('email')}
+            className={getFieldClasses('email')}
             placeholder="Enter your email address"
-            required
+            disabled={formState.isSubmitting}
           />
-          {errors.email && (
-            <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+          {formState.errors.email && (
+            <p className="mt-1 text-sm text-red-600 animate-slide-down" role="alert">
+              {formState.errors.email.message}
+            </p>
           )}
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor={phoneId} className="block text-sm font-medium text-gray-700 mb-2">
             Phone Number *
           </label>
           <input
             type="tel"
-            id="phone"
+            id={phoneId}
             value={formData.phone}
             onChange={(e) => handleInputChange('phone', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
+            onBlur={() => handleBlur('phone')}
+            className={getFieldClasses('phone')}
             placeholder="Enter your phone number"
-            required
+            disabled={formState.isSubmitting}
           />
-          {errors.phone && (
-            <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
+          {formState.errors.phone && (
+            <p className="mt-1 text-sm text-red-600 animate-slide-down" role="alert">
+              {formState.errors.phone.message}
+            </p>
           )}
         </div>
 
         <div>
-          <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor={companyId} className="block text-sm font-medium text-gray-700 mb-2">
             Company/Organization
           </label>
           <input
             type="text"
-            id="company"
+            id={companyId}
             value={formData.company}
             onChange={(e) => handleInputChange('company', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
+            className={getFieldClasses('company')}
             placeholder="Enter company name (optional)"
+            disabled={formState.isSubmitting}
           />
         </div>
+      </div>
+
+      {/* Drone Selection */}
+      <div>
+        <label htmlFor={droneId} className="block text-sm font-medium text-gray-700 mb-2">
+          Drone Model of Interest *
+        </label>
+        <select
+          id={droneId}
+          value={formData.droneId}
+          onChange={(e) => handleInputChange('droneId', e.target.value)}
+          onBlur={() => handleBlur('droneId')}
+          className={getFieldClasses('droneId')}
+          disabled={formState.isSubmitting}
+        >
+          <option value="">Select a drone model</option>
+          {droneModels.map((drone) => (
+            <option key={drone.id} value={drone.id}>
+              {drone.name}
+            </option>
+          ))}
+        </select>
+        {formState.errors.droneId && (
+          <p className="mt-1 text-sm text-red-600 animate-slide-down" role="alert">
+            {formState.errors.droneId.message}
+          </p>
+        )}
       </div>
 
       {/* Quantity and Budget */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor={quantityId} className="block text-sm font-medium text-gray-700 mb-2">
             Quantity Needed
           </label>
           <input
             type="number"
-            id="quantity"
+            id={quantityId}
             min="1"
+            max="100"
             value={formData.quantity}
             onChange={(e) => handleInputChange('quantity', parseInt(e.target.value) || 1)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
+            className={getFieldClasses('quantity')}
+            disabled={formState.isSubmitting}
           />
-          {errors.quantity && (
-            <p className="mt-1 text-sm text-red-600">{errors.quantity}</p>
-          )}
         </div>
 
         <div>
-          <label htmlFor="budget" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor={budgetId} className="block text-sm font-medium text-gray-700 mb-2">
             Budget Range
           </label>
           <select
-            id="budget"
+            id={budgetId}
             value={formData.budget}
             onChange={(e) => handleInputChange('budget', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
+            className={getFieldClasses('budget')}
+            disabled={formState.isSubmitting}
           >
             <option value="">Select budget range</option>
-            {budgetRanges.map(range => (
-              <option key={range.value} value={range.value}>
-                {range.label}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      {/* Timeline and Experience */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label htmlFor="timeline" className="block text-sm font-medium text-gray-700 mb-2">
-            Purchase Timeline
-          </label>
-          <select
-            id="timeline"
-            value={formData.timeline}
-            onChange={(e) => handleInputChange('timeline', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
-          >
-            <option value="">Select timeline</option>
-            {timelineOptions.map(option => (
+            {budgetOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
             ))}
           </select>
         </div>
+      </div>
 
-        <div>
-          <label htmlFor="experience" className="block text-sm font-medium text-gray-700 mb-2">
-            Drone Experience Level
-          </label>
-          <select
-            id="experience"
-            value={formData.experience}
-            onChange={(e) => handleInputChange('experience', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
-          >
-            <option value="beginner">Beginner</option>
-            <option value="intermediate">Intermediate</option>
-            <option value="advanced">Advanced</option>
-          </select>
+      {/* Timeline */}
+      <div>
+        <label htmlFor={timelineId} className="block text-sm font-medium text-gray-700 mb-2">
+          Timeline
+        </label>
+        <select
+          id={timelineId}
+          value={formData.timeline}
+          onChange={(e) => handleInputChange('timeline', e.target.value)}
+          className={getFieldClasses('timeline')}
+          disabled={formState.isSubmitting}
+        >
+          <option value="">Select timeline</option>
+          {timelineOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Experience Level */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-3">
+          Your Drone Experience Level
+        </label>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {experienceOptions.map((option) => (
+            <label
+              key={option.value}
+              className={`relative flex items-start p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
+                formData.experience === option.value
+                  ? 'border-primary bg-red-50 ring-2 ring-primary'
+                  : 'border-gray-300 hover:border-gray-400'
+              }`}
+            >
+              <input
+                type="radio"
+                name="experience"
+                value={option.value}
+                checked={formData.experience === option.value}
+                onChange={(e) => handleInputChange('experience', e.target.value)}
+                className="sr-only"
+                disabled={formState.isSubmitting}
+              />
+              <div className="flex-1">
+                <div className="flex items-center">
+                  <div className={`w-4 h-4 rounded-full border-2 mr-3 ${
+                    formData.experience === option.value
+                      ? 'border-primary bg-primary'
+                      : 'border-gray-300'
+                  }`}>
+                    {formData.experience === option.value && (
+                      <div className="w-2 h-2 bg-white rounded-full mx-auto mt-0.5"></div>
+                    )}
+                  </div>
+                  <span className="font-medium text-gray-900">
+                    {option.label}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600 ml-7 mt-1">
+                  {option.description}
+                </p>
+              </div>
+            </label>
+          ))}
         </div>
       </div>
 
       {/* Intended Use */}
       <div>
-        <label htmlFor="intendedUse" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor={intendedUseId} className="block text-sm font-medium text-gray-700 mb-2">
           Intended Use *
         </label>
         <textarea
-          id="intendedUse"
+          id={intendedUseId}
           rows={3}
           value={formData.intendedUse}
           onChange={(e) => handleInputChange('intendedUse', e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
-          placeholder="Describe how you plan to use the drone (e.g., aerial photography, mapping, agriculture, surveillance)"
-          required
+          onBlur={() => handleBlur('intendedUse')}
+          className={getFieldClasses('intendedUse')}
+          placeholder="Describe how you plan to use the drone (e.g., aerial photography, mapping, agriculture, surveillance, etc.)"
+          disabled={formState.isSubmitting}
         />
-        {errors.intendedUse && (
-          <p className="mt-1 text-sm text-red-600">{errors.intendedUse}</p>
+        {formState.errors.intendedUse && (
+          <p className="mt-1 text-sm text-red-600 animate-slide-down" role="alert">
+            {formState.errors.intendedUse.message}
+          </p>
         )}
       </div>
 
-      {/* Additional Options */}
-      <div className="space-y-4">
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="trainingNeeded"
-            checked={formData.trainingNeeded}
-            onChange={(e) => handleInputChange('trainingNeeded', e.target.checked)}
-            className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary focus:ring-2"
-          />
-          <label htmlFor="trainingNeeded" className="ml-2 text-sm text-gray-700">
-            I'm interested in drone training and certification programs
+      {/* Additional Services */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-3">
+          Additional Services
+        </label>
+        <div className="space-y-3">
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              checked={formData.trainingNeeded}
+              onChange={(e) => handleInputChange('trainingNeeded', e.target.checked)}
+              className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary focus:ring-2"
+              disabled={formState.isSubmitting}
+            />
+            <span className="ml-3 text-gray-700">
+              I'm interested in drone pilot training
+            </span>
           </label>
-        </div>
-
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="financingInterest"
-            checked={formData.financingInterest}
-            onChange={(e) => handleInputChange('financingInterest', e.target.checked)}
-            className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary focus:ring-2"
-          />
-          <label htmlFor="financingInterest" className="ml-2 text-sm text-gray-700">
-            I'm interested in financing options and payment plans
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              checked={formData.financingInterest}
+              onChange={(e) => handleInputChange('financingInterest', e.target.checked)}
+              className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary focus:ring-2"
+              disabled={formState.isSubmitting}
+            />
+            <span className="ml-3 text-gray-700">
+              I'm interested in financing options
+            </span>
           </label>
         </div>
       </div>
 
       {/* Additional Message */}
       <div>
-        <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor={messageId} className="block text-sm font-medium text-gray-700 mb-2">
           Additional Information
         </label>
         <textarea
-          id="message"
+          id={messageId}
           rows={4}
           value={formData.message}
           onChange={(e) => handleInputChange('message', e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
-          placeholder="Any additional questions or requirements..."
+          className={getFieldClasses('message')}
+          placeholder="Any additional questions or specific requirements you'd like to discuss..."
+          disabled={formState.isSubmitting}
         />
       </div>
 
       {/* Submit Error */}
-      {submitError && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+      {formState.submitError && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 animate-slide-down">
           <div className="flex items-center">
             <svg className="w-5 h-5 text-red-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <p className="text-red-700">{submitError}</p>
+            <p className="text-red-700">{formState.submitError}</p>
           </div>
         </div>
       )}
@@ -565,14 +615,14 @@ export default function DroneInquiryForm({
       <div className="pt-4">
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={formState.isSubmitting}
           className={`w-full bg-primary text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200 ${
-            isSubmitting
+            formState.isSubmitting
               ? 'opacity-50 cursor-not-allowed'
               : 'hover:bg-red-700 hover:shadow-lg transform hover:-translate-y-0.5'
           }`}
         >
-          {isSubmitting ? (
+          {formState.isSubmitting ? (
             <div className="flex items-center justify-center">
               <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -593,7 +643,7 @@ export default function DroneInquiryForm({
           <a href="/privacy" className="text-primary hover:text-red-700 transition-colors duration-200">
             Privacy Policy
           </a>
-          . Our sales team will contact you within 24 hours.
+          . Our sales team will respond within 24 hours.
         </p>
       </div>
     </form>

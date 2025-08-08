@@ -65,6 +65,27 @@ export const pageConfigs: Record<string, PageConfig> = {
     title: 'Contact Us - Vantage Vertical',
     description: 'Get in touch with Vantage Vertical for professional drone services. Request a quote or consultation for your aerial project needs.',
     keywords: ['contact drone services', 'drone quote Kenya', 'aerial services consultation', 'drone project inquiry'],
+  },
+  drones: {
+    title: 'Professional Drones for Sale - Vantage Vertical',
+    description: 'Buy professional drones in Kenya with expert support, training, and warranty. DJI, Autel, and other commercial-grade drones for agriculture, mapping, and surveillance.',
+    keywords: [
+      'buy drones Kenya',
+      'professional drones for sale',
+      'DJI drones Kenya',
+      'commercial drones',
+      'agricultural drones',
+      'mapping drones',
+      'surveillance drones',
+      'drone sales Kenya',
+      'KCAA compliant drones'
+    ],
+    openGraph: {
+      title: 'Professional Drones for Sale in Kenya',
+      description: 'Discover our curated selection of commercial-grade drones with expert consultation, training, and comprehensive support.',
+      image: '/drone_on_black_background.jpg',
+      type: 'website'
+    }
   }
 };
 
@@ -194,6 +215,53 @@ export function generateArticleSchema(data: ArticleSchemaData) {
       '@id': data.url,
     },
     keywords: data.keywords.join(', '),
+  };
+}
+
+export interface ProductSchemaData {
+  name: string;
+  description: string;
+  brand: string;
+  price: number;
+  currency: string;
+  availability: string;
+  condition: string;
+  image: string;
+  url: string;
+  category: string;
+  features: string[];
+}
+
+export function generateProductSchema(data: ProductSchemaData) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: data.name,
+    description: data.description,
+    brand: {
+      '@type': 'Brand',
+      name: data.brand,
+    },
+    offers: {
+      '@type': 'Offer',
+      price: data.price,
+      priceCurrency: data.currency,
+      availability: data.availability,
+      itemCondition: data.condition,
+      url: data.url,
+    },
+    image: data.image,
+    category: data.category,
+    additionalProperty: data.features.map(feature => ({
+      '@type': 'PropertyValue',
+      name: 'Feature',
+      value: feature,
+    })),
+    manufacturer: {
+      '@type': 'Organization',
+      name: 'Vantage Vertical',
+      url: 'https://vantagevertical.co.ke',
+    },
   };
 }
 

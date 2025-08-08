@@ -2459,7 +2459,7 @@ The Kenyan drone market has grown by over 300% in the past three years, driven b
 - Focused on measurable results for clients
 
 ### Case Study 2: Career Transition from Traditional Surveying
-**Background**: Mary Wanjiku, 34, Land Surveyor with 8 years experience
+**Background**: Grace Wacheke, 34, Land Surveyor with 8 years experience
 
 **Training Journey**:
 - Added drone surveying certification (2023)
@@ -2480,7 +2480,7 @@ The Kenyan drone market has grown by over 300% in the past three years, driven b
 - Provided comprehensive training to existing team
 
 ### Case Study 3: From Security Guard to Drone Security Specialist
-**Background**: James Ochieng, 29, Security guard with 5 years experience
+**Background**: David Mutua, 29, Security guard with 5 years experience
 
 **Training Journey**:
 - Completed RPL and security drone specialization (2023)
@@ -3264,6 +3264,80 @@ export const droneProducts = [
   }
 ];
 
+// Drone categories data
+export const droneCategories = [
+  {
+    id: 'commercial',
+    name: 'Commercial Drones',
+    description: 'Professional drones for commercial applications including photography, videography, and inspection services.',
+    icon: 'commercial',
+    productCount: 5,
+    priceRange: 'KSh 200,000 - 800,000'
+  },
+  {
+    id: 'agricultural',
+    name: 'Agricultural Drones',
+    description: 'Specialized drones for precision agriculture, crop monitoring, and spraying applications.',
+    icon: 'agriculture',
+    productCount: 3,
+    priceRange: 'KSh 500,000 - 1,200,000'
+  },
+  {
+    id: 'mapping',
+    name: 'Mapping & Survey',
+    description: 'High-precision drones for aerial mapping, surveying, and 3D modeling applications.',
+    icon: 'mapping',
+    productCount: 4,
+    priceRange: 'KSh 300,000 - 900,000'
+  },
+  {
+    id: 'surveillance',
+    name: 'Surveillance Drones',
+    description: 'Security and surveillance drones with advanced camera systems and long flight times.',
+    icon: 'surveillance',
+    productCount: 2,
+    priceRange: 'KSh 400,000 - 1,000,000'
+  }
+];
+
+// Drone specifications data
+export const droneSpecs = {
+  'dji-mavic-3-enterprise': {
+    dimensions: '347.5×283×107.7 mm',
+    weight: '915g',
+    maxFlightTime: '45 minutes',
+    maxTransmissionRange: '15 km',
+    maxSpeed: '75 km/h',
+    operatingTemperature: '-10°C to 40°C',
+    gimbalStabilization: '3-axis mechanical',
+    cameraResolution: '20MP',
+    videoResolution: '5.1K/50fps',
+    storageOptions: '8GB internal + microSD',
+    obstacleAvoidance: 'Omnidirectional',
+    gpsAccuracy: '±0.1m (RTK)',
+    windResistance: '12 m/s',
+    chargingTime: '96 minutes',
+    remoteControllerBattery: '3000 mAh'
+  },
+  'dji-agras-t40': {
+    dimensions: '2935×2935×755 mm (unfolded)',
+    weight: '24.5 kg (without payload)',
+    maxFlightTime: '25 minutes (with full payload)',
+    maxTransmissionRange: '7 km',
+    maxSpeed: '10 m/s',
+    operatingTemperature: '-20°C to 45°C',
+    sprayingSystem: '40L tank capacity',
+    sprayWidth: '9 meters',
+    flowRate: '8 L/min',
+    coverageRate: '18 hectares/hour',
+    obstacleAvoidance: 'Omnidirectional radar',
+    gpsAccuracy: '±10cm (RTK)',
+    windResistance: '8 m/s',
+    chargingTime: '20 minutes (fast charging)',
+    batteryCapacity: '29,000 mAh'
+  }
+};
+
 // Training data exports
 export const trainingPrograms = [
   {
@@ -3298,7 +3372,7 @@ export const trainingPrograms = [
   },
   {
     id: 'commercial-operations',
-    title: 'Commercial Drone Operations',
+    title: 'Advanced Commercial Drone Operations',
     level: 'Intermediate',
     duration: '3 weeks',
     price: 'KSh 130,000',
