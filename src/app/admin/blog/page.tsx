@@ -573,10 +573,9 @@ export default function BlogAdminPage() {
               {blogCategories.filter(cat => cat.id !== 'all').map((category) => (
                 <div key={category.id} className="border border-gray-200 rounded-lg p-4">
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">{category.name}</h3>
-                  <p className="text-gray-600 text-sm mb-3">{category.description}</p>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-500">{category.count} posts</span>
-                    <span className="text-xs bg-gray-100 px-2 py-1 rounded">{category.slug}</span>
+                    <span className="text-xs bg-gray-100 px-2 py-1 rounded">{category.value}</span>
                   </div>
                 </div>
               ))}
