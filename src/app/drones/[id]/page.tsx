@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { droneProducts } from '@/data';
 import { generateMetadata as generateSEOMetadata, generateProductSchema } from '@/lib/seo';
+import { DroneInquiryForm } from '@/components/forms';
 
 interface DroneDetailPageProps {
   params: {
@@ -362,6 +363,31 @@ export default function DroneDetailPage({ params }: DroneDetailPageProps) {
                   ))}
                 </ul>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Drone Inquiry Form */}
+      <section className="section-padding bg-white">
+        <div className="container-custom">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-section-title mb-4">
+                Interested in the <span className="text-gradient">{drone.name}</span>?
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Get personalized recommendations, pricing, and expert consultation for your specific needs. 
+                Our team will help you make the right choice.
+              </p>
+            </div>
+
+            <div className="bg-gray-50 rounded-2xl p-8">
+              <DroneInquiryForm 
+                variant="full" 
+                preselectedDroneId={drone.id}
+                className="max-w-3xl mx-auto"
+              />
             </div>
           </div>
         </div>

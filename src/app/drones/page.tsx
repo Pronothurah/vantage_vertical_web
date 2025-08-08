@@ -4,6 +4,8 @@ import DroneProductGrid from '@/components/sections/DroneProductGrid';
 import DroneFilters from '@/components/sections/DroneFilters';
 import DroneComparison from '@/components/sections/DroneComparison';
 import HeroSection from '@/components/sections/HeroSection';
+import { DroneInquiryForm } from '@/components/forms';
+import { ServiceIcon } from '@/components/ui';
 
 import { generateMetadata, pageConfigs } from '@/lib/seo';
 
@@ -47,7 +49,7 @@ export default function DronesPage() {
               >
                 <div className="flex justify-center mb-4">
                   <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 group-hover:scale-110">
-                    <category.icon className="w-8 h-8" />
+                    <ServiceIcon type={category.iconType} className="w-8 h-8" />
                   </div>
                 </div>
                 <h3 className="font-heading font-semibold text-xl text-gray-900 mb-3 group-hover:text-primary transition-colors duration-300">
@@ -164,43 +166,46 @@ export default function DronesPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Drone Inquiry Form Section */}
+      <section className="section-padding bg-white">
+        <div className="container-custom">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-section-title mb-4">
+                Ready to Find Your <span className="text-gradient">Perfect Drone</span>?
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Get expert consultation and personalized recommendations for your specific needs. 
+                Our team will help you choose the right drone solution with comprehensive support.
+              </p>
+            </div>
+
+            <div className="bg-gray-50 rounded-2xl p-8">
+              <DroneInquiryForm 
+                variant="full" 
+                className="max-w-3xl mx-auto"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Quick Contact CTA */}
       <section className="section-padding bg-primary text-white">
         <div className="container-custom text-center">
-          <h2 className="text-section-title mb-4">
-            Ready to Find Your Perfect Drone?
+          <h2 className="text-2xl font-heading font-bold mb-4">
+            Need Immediate Assistance?
           </h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90">
-            Get expert consultation and personalized recommendations for your specific needs. 
-            Our team is here to help you make the right choice.
+          <p className="text-lg mb-6 max-w-xl mx-auto opacity-90">
+            Speak directly with our drone experts for instant answers to your questions.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
-              href="/contact?service=drone-sales"
+              href="tel:+254704277687"
               className="btn-secondary bg-white text-primary hover:bg-gray-100 inline-flex items-center justify-center px-8 py-3 text-lg font-semibold rounded-lg transition-all duration-200 hover:scale-105 group"
             >
-              Get Consultation
               <svg
-                className="ml-2 w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-200"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 8l4 4m0 0l-4 4m4-4H3"
-                />
-              </svg>
-            </a>
-            <a
-              href="tel:+254700000000"
-              className="btn-secondary border-white text-white hover:bg-white hover:text-primary inline-flex items-center justify-center px-8 py-3 text-lg font-semibold rounded-lg transition-all duration-200 hover:scale-105 group"
-            >
-              Call Now
-              <svg
-                className="ml-2 w-5 h-5 transform group-hover:scale-110 transition-transform duration-200"
+                className="mr-2 w-5 h-5 transform group-hover:scale-110 transition-transform duration-200"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -212,6 +217,26 @@ export default function DronesPage() {
                   d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
                 />
               </svg>
+              Call +254 704 277 687
+            </a>
+            <a
+              href="mailto:vantagevarticalltd@gmail.com"
+              className="btn-secondary border-white text-white hover:bg-white hover:text-primary inline-flex items-center justify-center px-8 py-3 text-lg font-semibold rounded-lg transition-all duration-200 hover:scale-105 group"
+            >
+              <svg
+                className="mr-2 w-5 h-5 transform group-hover:scale-110 transition-transform duration-200"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                />
+              </svg>
+              Email Us
             </a>
           </div>
         </div>

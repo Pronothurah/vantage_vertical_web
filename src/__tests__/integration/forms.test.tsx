@@ -104,7 +104,7 @@ describe('Forms Integration Tests', () => {
       // Fill out all required fields
       await user.type(screen.getByLabelText(/full name/i), 'John Doe');
       await user.type(screen.getByLabelText(/email address/i), 'john@example.com');
-      await user.type(screen.getByLabelText(/phone number/i), '+254700123456');
+      await user.type(screen.getByLabelText(/phone number/i), '+254704277687');
       await user.selectOptions(screen.getByLabelText(/service needed/i), 'aerial-mapping');
       await user.type(screen.getByLabelText(/project details/i), 'I need aerial mapping for my 100-acre farm to assess crop health and plan irrigation systems.');
 
@@ -125,7 +125,7 @@ describe('Forms Integration Tests', () => {
           body: JSON.stringify({
             name: 'John Doe',
             email: 'john@example.com',
-            phone: '+254700123456',
+            phone: '+254704277687',
             service: 'aerial-mapping',
             message: 'I need aerial mapping for my 100-acre farm to assess crop health and plan irrigation systems.',
             urgency: 'high',
@@ -177,7 +177,7 @@ describe('Forms Integration Tests', () => {
       // Fill out form
       await user.type(screen.getByLabelText(/full name/i), 'John Doe');
       await user.type(screen.getByLabelText(/email address/i), 'john@example.com');
-      await user.type(screen.getByLabelText(/phone number/i), '+254700123456');
+      await user.type(screen.getByLabelText(/phone number/i), '+254704277687');
       await user.selectOptions(screen.getByLabelText(/service needed/i), 'aerial-mapping');
       await user.type(screen.getByLabelText(/project details/i), 'Test message');
 
@@ -474,7 +474,7 @@ describe('Forms Integration Tests', () => {
       // Fill out form
       await user.type(screen.getByLabelText(/full name/i), 'John Doe');
       await user.type(screen.getByLabelText(/email/i), 'john@example.com');
-      await user.type(screen.getByLabelText(/phone/i), '+254700123456');
+      await user.type(screen.getByLabelText(/phone/i), '+254704277687');
       await user.selectOptions(screen.getByLabelText(/service/i), 'aerial-mapping');
       await user.type(screen.getByLabelText(/project details/i), 'Test message');
 

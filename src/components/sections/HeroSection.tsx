@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { OptimizedImage } from '@/components/ui';
+import { OptimizedImage, TypingAnimation } from '@/components/ui';
 import { imageSizes, imageQuality } from '@/lib/imageUtils';
 
 interface HeroSectionProps {
@@ -40,7 +40,7 @@ export default function HeroSection({
   }, []);
 
   return (
-    <section className={`relative min-h-screen flex items-center justify-center overflow-hidden ${className}`}>
+    <section className={`relative h-screen flex flex-col justify-center overflow-hidden ${className}`}>
       {/* Background Media */}
       <div className="absolute inset-0 z-0">
         {backgroundVideo ? (
@@ -97,28 +97,33 @@ export default function HeroSection({
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        {/* Tagline */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex-1 flex flex-col justify-center pb-20">
+        {/* Tagline - Professional Aerial Intelligence - 2x larger and prominent with typing animation */}
         {tagline && (
           <div
             className={`transform transition-all duration-1000 ease-out ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
             }`}
           >
-            <p className="text-primary font-semibold text-sm sm:text-base uppercase tracking-wider mb-4">
-              {tagline}
-            </p>
+            <TypingAnimation
+              text={tagline}
+              className="text-primary font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl uppercase tracking-wider mb-6 md:mb-8 drop-shadow-lg block"
+              typingSpeed={120}
+              pauseDuration={3000}
+              deletingSpeed={80}
+              loop={true}
+            />
           </div>
         )}
 
-        {/* Main Title */}
+        {/* Main Title - Reduced font size by half */}
         <div
           className={`transform transition-all duration-1000 ease-out delay-200 ${
             isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}
         >
           <h1 className="font-heading font-bold text-white mb-6">
-            <span className="block text-4xl sm:text-5xl lg:text-6xl xl:text-7xl leading-tight">
+            <span className="block text-2xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl leading-tight">
               {title}
             </span>
           </h1>
@@ -188,17 +193,19 @@ export default function HeroSection({
           </div>
         </div>
 
-        {/* Scroll Indicator */}
-        <div
-          className={`absolute bottom-8 left-1/2 transform -translate-x-1/2 transition-all duration-1000 ease-out delay-1000 ${
-            isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-          }`}
-        >
-          <div className="flex flex-col items-center text-white/70 hover:text-white transition-colors duration-200">
-            <span className="text-sm font-medium mb-2">Scroll to explore</span>
-            <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
-              <div className="w-1 h-3 bg-white/50 rounded-full mt-2 animate-bounce" />
-            </div>
+      </div>
+
+      {/* Scroll Indicator - Positioned outside content container */}
+      <div
+        className={`absolute bottom-16 left-1/2 transform -translate-x-1/2 transition-all duration-1000 ease-out delay-1000 z-20 ${
+          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+        }`}
+      >
+        <div className="flex flex-col items-center text-white/70 hover:text-white transition-colors duration-200 cursor-pointer"
+             onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}>
+          <span className="text-sm font-medium mb-2 tracking-wide">Scroll to explore</span>
+          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center hover:border-white/50 transition-colors duration-200">
+            <div className="w-1 h-3 bg-white/50 rounded-full mt-2 animate-bounce" />
           </div>
         </div>
       </div>

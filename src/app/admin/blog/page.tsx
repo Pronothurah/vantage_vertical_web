@@ -141,8 +141,19 @@ export default function BlogAdminPage() {
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Blog Content Management</h1>
-          <p className="text-gray-600">Manage your blog posts, categories, and content.</p>
+          <div className="flex items-center gap-4 mb-4">
+            <div className="relative w-16 h-16">
+              <img
+                src="/vantage-logo.png"
+                alt="Vantage Vertical Logo"
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Blog Content Management</h1>
+              <p className="text-gray-600">Manage your blog posts, categories, and content.</p>
+            </div>
+          </div>
         </div>
 
         {/* Navigation Tabs */}
@@ -313,7 +324,7 @@ export default function BlogAdminPage() {
                             )}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {post.publishedAt}
+                            {post.publishedAt.toLocaleDateString()}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                             <button

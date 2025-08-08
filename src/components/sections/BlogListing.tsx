@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { OptimizedImage } from '@/components/ui';
 import { imageSizes, imageQuality } from '@/lib/imageUtils';
 import { BlogSearchParams } from '@/types/forms';
@@ -75,26 +76,23 @@ export default function BlogListing({ searchParams }: BlogListingProps) {
   const hasActiveFilters = searchParams.query || searchParams.category || searchParams.tag;
   
   return (
-    <div className="space-y-12">
+    <div className="blog-content-gap">
       {/* Featured Posts Section - Only show on first page without filters */}
       {!hasActiveFilters && searchParams.page === 1 && (
         <section>
-          <h2 className="text-3xl font-bold mb-8">Featured Articles</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <h2 className="text-3xl font-bold blog-section-md">Featured Articles</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 blog-card-gap">
             {featuredPosts.map((post) => {
               const author = getBlogAuthorById(post.author);
               return (
                 <article key={post.id} className="group">
                   <Link href={generateBlogPostUrl(post.slug)} className="block">
                     <div className="relative aspect-video mb-4 overflow-hidden rounded-lg">
-                      <OptimizedImage
+                      <Image
                         src={post.featuredImage}
                         alt={post.title}
                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
-                        quality={imageQuality.card}
-                        sizes={imageSizes.card}
-                        fallbackSrc="/images/placeholder-drone.svg"
                       />
                       <div className="absolute top-4 left-4">
                         <span className="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium">
@@ -140,8 +138,8 @@ export default function BlogListing({ searchParams }: BlogListingProps) {
       )}
       
       {/* Search and Filters */}
-      <section className="space-y-6">
-        <div className="flex flex-col lg:flex-row gap-6">
+      <section className="space-y-4">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
           {/* Search Bar */}
           <form onSubmit={handleSearch} className="flex-1">
             <div className="relative">
@@ -216,7 +214,7 @@ export default function BlogListing({ searchParams }: BlogListingProps) {
       
       {/* Blog Posts Grid */}
       <section>
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-center blog-section-md">
           <h2 className="text-3xl font-bold">
             {hasActiveFilters ? 'Search Results' : 'Latest Articles'}
           </h2>
@@ -226,21 +224,18 @@ export default function BlogListing({ searchParams }: BlogListingProps) {
         </div>
         
         {posts.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 blog-card-gap">
             {posts.map((post) => {
               const author = getBlogAuthorById(post.author);
               return (
                 <article key={post.id} className="group">
                   <Link href={generateBlogPostUrl(post.slug)} className="block">
                     <div className="relative aspect-video mb-4 overflow-hidden rounded-lg">
-                      <OptimizedImage
+                      <Image
                         src={post.featuredImage}
                         alt={post.title}
                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
-                        quality={imageQuality.card}
-                        sizes={imageSizes.card}
-                        fallbackSrc="/images/placeholder-drone.svg"
                       />
                       {post.featured && (
                         <div className="absolute top-4 left-4">
@@ -348,8 +343,8 @@ export default function BlogListing({ searchParams }: BlogListingProps) {
       )}
       
       {/* Popular Tags */}
-      <section className="bg-gray-50 rounded-lg p-8">
-        <h3 className="text-xl font-bold mb-6">Popular Topics</h3>
+      <section className="bg-gray-50 rounded-lg p-6 md:p-8">
+        <h3 className="text-xl font-bold blog-section-md">Popular Topics</h3>
         <div className="flex flex-wrap gap-3">
           {blogTags.slice(0, 10).map((tag) => (
             <button

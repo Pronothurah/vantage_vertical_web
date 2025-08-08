@@ -80,8 +80,8 @@ jest.mock('@/data', () => ({
   ],
   companyInfo: {
     name: 'Vantage Vertical',
-    phone: '+254 700 123 456',
-    email: 'info@vantagevertical.co.ke'
+    phone: '+254704277687',
+    email: 'vantagevarticalltd@gmail.com'
   }
 }));
 
@@ -229,11 +229,11 @@ describe('Page Integration Tests', () => {
       const callNowBtn = screen.getByRole('link', { name: /call now/i });
       const sendMessageBtn = screen.getByRole('link', { name: /send message/i });
 
-      expect(callNowBtn).toHaveAttribute('href', 'tel:+254700123456');
+      expect(callNowBtn).toHaveAttribute('href', 'tel:+254704277687');
       expect(sendMessageBtn).toHaveAttribute('href', '#contact-form');
 
       // Check department phone links
-      const phoneLinks = screen.getAllByText('+254 700 123 456');
+      const phoneLinks = screen.getAllByText('+254704277687');
       expect(phoneLinks.length).toBeGreaterThan(0);
 
       // Check email links

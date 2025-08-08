@@ -47,8 +47,8 @@ const Footer = () => {
                 <div className="vantage__footer-links__div">
                     <h4>Get in touch</h4>
                     <p>Garden Estate, Nairobi, Kenya. All rights reserved.</p>
-                    <p>+254 717 239 408</p>
-                    <p>info@vantagevertical.com</p>
+                    <p>+254 704 277 687</p>
+                    <p>vantagevarticalltd@gmail.com</p>
                 </div>
                 
             </div>
