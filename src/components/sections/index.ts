@@ -6,6 +6,7 @@ export { default as ProjectCard } from './ProjectCard';
 export { default as ProjectModal } from './ProjectModal';
 export { default as BlogListing } from './BlogListing';
 export { default as BlogPostContent } from './BlogPostContent';
+export { default as FeaturedImageSection } from './FeaturedImageSection';
 export { default as SocialShare } from './SocialShare';
 export { default as DroneProductGrid } from './DroneProductGrid';
 export { default as DroneFilters } from './DroneFilters';

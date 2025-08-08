@@ -152,6 +152,41 @@
   .transition-smooth {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
+  
+  /* Blog Layout Spacing Utilities - Consistent Vertical Rhythm */
+  /* Based on 8px base unit: 8px, 16px, 24px, 32px, 48px, 64px */
+  
+  /* Blog section spacing */
+  .blog-section-xs { @apply mb-2; }      /* 8px */
+  .blog-section-sm { @apply mb-4; }      /* 16px */
+  .blog-section-md { @apply mb-6; }      /* 24px */
+  .blog-section-lg { @apply mb-8; }      /* 32px */
+  .blog-section-xl { @apply mb-12; }     /* 48px */
+  .blog-section-2xl { @apply mb-16; }    /* 64px */
+  
+  /* Responsive blog spacing */
+  @media (max-width: 640px) {
+    .blog-section-responsive-sm { @apply mb-4; }   /* 16px on mobile */
+    .blog-section-responsive-md { @apply mb-6; }   /* 24px on mobile */
+    .blog-section-responsive-lg { @apply mb-6; }   /* 24px on mobile */
+  }
+  
+  @media (min-width: 641px) and (max-width: 1024px) {
+    .blog-section-responsive-sm { @apply mb-6; }   /* 24px on tablet */
+    .blog-section-responsive-md { @apply mb-8; }   /* 32px on tablet */
+    .blog-section-responsive-lg { @apply mb-8; }   /* 32px on tablet */
+  }
+  
+  @media (min-width: 1025px) {
+    .blog-section-responsive-sm { @apply mb-6; }   /* 24px on desktop */
+    .blog-section-responsive-md { @apply mb-8; }   /* 32px on desktop */
+    .blog-section-responsive-lg { @apply mb-8; }   /* 32px on desktop */
+  }
+  
+  /* Blog content spacing */
+  .blog-content-gap { @apply space-y-6; }         /* 24px between content elements */
+  .blog-meta-gap { @apply gap-4 md:gap-6; }       /* 16px mobile, 24px desktop */
+  .blog-card-gap { @apply gap-6 md:gap-8; }       /* 24px mobile, 32px desktop */
 }
 
 /* Custom Keyframes */

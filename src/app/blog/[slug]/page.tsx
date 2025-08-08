@@ -17,6 +17,7 @@ import {
 import { generateMetadata as generateSEOMetadata, generateArticleSchema } from '@/lib/seo';
 import { blogCategories } from '@/data';
 import BlogPostContent from '@/components/sections/BlogPostContent';
+import FeaturedImageSection from '@/components/sections/FeaturedImageSection';
 import SocialShare from '@/components/sections/SocialShare';
 
 interface BlogPostPageProps {
@@ -116,29 +117,41 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
         {/* Article Header */}
         <section className="section-padding">
           <div className="container-custom max-w-4xl">
-            <div className="text-center mb-12">
+            {/* Title Area */}
+            <div className="text-center blog-section-lg">
               {/* Category Badge */}
               {category && (
                 <Link
                   href={generateCategoryUrl(category.slug)}
-                  className="inline-block bg-primary text-white px-4 py-2 rounded-full text-sm font-medium mb-6 hover:bg-red-700 transition-colors"
+                  className="inline-block bg-primary text-white px-4 py-2 rounded-full text-sm font-medium blog-section-md hover:bg-red-700 transition-colors"
                 >
                   {category.name}
                 </Link>
               )}
               
               {/* Title */}
-              <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+              <h1 className="text-4xl md:text-5xl font-bold blog-section-md leading-tight">
                 {post.title}
               </h1>
               
               {/* Excerpt */}
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+              <p className="text-xl text-gray-600 mb-0 leading-relaxed">
                 {post.excerpt}
               </p>
-              
+            </div>
+            
+            {/* Featured Image */}
+            <FeaturedImageSection
+              src={post.featuredImage}
+              alt={post.title}
+              title={post.title}
+              priority
+            />
+            
+            {/* Meta/Social Area */}
+            <div className="text-center blog-section-lg">
               {/* Meta Information */}
-              <div className="flex flex-wrap justify-center items-center gap-6 text-gray-600 mb-8">
+              <div className="flex flex-wrap justify-center items-center blog-meta-gap text-gray-600 blog-section-md">
                 {author && (
                   <div className="flex items-center gap-3">
                     <OptimizedImage
@@ -171,32 +184,18 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
                 description={post.excerpt}
               />
             </div>
-            
-            {/* Featured Image */}
-            <div className="relative aspect-video mb-12 overflow-hidden rounded-lg">
-              <OptimizedImage
-                src={post.featuredImage}
-                alt={post.title}
-                fill
-                className="object-cover"
-                priority
-                quality={imageQuality.hero}
-                sizes={imageSizes.hero}
-                fallbackSrc="/images/placeholder-drone.svg"
-              />
-            </div>
           </div>
         </section>
 
         {/* Article Content */}
-        <section className="pb-16">
+        <section className="pb-8 md:pb-12">
           <div className="container-custom max-w-4xl">
             <BlogPostContent content={post.content} />
           </div>
         </section>
 
         {/* Tags */}
-        <section className="border-t border-gray-200 py-8">
+        <section className="border-t border-gray-200 py-6 md:py-8">
           <div className="container-custom max-w-4xl">
             <div className="flex flex-wrap gap-3">
               <span className="text-gray-600 font-medium">Tags:</span>
@@ -215,9 +214,9 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
 
         {/* Author Bio */}
         {author && (
-          <section className="border-t border-gray-200 py-12">
+          <section className="border-t border-gray-200 py-6 md:py-8">
             <div className="container-custom max-w-4xl">
-              <div className="bg-gray-50 rounded-lg p-8">
+              <div className="bg-gray-50 rounded-lg p-6 md:p-8">
                 <div className="flex flex-col md:flex-row gap-6">
                   <OptimizedImage
                     src={author.avatar}
@@ -264,10 +263,10 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
 
         {/* Related Posts */}
         {relatedPosts.length > 0 && (
-          <section className="border-t border-gray-200 py-16">
+          <section className="border-t border-gray-200 py-8 md:py-12">
             <div className="container-custom max-w-6xl">
-              <h2 className="text-3xl font-bold text-center mb-12">Related Articles</h2>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <h2 className="text-3xl font-bold text-center blog-section-lg">Related Articles</h2>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 blog-card-gap">
                 {relatedPosts.map((relatedPost) => {
                   const relatedAuthor = getBlogAuthorById(relatedPost.author);
                   return (
@@ -307,10 +306,10 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
         )}
 
         {/* Call to Action */}
-        <section className="bg-primary text-white py-16">
+        <section className="bg-primary text-white py-8 md:py-12">
           <div className="container-custom text-center">
             <h2 className="text-3xl font-bold mb-4">Ready to Transform Your Operations?</h2>
-            <p className="text-xl mb-8 opacity-90">
+            <p className="text-xl mb-6 opacity-90">
               Contact Vantage Vertical to discuss how our drone services can benefit your business.
             </p>
             <Link
