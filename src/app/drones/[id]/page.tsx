@@ -32,11 +32,6 @@ export async function generateMetadata({ params }: DroneDetailPageProps): Promis
       image: drone.featuredImage,
       type: 'product',
     },
-    twitter: {
-      title: `${drone.name} - Professional Drone for Sale`,
-      description: `${drone.description} Buy ${drone.name} in Kenya.`,
-      image: drone.featuredImage,
-    },
   });
 }
 
@@ -71,12 +66,13 @@ export default function DroneDetailPage({ params }: DroneDetailPageProps) {
     description: drone.description,
     image: drone.featuredImage,
     brand: drone.brand,
-    model: drone.name,
     price: drone.price,
     currency: 'KES',
     availability: drone.inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
     condition: 'https://schema.org/NewCondition',
-    sku: drone.id,
+    url: `/drones/${drone.id}`,
+    category: drone.category,
+    features: drone.features,
   });
 
   return (
