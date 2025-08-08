@@ -169,11 +169,20 @@ export interface BlogSearchParams {
   search?: string;
   query?: string;
   page?: string | number;
-}export 
-interface BlogPagination {
+  limit?: number;
+}
+
+export interface BlogPagination {
   currentPage: number;
   totalPages: number;
   totalPosts: number;
   hasNextPage: boolean;
   hasPrevPage: boolean;
+}
+
+export interface BlogTag {
+  id: string;
+  name: string;
+  slug: string;
+  count: number;
 }

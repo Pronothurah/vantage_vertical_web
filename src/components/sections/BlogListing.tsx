@@ -306,7 +306,7 @@ export default function BlogListing({ searchParams }: BlogListingProps) {
           <div className="flex items-center gap-2">
             <button
               onClick={() => handlePageChange(pagination.currentPage - 1)}
-              disabled={!pagination.hasPrev}
+              disabled={!pagination.hasPrevPage}
               className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
             >
               Previous
@@ -333,7 +333,7 @@ export default function BlogListing({ searchParams }: BlogListingProps) {
             
             <button
               onClick={() => handlePageChange(pagination.currentPage + 1)}
-              disabled={!pagination.hasNext}
+              disabled={!pagination.hasNextPage}
               className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
             >
               Next

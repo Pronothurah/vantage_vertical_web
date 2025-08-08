@@ -91,7 +91,7 @@ export function createBlogPost(postData: BlogPostInput): BlogPost {
 
   const slug = generateSlug(postData.title);
   const readTime = calculateReadTime(postData.content);
-  const now = new Date().toISOString().split('T')[0];
+  const now = new Date();
 
   const newPost: BlogPost = {
     id: Date.now().toString(), // In a real app, use a proper ID generator
