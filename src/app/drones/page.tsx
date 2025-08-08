@@ -5,6 +5,7 @@ import DroneFilters from '@/components/sections/DroneFilters';
 import DroneComparison from '@/components/sections/DroneComparison';
 import HeroSection from '@/components/sections/HeroSection';
 import { DroneInquiryForm } from '@/components/forms';
+import { ServiceIcon } from '@/components/ui';
 
 import { generateMetadata, pageConfigs } from '@/lib/seo';
 
@@ -48,7 +49,7 @@ export default function DronesPage() {
               >
                 <div className="flex justify-center mb-4">
                   <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 group-hover:scale-110">
-                    <category.icon className="w-8 h-8" />
+                    <ServiceIcon type={category.iconType} className="w-8 h-8" />
                   </div>
                 </div>
                 <h3 className="font-heading font-semibold text-xl text-gray-900 mb-3 group-hover:text-primary transition-colors duration-300">

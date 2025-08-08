@@ -331,6 +331,51 @@ export class EmailService {
   }
 
   /**
+   * Sends enrollment confirmation and admin notification emails
+   * @param enrollmentData - Training enrollment data
+   * @returns Promise<{ studentResult: EmailResult, adminResult: EmailResult }>
+   */
+  async sendEnrollmentEmails(enrollmentData: any): Promise<{ studentResult: EmailResult, adminResult: EmailResult }> {
+    const { generateEnrollmentEmails } = await import('./templates/enrollment');
+    const { adminNotification, studentConfirmation } = generateEnrollmentEmails(enrollmentData);
+
+    // Send both emails concurrently
+    const [adminResult, studentResult] = await Promise.allSettled([
+      this.sendEmail({
+        to: this.config?.contactEmail || 'vantagevarticalltd@gmail.com',
+        subject: adminNotification.subject,
+        html: adminNotification.html,
+        text: adminNotification.text,
+      }),
+      this.sendEmail({
+        to: enrollmentData.email,
+        subject: studentConfirmation.subject,
+        html: studentConfirmation.html,
+        text: studentConfirmation.text,
+      })
+    ]);
+
+    return {
+      adminResult: adminResult.status === 'fulfilled' ? adminResult.value : {
+        success: false,
+        error: adminResult.reason,
+        retryCount: 0,
+        timestamp: new Date(),
+        recipient: this.config?.contactEmail || 'vantagevarticalltd@gmail.com',
+        subject: adminNotification.subject,
+      },
+      studentResult: studentResult.status === 'fulfilled' ? studentResult.value : {
+        success: false,
+        error: studentResult.reason,
+        retryCount: 0,
+        timestamp: new Date(),
+        recipient: enrollmentData.email,
+        subject: studentConfirmation.subject,
+      }
+    };
+  }
+
+  /**
    * Manually reset the circuit breaker
    */
   resetCircuitBreaker(): void {

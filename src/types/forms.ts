@@ -53,3 +53,59 @@ export interface DroneInquiryData {
   financingInterest: boolean;
   message: string;
 }
+
+export interface BlogPost {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  author: string;
+  publishedAt: Date;
+  updatedAt: Date;
+  published: boolean;
+  featured: boolean;
+  readTime: number;
+  tags: string[];
+  category: string;
+  featuredImage: string;
+  seoTitle: string;
+  seoDescription: string;
+}
+
+export interface BlogCategory {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  postCount: number;
+}
+
+export interface EnrollmentData {
+  name: string;
+  email: string;
+  phone: string;
+  program: string;
+  session: string;
+  experience: string;
+  motivation: string;
+  accommodation?: boolean;
+  terms: boolean;
+  emergencyContact?: {
+    name: string;
+    phone: string;
+    relationship: string;
+  };
+}
+
+export interface BlogAuthor {
+  id: string;
+  name: string;
+  bio: string;
+  avatar: string;
+  socialLinks: {
+    twitter?: string;
+    linkedin?: string;
+    email?: string;
+  };
+}

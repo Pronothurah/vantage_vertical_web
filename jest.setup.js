@@ -85,3 +85,42 @@ jest.mock('@/components/ui/TypingAnimation', () => ({
     </span>
   ),
 }))
+
+// Mock Next.js server APIs for API route testing
+global.Request = class Request {
+  constructor(url, options = {}) {
+    this.url = url;
+    this.method = options.method || 'GET';
+    this.headers = new Map(Object.entries(options.headers || {}));
+    this.body = options.body;
+  }
+
+  async json() {
+    return JSON.parse(this.body);
+  }
+
+  async text() {
+    return this.body;
+  }
+};
+
+global.Response = class Response {
+  constructor(body, options = {}) {
+    this.body = body;
+    this.status = options.status || 200;
+    this.statusText = options.statusText || 'OK';
+    this.headers = new Map(Object.entries(options.headers || {}));
+  }
+
+  async json() {
+    return JSON.parse(this.body);
+  }
+
+  async text() {
+    return this.body;
+  }
+};
+
+// Mock environment variables for testing
+process.env.CONTACT_EMAIL = 'vantagevarticalltd@gmail.com';
+process.env.NODE_ENV = 'test';

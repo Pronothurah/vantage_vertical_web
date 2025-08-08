@@ -258,8 +258,7 @@ export default function AboutPage() {
                   {/* Content */}
                   <div className={`ml-12 md:ml-0 md:w-1/2 ${index % 2 === 0 ? 'md:pr-12' : 'md:pl-12'}`}>
                     <div className="card p-6">
-                      <div className="text-primary font-bold text-lg mb-2">{achievement.year}</div>
-                      <h3 className="text-xl font-semibold mb-3">{achievement.title}</h3>
+                      <h3 className="text-xl font-semibold mb-3 text-primary">{achievement.title}</h3>
                       <p className="text-gray-600">{achievement.description}</p>
                     </div>
                   </div>
@@ -291,7 +290,7 @@ export default function AboutPage() {
                     </div>
                     <div>
                       <h3 className="text-xl font-semibold">Operator Certificate</h3>
-                      <p className="text-gray-600">Certificate No: {kcaaInfo.operatorCertificate}</p>
+                      <p className="text-gray-600">Certificate No: {kcaaInfo.certificationNumber}</p>
                     </div>
                   </div>
                   <div className="space-y-4">

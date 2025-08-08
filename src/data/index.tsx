@@ -422,6 +422,9 @@ export const kcaaInfo = {
   operationalLimits: {
     maxAltitude: '400 feet AGL',
     dayOperations: 'Sunrise to Sunset',
+    nightOperations: 'Not Authorized',
+    beyondVisualLineOfSight: 'Not Authorized',
+    overPeople: 'Not Authorized',
     weatherLimits: 'Wind < 25 knots, Visibility > 3km',
     operatingRadius: '500m from pilot'
   }
@@ -3219,48 +3222,89 @@ export const blogAuthors = [
 // Drone products data
 export const droneProducts = [
   {
-    id: '1',
+    id: 'dji-mavic-3-enterprise',
     name: 'DJI Mavic 3 Enterprise',
     brand: 'DJI',
     price: 450000,
+    originalPrice: 500000,
     category: 'commercial',
-    description: 'Professional drone for commercial applications with advanced camera system.',
-    specifications: [
-      { name: 'Flight Time', value: '45 minutes' },
-      { name: 'Camera', value: '20MP Hasselblad' },
-      { name: 'Video', value: '5.1K/50fps' },
-      { name: 'Range', value: '15km' }
-    ],
+    description: 'Professional drone for commercial applications with advanced camera system and enterprise-grade features.',
+    shortDescription: 'Professional drone with 20MP Hasselblad camera and 45-minute flight time.',
+    featuredImage: '/drone_frame.jpg',
     images: ['/drone_frame.jpg', '/drone_on_ground.jpg'],
     inStock: true,
+    stockLevel: 5,
+    rating: 4.8,
+    reviewCount: 24,
+    specifications: {
+      'Flight Time': '45 minutes',
+      'Camera': '20MP Hasselblad',
+      'Video': '5.1K/50fps',
+      'Range': '15km',
+      'Weight': '915g',
+      'Max Speed': '75 km/h'
+    },
     features: [
       'Obstacle avoidance',
       'RTK positioning',
       'Thermal imaging',
-      'Long flight time'
-    ]
+      'Long flight time',
+      'Professional camera system',
+      'Enterprise security features'
+    ],
+    applications: [
+      'Aerial photography',
+      'Inspection services',
+      'Mapping and surveying',
+      'Security surveillance',
+      'Real estate marketing'
+    ],
+    tags: ['commercial', 'professional', 'enterprise', 'photography', 'inspection'],
+    featured: true,
+    bestSeller: true,
+    certification: 'KCAA Approved'
   },
   {
-    id: '2',
+    id: 'dji-agras-t40',
     name: 'DJI Agras T40',
     brand: 'DJI',
     price: 850000,
     category: 'agricultural',
-    description: 'Agricultural drone for precision spraying and crop monitoring.',
-    specifications: [
-      { name: 'Payload', value: '40L tank' },
-      { name: 'Spray Width', value: '9 meters' },
-      { name: 'Flight Time', value: '25 minutes' },
-      { name: 'Coverage', value: '18 hectares/hour' }
-    ],
+    description: 'Agricultural drone for precision spraying and crop monitoring with 40L tank capacity.',
+    shortDescription: 'Agricultural spraying drone with 40L capacity and 18 hectares/hour coverage.',
+    featuredImage: '/spray_drone.jpg',
     images: ['/spray_drone.jpg', '/agric-2.jpg'],
     inStock: true,
+    stockLevel: 3,
+    rating: 4.9,
+    reviewCount: 18,
+    specifications: {
+      'Payload': '40L tank',
+      'Spray Width': '9 meters',
+      'Flight Time': '25 minutes',
+      'Coverage': '18 hectares/hour',
+      'Weight': '24.5 kg',
+      'Max Speed': '10 m/s'
+    },
     features: [
       'Precision spraying',
       'Crop monitoring',
       'Weather resistance',
-      'Auto-return'
-    ]
+      'Auto-return',
+      'Large payload capacity',
+      'Efficient coverage'
+    ],
+    applications: [
+      'Crop spraying',
+      'Fertilizer application',
+      'Pest control',
+      'Crop monitoring',
+      'Precision agriculture'
+    ],
+    tags: ['agricultural', 'spraying', 'precision-farming', 'crop-monitoring'],
+    featured: true,
+    bestSeller: false,
+    certification: 'KCAA Approved'
   }
 ];
 
@@ -3270,7 +3314,7 @@ export const droneCategories = [
     id: 'commercial',
     name: 'Commercial Drones',
     description: 'Professional drones for commercial applications including photography, videography, and inspection services.',
-    icon: 'commercial',
+    iconType: 'photography',
     productCount: 5,
     priceRange: 'KSh 200,000 - 800,000'
   },
@@ -3278,7 +3322,7 @@ export const droneCategories = [
     id: 'agricultural',
     name: 'Agricultural Drones',
     description: 'Specialized drones for precision agriculture, crop monitoring, and spraying applications.',
-    icon: 'agriculture',
+    iconType: 'agriculture',
     productCount: 3,
     priceRange: 'KSh 500,000 - 1,200,000'
   },
@@ -3286,7 +3330,7 @@ export const droneCategories = [
     id: 'mapping',
     name: 'Mapping & Survey',
     description: 'High-precision drones for aerial mapping, surveying, and 3D modeling applications.',
-    icon: 'mapping',
+    iconType: 'mapping',
     productCount: 4,
     priceRange: 'KSh 300,000 - 900,000'
   },
@@ -3294,7 +3338,7 @@ export const droneCategories = [
     id: 'surveillance',
     name: 'Surveillance Drones',
     description: 'Security and surveillance drones with advanced camera systems and long flight times.',
-    icon: 'surveillance',
+    iconType: 'surveillance',
     productCount: 2,
     priceRange: 'KSh 400,000 - 1,000,000'
   }

@@ -14,7 +14,7 @@
   - Create template validation to ensure required data is present
   - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6_
 
-- [ ] 3. Complete drone inquiry email integration
+- [x] 3. Complete drone inquiry email integration
   - Update `src/app/api/drone-inquiry/route.ts` to use shared EmailService instead of console logging
   - Create `src/lib/email/templates/droneInquiry.ts` with admin notification and customer acknowledgment templates
   - Implement proper error handling with user feedback when email sending fails
@@ -22,7 +22,7 @@
   - Test drone inquiry form submission with actual email delivery
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
 
-- [ ] 4. Complete training enrollment email integration
+- [-] 4. Complete training enrollment email integration
   - Update `src/app/api/enrollment/route.ts` to implement actual email sending using shared EmailService
   - Create `src/lib/email/templates/enrollment.ts` with student confirmation and admin notification templates
   - Add enrollment-specific email content including course details, schedule, and preparation instructions
