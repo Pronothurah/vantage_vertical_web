@@ -26,7 +26,6 @@ export async function generateMetadata({ params }: DroneDetailPageProps): Promis
     title: `${drone.name} - Professional Drone for Sale`,
     description: `${drone.description} Buy ${drone.name} in Kenya with expert support, training, and warranty. ${drone.features.slice(0, 3).join(', ')}.`,
     keywords: [drone.name, drone.brand, `${drone.category} drone`, 'buy drone Kenya', ...drone.tags],
-    canonical: `/drones/${drone.id}`,
     openGraph: {
       title: `${drone.name} - Professional Drone for Sale`,
       description: `${drone.description} Buy ${drone.name} in Kenya with expert support.`,

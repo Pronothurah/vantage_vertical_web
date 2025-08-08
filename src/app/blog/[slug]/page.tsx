@@ -49,23 +49,11 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
     title: post.seoTitle || post.title,
     description: post.seoDescription || post.excerpt,
     keywords: post.tags,
-    canonical: `/blog/${post.slug}`,
     openGraph: {
       title: post.seoTitle || post.title,
       description: post.seoDescription || post.excerpt,
       image: post.featuredImage,
       type: 'article',
-      publishedTime: post.publishedAt,
-      modifiedTime: post.updatedAt,
-      author: author?.name,
-      section: post.category,
-      tags: post.tags,
-    },
-    twitter: {
-      title: post.seoTitle || post.title,
-      description: post.seoDescription || post.excerpt,
-      image: post.featuredImage,
-      creator: author?.socialLinks?.twitter || '@vantagevertical',
     },
   });
 }
@@ -123,7 +111,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
               {category && (
                 <nav aria-label="Article category">
                   <Link
-                    href={generateCategoryUrl(category.slug)}
+                    href={generateCategoryUrl(category.value)}
                     className="blog-category-badge"
                     aria-label={`View all posts in ${category.name} category`}
                   >
@@ -177,8 +165,8 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
                   </div>
                 )}
                 <div className="blog-publish-info" role="doc-biblioentry">
-                  <time dateTime={post.publishedAt} aria-label={`Published on ${formatPublishDate(post.publishedAt)}`}>
-                    {formatPublishDate(post.publishedAt)}
+                  <time dateTime={post.publishedAt.toISOString()} aria-label={`Published on ${formatPublishDate(post.publishedAt.toISOString())}`}>
+                    {formatPublishDate(post.publishedAt.toISOString())}
                   </time>
                   <span aria-hidden="true">•</span>
                   <span aria-label={`Estimated reading time: ${formatReadTime(post.readTime)}`}>
@@ -312,8 +300,8 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
                         </div>
                         <div className="blog-related-post-content">
                           <div className="blog-related-post-meta">
-                            <time dateTime={relatedPost.publishedAt}>
-                              {formatPublishDate(relatedPost.publishedAt)}
+                            <time dateTime={relatedPost.publishedAt.toISOString()}>
+                              {formatPublishDate(relatedPost.publishedAt.toISOString())}
                             </time>
                             <span aria-hidden="true">•</span>
                             <span>{formatReadTime(relatedPost.readTime)}</span>
