@@ -109,3 +109,35 @@ export interface BlogAuthor {
     email?: string;
   };
 }
+
+export interface PortfolioProject {
+  id: string;
+  title: string;
+  category: string;
+  serviceType: string;
+  description: string;
+  image: string;
+  featuredImage: string;
+  images: string[];
+  client: string;
+  location: string;
+  date: string;
+  duration: string;
+  featured: boolean;
+  services: string[];
+  challenge: string;
+  solution: string;
+  technologies: string[];
+  tags: string[];
+  results: Array<{
+    value: string;
+    metric: string;
+    improvement: string;
+  }>;
+  testimonial: {
+    quote: string;
+    author: string;
+    role: string;
+    company: string;
+  };
+}
