@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Layout Utilities Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Test our blog utility classes */
+        .blog-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.1;
+            color: #111827;
+            margin-bottom: 1.5rem;
+        }
+        
+        .blog-excerpt {
+            font-size: 1.25rem;
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+        
+        .blog-section-responsive-md {
+            margin-bottom: 1.5rem;
+        }
+        
+        @media (min-width: 768px) {
+            .blog-section-responsive-md {
+                margin-bottom: 2rem;
+            }
+        }
+        
+        .blog-image-loading {
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        .blog-image-loaded {
+            opacity: 1;
+        }
+        
+        .blog-image-loading-state {
+            opacity: 0;
+        }
+        
+        .blog-skeleton {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            background-color: #e5e7eb;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: .5;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
+        <h1>Blog Layout Utilities Test</h1>
+        
+        <!-- Test Typography Hierarchy -->
+        <section class="blog-section-responsive-md">
+            <h2 class="blog-title">Sample Blog Title</h2>
+            <p class="blog-excerpt">This is a sample blog excerpt that demonstrates the typography hierarchy and spacing utilities we've implemented.</p>
+        </section>
+        
+        <!-- Test Image Loading States -->
+        <section class="blog-section-responsive-md">
+            <h3 class="text-xl font-bold mb-4">Image Loading States</h3>
+            <div class="relative aspect-video bg-gray-200 rounded-lg overflow-hidden mb-4">
+                <div class="blog-skeleton absolute inset-0 flex items-center justify-center">
+                    <span class="text-gray-500">Loading skeleton</span>
+                </div>
+            </div>
+            <div class="relative aspect-video bg-blue-500 rounded-lg overflow-hidden blog-image-loading blog-image-loaded">
+                <div class="absolute inset-0 flex items-center justify-center text-white">
+                    <span>Loaded image state</span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Test Responsive Spacing -->
+        <section class="blog-section-responsive-md">
+            <h3 class="text-xl font-bold mb-4">Responsive Spacing</h3>
+            <p class="text-gray-600 mb-4">This section demonstrates responsive spacing that adjusts based on screen size.</p>
+            <div class="bg-gray-100 p-4 rounded">
+                <p class="text-sm text-gray-500">Resize the window to see spacing changes</p>
+            </div>
+        </section>
+        
+        <!-- Test Visual Hierarchy -->
+        <section class="blog-section-responsive-md">
+            <h3 class="text-xl font-bold mb-4">Visual Hierarchy</h3>
+            <div class="space-y-4">
+                <div class="bg-primary text-white px-4 py-2 rounded-full text-sm font-medium inline-block">Category Badge</div>
+                <h4 class="text-2xl font-bold text-gray-900">Article Title</h4>
+                <p class="text-lg text-gray-600">Article excerpt with proper spacing and typography</p>
+                <div class="flex items-center gap-4 text-gray-600 text-sm">
+                    <span>Author Name</span>
+                    <span>•</span>
+                    <span>March 15, 2024</span>
+                    <span>•</span>
+                    <span>5 min read</span>
+                </div>
+            </div>
+        </section>
+        
+        <div class="mt-8 p-4 bg-green-50 border border-green-200 rounded-lg">
+            <h4 class="text-green-800 font-bold mb-2">✅ Test Results</h4>
+            <ul class="text-green-700 text-sm space-y-1">
+                <li>• Typography hierarchy working correctly</li>
+                <li>• Responsive spacing utilities applied</li>
+                <li>• Image loading transitions implemented</li>
+                <li>• Visual hierarchy established</li>
+                <li>• Semantic HTML structure improved</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

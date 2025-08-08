@@ -115,48 +115,54 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
         </section>
 
         {/* Article Header */}
-        <section className="section-padding">
-          <div className="container-custom max-w-4xl">
+        <header className="section-padding" role="banner">
+          <div className="blog-header-container">
             {/* Title Area */}
-            <div className="text-center blog-section-lg">
+            <section className="blog-title-section" aria-labelledby="blog-title">
               {/* Category Badge */}
               {category && (
-                <Link
-                  href={generateCategoryUrl(category.slug)}
-                  className="inline-block bg-primary text-white px-4 py-2 rounded-full text-sm font-medium blog-section-md hover:bg-red-700 transition-colors"
-                >
-                  {category.name}
-                </Link>
+                <nav aria-label="Article category">
+                  <Link
+                    href={generateCategoryUrl(category.slug)}
+                    className="blog-category-badge"
+                    aria-label={`View all posts in ${category.name} category`}
+                  >
+                    {category.name}
+                  </Link>
+                </nav>
               )}
               
               {/* Title */}
-              <h1 className="text-4xl md:text-5xl font-bold blog-section-md leading-tight">
+              <h1 id="blog-title" className="blog-title px-2 sm:px-0">
                 {post.title}
               </h1>
               
               {/* Excerpt */}
-              <p className="text-xl text-gray-600 mb-0 leading-relaxed">
+              <p className="blog-excerpt px-2 sm:px-0" role="doc-subtitle">
                 {post.excerpt}
               </p>
-            </div>
+            </section>
             
             {/* Featured Image */}
-            <FeaturedImageSection
-              src={post.featuredImage}
-              alt={post.title}
-              title={post.title}
-              priority
-            />
+            <section className="blog-image-section" aria-label="Featured image">
+              <FeaturedImageSection
+                src={post.featuredImage}
+                alt={post.title}
+                title={post.title}
+                priority
+                className="blog-image-loading"
+              />
+            </section>
             
             {/* Meta/Social Area */}
-            <div className="text-center blog-section-lg">
+            <section className="blog-meta-section" aria-label="Article metadata and sharing">
               {/* Meta Information */}
-              <div className="flex flex-wrap justify-center items-center blog-meta-gap text-gray-600 blog-section-md">
+              <div className="blog-meta-info px-2 sm:px-0">
                 {author && (
-                  <div className="flex items-center gap-3">
+                  <div className="blog-author-info" role="doc-credit">
                     <OptimizedImage
                       src={author.avatar}
-                      alt={author.name}
+                      alt={`${author.name} profile picture`}
                       width={40}
                       height={40}
                       className="rounded-full"
@@ -165,81 +171,95 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
                       fallbackSrc="/images/placeholder-drone.svg"
                     />
                     <div className="text-left">
-                      <p className="font-medium text-gray-900">{author.name}</p>
-                      <p className="text-sm">{author.role}</p>
+                      <p className="blog-author-name">{author.name}</p>
+                      <p className="blog-author-role">{author.role}</p>
                     </div>
                   </div>
                 )}
-                <div className="flex items-center gap-4 text-sm">
-                  <span>{formatPublishDate(post.publishedAt)}</span>
-                  <span>•</span>
-                  <span>{formatReadTime(post.readTime)}</span>
+                <div className="blog-publish-info" role="doc-biblioentry">
+                  <time dateTime={post.publishedAt} aria-label={`Published on ${formatPublishDate(post.publishedAt)}`}>
+                    {formatPublishDate(post.publishedAt)}
+                  </time>
+                  <span aria-hidden="true">•</span>
+                  <span aria-label={`Estimated reading time: ${formatReadTime(post.readTime)}`}>
+                    {formatReadTime(post.readTime)}
+                  </span>
                 </div>
               </div>
               
               {/* Social Share */}
-              <SocialShare 
-                url={`https://vantagevertical.co.ke/blog/${post.slug}`}
-                title={post.title}
-                description={post.excerpt}
-              />
-            </div>
+              <nav className="px-2 sm:px-0" aria-label="Share this article">
+                <SocialShare 
+                  url={`https://vantagevertical.co.ke/blog/${post.slug}`}
+                  title={post.title}
+                  description={post.excerpt}
+                  variant="header"
+                  size="medium"
+                />
+              </nav>
+            </section>
           </div>
-        </section>
+        </header>
 
         {/* Article Content */}
-        <section className="pb-8 md:pb-12">
-          <div className="container-custom max-w-4xl">
-            <BlogPostContent content={post.content} />
+        <article className="blog-content-section" role="main" aria-labelledby="blog-title">
+          <div className="blog-content-container">
+            <div className="blog-content-prose">
+              <BlogPostContent content={post.content} />
+            </div>
           </div>
-        </section>
+        </article>
 
         {/* Tags */}
-        <section className="border-t border-gray-200 py-6 md:py-8">
-          <div className="container-custom max-w-4xl">
-            <div className="flex flex-wrap gap-3">
-              <span className="text-gray-600 font-medium">Tags:</span>
+        <section className="blog-section-divider" aria-label="Article tags">
+          <div className="blog-content-container">
+            <nav className="blog-tags-container" aria-label="Related topics">
+              <span className="blog-tag-label">Tags:</span>
               {post.tags.map((tag) => (
                 <Link
                   key={tag}
                   href={generateTagUrl(tag)}
-                  className="bg-gray-100 hover:bg-primary hover:text-white px-3 py-1 rounded-full text-sm transition-colors"
+                  className="blog-tag-item"
+                  aria-label={`View all posts tagged with ${tag.replace('-', ' ')}`}
                 >
                   {tag.replace('-', ' ')}
                 </Link>
               ))}
-            </div>
+            </nav>
           </div>
         </section>
 
         {/* Author Bio */}
         {author && (
-          <section className="border-t border-gray-200 py-6 md:py-8">
-            <div className="container-custom max-w-4xl">
-              <div className="bg-gray-50 rounded-lg p-6 md:p-8">
-                <div className="flex flex-col md:flex-row gap-6">
+          <section className="blog-section-divider" aria-labelledby="author-bio-heading">
+            <div className="blog-content-container">
+              <div className="blog-author-bio-container">
+                <div className="blog-author-bio-content">
                   <OptimizedImage
                     src={author.avatar}
-                    alt={author.name}
+                    alt={`${author.name} profile picture`}
                     width={80}
                     height={80}
-                    className="rounded-full mx-auto md:mx-0"
+                    className="blog-author-avatar"
                     quality={imageQuality.thumbnail}
                     sizes={imageSizes.avatar}
                     fallbackSrc="/images/placeholder-drone.svg"
                   />
-                  <div className="flex-1 text-center md:text-left">
-                    <h3 className="text-xl font-bold mb-2">{author.name}</h3>
-                    <p className="text-primary font-medium mb-3">{author.role}</p>
-                    <p className="text-gray-600 mb-4">{author.bio}</p>
+                  <div className="blog-author-details">
+                    <h3 id="author-bio-heading" className="blog-author-bio-name">
+                      {author.name}
+                    </h3>
+                    <p className="blog-author-bio-role">{author.role}</p>
+                    <p className="blog-author-bio-text">{author.bio}</p>
                     {author.socialLinks && (
-                      <div className="flex justify-center md:justify-start gap-4">
+                      <nav className="blog-author-social-links" aria-label="Author social links">
                         {author.socialLinks.linkedin && (
                           <a
                             href={author.socialLinks.linkedin}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-gray-600 hover:text-primary transition-colors"
+                            className="blog-author-social-link"
+                            aria-label={`${author.name} on LinkedIn`}
                           >
                             LinkedIn
                           </a>
@@ -247,12 +267,13 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
                         {author.socialLinks.email && (
                           <a
                             href={`mailto:${author.socialLinks.email}`}
-                            className="text-gray-600 hover:text-primary transition-colors"
+                            className="blog-author-social-link"
+                            aria-label={`Email ${author.name}`}
                           >
                             Email
                           </a>
                         )}
-                      </div>
+                      </nav>
                     )}
                   </div>
                 </div>
@@ -263,16 +284,22 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
 
         {/* Related Posts */}
         {relatedPosts.length > 0 && (
-          <section className="border-t border-gray-200 py-8 md:py-12">
-            <div className="container-custom max-w-6xl">
-              <h2 className="text-3xl font-bold text-center blog-section-lg">Related Articles</h2>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 blog-card-gap">
+          <section className="blog-section-divider" aria-labelledby="related-posts-heading">
+            <div className="blog-related-posts-container">
+              <h2 id="related-posts-heading" className="blog-related-posts-title">
+                Related Articles
+              </h2>
+              <div className="blog-related-posts-grid" role="list">
                 {relatedPosts.map((relatedPost) => {
                   const relatedAuthor = getBlogAuthorById(relatedPost.author);
                   return (
-                    <article key={relatedPost.id} className="group">
-                      <Link href={generateBlogPostUrl(relatedPost.slug)} className="block">
-                        <div className="relative aspect-video mb-4 overflow-hidden rounded-lg">
+                    <article key={relatedPost.id} className="blog-related-post-card group" role="listitem">
+                      <Link 
+                        href={generateBlogPostUrl(relatedPost.slug)} 
+                        className="block"
+                        aria-label={`Read article: ${relatedPost.title}`}
+                      >
+                        <div className="blog-related-post-image">
                           <OptimizedImage
                             src={relatedPost.featuredImage}
                             alt={relatedPost.title}
@@ -283,16 +310,18 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
                             fallbackSrc="/images/placeholder-drone.svg"
                           />
                         </div>
-                        <div className="space-y-3">
-                          <div className="flex items-center gap-4 text-sm text-gray-600">
-                            <span>{formatPublishDate(relatedPost.publishedAt)}</span>
-                            <span>•</span>
+                        <div className="blog-related-post-content">
+                          <div className="blog-related-post-meta">
+                            <time dateTime={relatedPost.publishedAt}>
+                              {formatPublishDate(relatedPost.publishedAt)}
+                            </time>
+                            <span aria-hidden="true">•</span>
                             <span>{formatReadTime(relatedPost.readTime)}</span>
                           </div>
-                          <h3 className="text-xl font-bold group-hover:text-primary transition-colors">
+                          <h3 className="blog-related-post-title">
                             {relatedPost.title}
                           </h3>
-                          <p className="text-gray-600 line-clamp-3">
+                          <p className="blog-related-post-excerpt">
                             {relatedPost.excerpt}
                           </p>
                         </div>
@@ -306,15 +335,18 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
         )}
 
         {/* Call to Action */}
-        <section className="bg-primary text-white py-8 md:py-12">
-          <div className="container-custom text-center">
-            <h2 className="text-3xl font-bold mb-4">Ready to Transform Your Operations?</h2>
-            <p className="text-xl mb-6 opacity-90">
+        <section className="blog-cta-section" aria-labelledby="cta-heading">
+          <div className="container-custom blog-cta-container">
+            <h2 id="cta-heading" className="blog-cta-title">
+              Ready to Transform Your Operations?
+            </h2>
+            <p className="blog-cta-description">
               Contact Vantage Vertical to discuss how our drone services can benefit your business.
             </p>
             <Link
               href="/contact"
-              className="inline-block bg-white text-primary px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+              className="blog-cta-button"
+              aria-label="Contact Vantage Vertical to get started"
             >
               Get Started Today
             </Link>
