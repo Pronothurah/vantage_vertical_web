@@ -270,10 +270,12 @@ export const testimonials = [
 export const companyInfo = {
   name: 'Vantage Vertical',
   tagline: 'See More. Do More. From Above.',
-  description: 'Leading provider of professional drone services in Kenya, specializing in aerial mapping, surveillance, agritech solutions, and commercial applications.',
-  founded: '2020',
+  description: 'A leading Unmanned Aircraft company in East Africa that offers professional services in aerial mapping, surveillance, agritech solutions, commercial photography, and comprehensive drone training programs.',
+  phone: '+254704277687',
+  email: 'vantagevarticalltd@gmail.com',
+  founded: 'December 2022',
   location: 'Nairobi, Kenya',
-  employees: '15+',
+  employees: '10+',
   projectsCompleted: '500+',
   mission: 'To revolutionize industries through innovative aerial intelligence solutions that enhance productivity, safety, and decision-making.',
   vision: 'To be the leading drone services provider in East Africa, setting the standard for excellence in aerial technology applications.',
@@ -316,8 +318,8 @@ export const companyInfo = {
 // Team members
 export const teamMembers = [
   {
-    id: 'david-kuria',
-    name: 'David Kuria',
+    id: 'michel-wanjugu',
+    name: 'Michel Wanjugu',
     role: 'CEO & Lead Pilot',
     image: '/profile.png',
     bio: 'KCAA certified pilot with over 8 years of experience in aerial operations and business development.',
@@ -327,8 +329,8 @@ export const teamMembers = [
     specialties: ['Strategic Planning', 'Flight Operations', 'Business Development']
   },
   {
-    id: 'mary-wanjiku',
-    name: 'Mary Wanjiku',
+    id: 'grace-wacheke',
+    name: 'Grace Wacheke',
     role: 'Technical Director',
     image: '/profile.png',
     bio: 'Expert in drone technology and data analysis with a background in geospatial engineering.',
@@ -338,15 +340,26 @@ export const teamMembers = [
     specialties: ['Data Processing', 'Technical Analysis', 'Equipment Management']
   },
   {
-    id: 'james-ochieng',
-    name: 'James Ochieng',
-    role: 'Operations Manager',
+    id: 'david-mutua',
+    name: 'David Mutua',
+    role: 'Operations Manager (Aeronautical Engineer & Pilot)',
     image: '/profile.png',
     bio: 'Experienced operations manager ensuring smooth project execution and client satisfaction.',
     experience: '5+ Years',
     projects: '180+',
     certifications: ['Project Management Professional', 'Safety Operations', 'Quality Assurance', 'Client Relations'],
     specialties: ['Project Management', 'Client Relations', 'Quality Assurance']
+  },
+  {
+    id: 'onsongo-onditi',
+    name: 'Onsongo Onditi',
+    role: 'Business Development Lead',
+    image: '/profile.png',
+    bio: 'Business development specialist focused on expanding market reach and building strategic partnerships.',
+    experience: '4+ Years',
+    projects: '120+',
+    certifications: ['Business Development Professional', 'Strategic Planning', 'Market Analysis', 'Partnership Management'],
+    specialties: ['Market Expansion', 'Strategic Partnerships', 'Client Acquisition']
   }
 ];
 
@@ -674,7 +687,7 @@ Precision agriculture powered by drone technology represents the future of farmi
 The transformation is already underway, and early adopters are seeing remarkable results. The question isn't whether precision agriculture will become mainstream in Kenya – it's how quickly farmers will embrace this revolutionary technology.
 
 *Ready to transform your farming operations? Contact Vantage Vertical today to learn how our precision agriculture solutions can increase your yields while reducing costs.*`,
-    author: 'david-kuria',
+    author: 'michel-wanjugu',
     publishedAt: new Date('2024-01-15'),
     updatedAt: new Date('2024-01-15'),
     published: true,
@@ -897,7 +910,7 @@ Drone surveillance represents a paradigm shift in security operations, offering 
 The integration of AI, advanced sensors, and real-time communication systems makes drone surveillance not just a security tool, but a comprehensive intelligence platform that enhances decision-making and operational efficiency.
 
 *Ready to enhance your security operations with cutting-edge drone surveillance? Contact Vantage Vertical today to learn how our advanced surveillance solutions can protect what matters most to your organization.*`,
-    author: 'mary-wanjiku',
+    author: 'grace-wacheke',
     publishedAt: new Date('2024-02-01'),
     updatedAt: new Date('2024-02-01'),
     published: true,
@@ -1160,7 +1173,7 @@ The technology has moved beyond early adoption to become an essential tool for c
 The question for construction professionals is not whether to adopt aerial mapping, but how quickly they can integrate this powerful technology into their project workflows.
 
 *Ready to revolutionize your construction projects with aerial mapping? Contact Vantage Vertical today to learn how our advanced mapping solutions can improve your project outcomes while reducing costs and timelines.*`,
-    author: 'david-kuria',
+    author: 'michel-wanjugu',
     publishedAt: new Date('2024-02-15'),
     updatedAt: new Date('2024-02-15'),
     published: true,
@@ -1460,7 +1473,7 @@ The key to successful compliance is staying informed about regulatory updates, m
 For businesses and individuals looking to enter the drone industry in Kenya, investing in proper training, certification, and compliance systems is not just a legal requirement – it's a foundation for long-term success in this rapidly growing sector.
 
 *Need help navigating KCAA regulations for your drone operations? Contact Vantage Vertical today for expert guidance on compliance, training, and certification requirements.*`,
-    author: 'mary-wanjiku',
+    author: 'grace-wacheke',
     publishedAt: new Date('2024-03-01'),
     updatedAt: new Date('2024-03-01'),
     published: true,
@@ -1764,7 +1777,7 @@ Real estate professionals who embrace drone photography today will be better pos
 The question for real estate professionals is not whether to adopt drone photography, but how quickly they can integrate this powerful marketing tool into their property promotion strategies.
 
 *Ready to elevate your real estate marketing with stunning aerial photography? Contact Vantage Vertical today to learn how our professional drone photography services can help you sell properties faster and at higher prices.*`,
-    author: 'david-kuria',
+    author: 'michel-wanjugu',
     publishedAt: new Date('2024-03-15'),
     updatedAt: new Date('2024-03-15'),
     published: true,
@@ -2157,7 +2170,7 @@ The technology has proven its value across diverse crops and farming systems in 
 The key to success with NDVI technology lies in understanding its capabilities and limitations, integrating it with existing farm management practices, and using the data to drive actionable decisions. Farmers who embrace this technology today will be better positioned to meet the challenges of sustainable agriculture in the future.
 
 *Ready to revolutionize your crop monitoring with NDVI technology? Contact Vantage Vertical today to learn how our advanced NDVI services can optimize your agricultural operations and increase your profitability.*`,
-    author: 'mary-wanjiku',
+    author: 'grace-wacheke',
     publishedAt: new Date('2024-04-01'),
     updatedAt: new Date('2024-04-01'),
     published: true,
@@ -2715,7 +2728,7 @@ The key to success lies in choosing the right training path, gaining practical e
 The future of Kenya's drone industry is bright, and those who enter the field today will be well-positioned to benefit from the continued growth and innovation in this exciting sector.
 
 *Ready to launch your drone career? Contact Vantage Vertical Training Academy today to learn about our comprehensive training programs and start your journey in Kenya's thriving drone industry.*`,
-    author: 'david-kuria',
+    author: 'michel-wanjugu',
     publishedAt: new Date('2024-04-15'),
     updatedAt: new Date('2024-04-15'),
     published: true,
@@ -3114,7 +3127,7 @@ The key to success lies in proper training, regulatory compliance, and integrati
 The future of crop protection in Kenya is taking flight, and agricultural spraying drones are leading the way toward more sustainable, efficient, and profitable farming practices.
 
 *Ready to revolutionize your crop protection with precision drone spraying? Contact Vantage Vertical today to learn how our agricultural spraying services can reduce your costs while improving crop health and environmental sustainability.*`,
-    author: 'mary-wanjiku',
+    author: 'grace-wacheke',
     publishedAt: new Date('2024-05-01'),
     updatedAt: new Date('2024-05-01'),
     published: true,
@@ -3150,29 +3163,55 @@ export const blogTags = [
 
 export const blogAuthors = [
   {
-    id: 'david-kuria',
-    name: 'David Kuria',
+    id: 'michel-wanjugu',
+    name: 'Michel Wanjugu',
     role: 'CEO & Lead Pilot',
     bio: 'KCAA certified pilot with expertise in aerial operations.',
     avatar: '/profile.png',
     image: '/profile.png',
     socialLinks: {
-      linkedin: 'https://linkedin.com/in/david-kuria',
-      email: 'david@vantagevertical.co.ke',
-      twitter: '@davidkuria'
+      linkedin: 'https://linkedin.com/in/michel-wanjugu',
+      email: 'michel@vantagevertical.co.ke',
+      twitter: '@michelwanjugu'
     }
   },
   {
-    id: 'mary-wanjiku',
-    name: 'Mary Wanjiku',
+    id: 'grace-wacheke',
+    name: 'Grace Wacheke',
     role: 'Technical Director',
     bio: 'Expert in drone technology and data analysis.',
     avatar: '/profile.png',
     image: '/profile.png',
     socialLinks: {
-      linkedin: 'https://linkedin.com/in/mary-wanjiku',
-      email: 'mary@vantagevertical.co.ke',
-      twitter: '@marywanjiku'
+      linkedin: 'https://linkedin.com/in/grace-wacheke',
+      email: 'grace@vantagevertical.co.ke',
+      twitter: '@gracewacheke'
+    }
+  },
+  {
+    id: 'david-mutua',
+    name: 'David Mutua',
+    role: 'Operations Manager (Aeronautical Engineer & Pilot)',
+    bio: 'Experienced operations manager and aeronautical engineer.',
+    avatar: '/profile.png',
+    image: '/profile.png',
+    socialLinks: {
+      linkedin: 'https://linkedin.com/in/david-mutua',
+      email: 'david@vantagevertical.co.ke',
+      twitter: '@davidmutua'
+    }
+  },
+  {
+    id: 'onsongo-onditi',
+    name: 'Onsongo Onditi',
+    role: 'Business Development Lead',
+    bio: 'Business development specialist focused on market expansion.',
+    avatar: '/profile.png',
+    image: '/profile.png',
+    socialLinks: {
+      linkedin: 'https://linkedin.com/in/onsongo-onditi',
+      email: 'onsongo@vantagevertical.co.ke',
+      twitter: '@onsongoonditi'
     }
   }
 ];
@@ -3229,10 +3268,10 @@ export const droneProducts = [
 export const trainingPrograms = [
   {
     id: 'basic-pilot',
-    title: 'Basic Drone Pilot Certification',
+    title: 'KCAA Unmanned Aircraft System (UAS) Certification',
     level: 'Beginner',
     duration: '2 weeks',
-    price: 'KSh 45,000',
+    price: 'KSh 150,000',
     description: 'Comprehensive introduction to drone operations, safety protocols, and basic flight skills for aspiring pilots.',
     objectives: [
       'Understand drone technology and components',
@@ -3262,7 +3301,7 @@ export const trainingPrograms = [
     title: 'Commercial Drone Operations',
     level: 'Intermediate',
     duration: '3 weeks',
-    price: 'KSh 75,000',
+    price: 'KSh 130,000',
     description: 'Advanced training for commercial drone operations including aerial photography, mapping, and surveillance applications.',
     objectives: [
       'Advanced flight techniques and precision control',
@@ -3292,7 +3331,7 @@ export const trainingPrograms = [
     title: 'Agricultural Drone Specialist',
     level: 'Advanced',
     duration: '4 weeks',
-    price: 'KSh 95,000',
+    price: 'KSh 100,000',
     description: 'Specialized training in precision agriculture applications including crop monitoring, spraying, and data analysis.',
     objectives: [
       'Precision agriculture principles and practices',
@@ -3316,7 +3355,7 @@ export const trainingPrograms = [
     title: 'Drone Instructor Certification',
     level: 'Professional',
     duration: '6 weeks',
-    price: 'KSh 150,000',
+    price: 'KSh 100,000',
     description: 'Train-the-trainer program for experienced pilots looking to become certified drone instructors.',
     objectives: [
       'Advanced teaching methodologies and techniques',
@@ -3362,8 +3401,8 @@ export const trainingMetrics = [
 
 export const trainingInstructors = [
   {
-    id: 'david-kuria',
-    name: 'David Kuria',
+    id: 'michel-wanjugu',
+    name: 'Michel Wanjugu',
     title: 'Chief Flight Instructor',
     image: '/profile.png',
     bio: 'KCAA certified chief instructor with over 10 years of aviation experience and 5 years specializing in drone operations.',
@@ -3373,8 +3412,8 @@ export const trainingInstructors = [
     specialties: ['Commercial Operations', 'Safety Management', 'Regulatory Compliance']
   },
   {
-    id: 'mary-wanjiku',
-    name: 'Mary Wanjiku',
+    id: 'grace-wacheke',
+    name: 'Grace Wacheke',
     title: 'Technical Training Specialist',
     image: '/profile.png',
     bio: 'Expert in drone technology and data analysis with extensive experience in agricultural and mapping applications.',
@@ -3384,8 +3423,8 @@ export const trainingInstructors = [
     specialties: ['Agricultural Applications', 'Data Analysis', 'Mapping Technology']
   },
   {
-    id: 'james-ochieng',
-    name: 'James Ochieng',
+    id: 'david-mutua',
+    name: 'David Mutua',
     title: 'Flight Operations Instructor',
     image: '/profile.png',
     bio: 'Former military pilot with expertise in surveillance and security applications of drone technology.',
@@ -3395,8 +3434,19 @@ export const trainingInstructors = [
     specialties: ['Surveillance Operations', 'Security Applications', 'Advanced Flight Techniques']
   },
   {
-    id: 'grace-muthoni',
-    name: 'Grace Muthoni',
+    id: 'onsongo-onditi',
+    name: 'Onsongo Onditi',
+    title: 'Business Development Instructor',
+    image: '/profile.png',
+    bio: 'Business development specialist with expertise in commercial drone applications and market strategies.',
+    experience: '6 years',
+    studentsTrained: '120+',
+    passRate: '100%',
+    specialties: ['Business Development', 'Commercial Applications', 'Market Strategy']
+  },
+  {
+    id: 'mike-kasio',
+    name: 'Mike Kasio',
     title: 'Safety and Compliance Instructor',
     image: '/profile.png',
     bio: 'Aviation safety expert specializing in KCAA regulations and drone safety management systems.',

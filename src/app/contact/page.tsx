@@ -11,13 +11,13 @@ import { companyInfo } from '@/data';
 const contactInfo = {
   office: {
     address: 'Westlands Business Park, Suite 402\nWaiyaki Way, Westlands\nNairobi, Kenya',
-    phone: '+254 700 123 456',
-    email: 'info@vantagevertical.co.ke',
+    phone: '+254704277687',
+    email: 'vantagevarticalltd@gmail.com',
     hours: 'Monday - Friday: 8:00 AM - 6:00 PM\nSaturday: 9:00 AM - 4:00 PM\nSunday: Emergency calls only'
   },
   emergency: {
-    phone: '+254 722 URGENT (874368)',
-    email: 'emergency@vantagevertical.co.ke',
+    phone: '+254704277687',
+    email: 'vantagevarticalltd@gmail.com',
     responseTime: '24/7 Emergency Response\nAverage response time: 2 hours',
     services: [
       'Emergency surveillance',
@@ -29,26 +29,26 @@ const contactInfo = {
   departments: [
     {
       name: 'Sales & General Inquiries',
-      phone: '+254 700 123 456',
-      email: 'sales@vantagevertical.co.ke',
+      phone: '+254704277687',
+      email: 'vantagevarticalltd@gmail.com',
       description: 'New projects, quotes, and general information'
     },
     {
       name: 'Training Academy',
-      phone: '+254 700 123 457',
-      email: 'training@vantagevertical.co.ke',
+      phone: '+254704277687',
+      email: 'vantagevarticalltd@gmail.com',
       description: 'Drone pilot certification and training programs'
     },
     {
       name: 'Technical Support',
-      phone: '+254 700 123 458',
-      email: 'support@vantagevertical.co.ke',
+      phone: '+254704277687',
+      email: 'vantagevarticalltd@gmail.com',
       description: 'Equipment support and technical assistance'
     },
     {
       name: 'Drone Sales',
-      phone: '+254 700 123 459',
-      email: 'drones@vantagevertical.co.ke',
+      phone: '+254704277687',
+      email: 'vantagevarticalltd@gmail.com',
       description: 'Drone purchases, equipment, and accessories'
     }
   ]
@@ -77,7 +77,7 @@ export default function ContactPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
-                href="tel:+254700123456"
+                href="tel:+254704277687"
                 className="bg-primary text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-red-700 transition-colors duration-200 inline-flex items-center justify-center"
               >
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import ImageSkeleton from './ImageSkeleton';
 
 interface OptimizedImageProps {
   src: string;
@@ -22,6 +23,9 @@ interface OptimizedImageProps {
   objectFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down';
   loading?: 'lazy' | 'eager';
   fallbackSrc?: string;
+  preventLayoutShift?: boolean;
+  showSkeleton?: boolean;
+  skeletonText?: string;
 }
 
 const aspectRatioClasses = {
@@ -50,10 +54,28 @@ export default function OptimizedImage({
   objectFit = 'cover',
   loading = 'lazy',
   fallbackSrc = '/images/placeholder-drone.svg',
+  preventLayoutShift = true,
+  showSkeleton = true,
+  skeletonText = 'Loading image...',
 }: OptimizedImageProps) {
   const [imgSrc, setImgSrc] = useState(src);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+  const imageRef = useRef<HTMLImageElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Maximum retry attempts for failed images
+  const MAX_RETRY_ATTEMPTS = 2;
+
+  // Update src when prop changes
+  useEffect(() => {
+    if (src !== imgSrc && retryCount === 0) {
+      setImgSrc(src);
+      setIsLoading(true);
+      setHasError(false);
+    }
+  }, [src, imgSrc, retryCount]);
 
   // Generate responsive sizes if not provided
   const responsiveSizes = sizes || (
@@ -85,15 +107,42 @@ export default function OptimizedImage({
 
   const handleLoad = () => {
     setIsLoading(false);
+    setRetryCount(0); // Reset retry count on successful load
+    
+    // Performance monitoring - measure image load time
+    if (imageRef.current) {
+      const loadTime = performance.now();
+      console.log(`Image loaded successfully in ${loadTime.toFixed(2)}ms: ${imgSrc}`);
+    }
+    
     onLoad?.();
   };
 
   const handleError = () => {
+    console.warn(`Image failed to load (attempt ${retryCount + 1}/${MAX_RETRY_ATTEMPTS + 1}): ${imgSrc}`);
+    
+    if (retryCount < MAX_RETRY_ATTEMPTS && imgSrc === src) {
+      // Retry with exponential backoff
+      const retryDelay = Math.pow(2, retryCount) * 1000; // 1s, 2s, 4s...
+      setTimeout(() => {
+        setRetryCount(prev => prev + 1);
+        setIsLoading(true);
+        setHasError(false);
+        // Force image reload by adding timestamp
+        setImgSrc(`${src}?retry=${retryCount + 1}&t=${Date.now()}`);
+      }, retryDelay);
+      return;
+    }
+    
     setHasError(true);
     setIsLoading(false);
+    
+    // Try fallback if not already using it
     if (imgSrc !== fallbackSrc) {
       setImgSrc(fallbackSrc);
+      setRetryCount(0); // Reset retry count for fallback
     }
+    
     onError?.();
   };
 
@@ -115,15 +164,45 @@ export default function OptimizedImage({
     isLoading && 'animate-pulse bg-gray-200'
   );
 
-  // For fill images, wrap in a container
+  // For fill images, wrap in a container with layout shift prevention
   if (fill) {
     return (
-      <div className={containerClasses}>
+      <div 
+        ref={containerRef}
+        className={cn(
+          'relative overflow-hidden',
+          aspectRatio && aspectRatioClasses[aspectRatio],
+          // Prevent layout shift with fixed dimensions
+          preventLayoutShift && [
+            'min-h-[200px]',
+            'md:min-h-[300px]',
+            'lg:min-h-[400px]'
+          ]
+        )}
+      >
+        {/* Enhanced skeleton loading */}
+        {isLoading && showSkeleton && (
+          <ImageSkeleton
+            className="absolute inset-0"
+            aspectRatio={aspectRatio}
+            showIcon={true}
+            showText={retryCount > 0}
+            text={retryCount > 0 ? `Retrying... (${retryCount}/${MAX_RETRY_ATTEMPTS})` : skeletonText}
+            animate={true}
+          />
+        )}
+
         <Image
+          ref={imageRef}
           src={imgSrc}
           alt={alt}
           fill
-          className={imageClasses}
+          className={cn(
+            imageClasses,
+            // Smooth transition when loading completes
+            'transition-all duration-500 ease-out',
+            isLoading ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
+          )}
           priority={priority}
           quality={quality}
           sizes={responsiveSizes}
@@ -132,55 +211,68 @@ export default function OptimizedImage({
           onLoad={handleLoad}
           onError={handleError}
           loading={priority ? 'eager' : loading}
+          // Add performance hints
+          decoding="async"
+          fetchPriority={priority ? 'high' : 'auto'}
         />
-        
-        {/* Loading skeleton */}
-        {isLoading && (
-          <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-            <div className="w-12 h-12 text-gray-400">
+
+        {/* Enhanced error state */}
+        {hasError && imgSrc === fallbackSrc && (
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center justify-center text-gray-500 p-4">
+            <div className="w-16 h-16 mb-3 text-gray-400" aria-hidden="true">
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path 
                   strokeLinecap="round" 
                   strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" 
+                  strokeWidth={1.5} 
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" 
                 />
               </svg>
             </div>
-          </div>
-        )}
-
-        {/* Error state */}
-        {hasError && imgSrc === fallbackSrc && (
-          <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
-            <div className="text-center text-gray-500">
-              <div className="w-12 h-12 mx-auto mb-2">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth={2} 
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" 
-                  />
-                </svg>
-              </div>
-              <p className="text-xs">Image unavailable</p>
-            </div>
+            <p className="text-sm font-medium text-gray-600 mb-1 text-center">Image unavailable</p>
+            <p className="text-xs text-gray-400 text-center leading-relaxed">
+              Failed to load after {MAX_RETRY_ATTEMPTS + 1} attempts
+            </p>
           </div>
         )}
       </div>
     );
   }
 
-  // For fixed size images
+  // For fixed size images with layout shift prevention
   return (
-    <div className={cn('relative', aspectRatio && aspectRatioClasses[aspectRatio])}>
+    <div 
+      className={cn(
+        'relative',
+        aspectRatio && aspectRatioClasses[aspectRatio],
+        // Prevent layout shift for fixed size images
+        preventLayoutShift && width && height && `min-w-[${width}px] min-h-[${height}px]`
+      )}
+    >
+      {/* Enhanced skeleton loading for fixed size images */}
+      {isLoading && showSkeleton && (
+        <ImageSkeleton
+          className="absolute inset-0"
+          aspectRatio={aspectRatio}
+          showIcon={true}
+          showText={retryCount > 0}
+          text={retryCount > 0 ? `Retrying... (${retryCount}/${MAX_RETRY_ATTEMPTS})` : skeletonText}
+          animate={true}
+        />
+      )}
+
       <Image
+        ref={imageRef}
         src={imgSrc}
         alt={alt}
         width={width}
         height={height}
-        className={imageClasses}
+        className={cn(
+          imageClasses,
+          // Smooth transition when loading completes
+          'transition-all duration-500 ease-out',
+          isLoading ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
+        )}
         priority={priority}
         quality={quality}
         sizes={responsiveSizes}
@@ -189,40 +281,28 @@ export default function OptimizedImage({
         onLoad={handleLoad}
         onError={handleError}
         loading={priority ? 'eager' : loading}
+        // Add performance hints
+        decoding="async"
+        fetchPriority={priority ? 'high' : 'auto'}
       />
-      
-      {/* Loading skeleton */}
-      {isLoading && (
-        <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-          <div className="w-8 h-8 text-gray-400">
+
+      {/* Enhanced error state for fixed size images */}
+      {hasError && imgSrc === fallbackSrc && (
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center justify-center text-gray-500 p-2">
+          <div className="w-8 h-8 mb-2 text-gray-400" aria-hidden="true">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path 
                 strokeLinecap="round" 
                 strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" 
+                strokeWidth={1.5} 
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" 
               />
             </svg>
           </div>
-        </div>
-      )}
-
-      {/* Error state */}
-      {hasError && imgSrc === fallbackSrc && (
-        <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
-          <div className="text-center text-gray-500">
-            <div className="w-8 h-8 mx-auto mb-1">
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" 
-                />
-              </svg>
-            </div>
-            <p className="text-xs">Image unavailable</p>
-          </div>
+          <p className="text-xs font-medium text-gray-600 text-center">Image unavailable</p>
+          <p className="text-xs text-gray-400 text-center">
+            Failed after {MAX_RETRY_ATTEMPTS + 1} attempts
+          </p>
         </div>
       )}
     </div>

@@ -75,3 +75,13 @@ jest.mock('@/components/ui/OptimizedImage', () => ({
     <img src={src} alt={alt} {...props} />
   ),
 }))
+
+// Mock TypingAnimation component for tests
+jest.mock('@/components/ui/TypingAnimation', () => ({
+  __esModule: true,
+  default: ({ text, className, ...props }) => (
+    <span className={className} {...props}>
+      {text}
+    </span>
+  ),
+}))

@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
 
     // In a real implementation, you would:
     // await sendEmail({
-    //   to: 'sales@vantagevertical.co.ke',
+    //   to: 'vantagevarticalltd@gmail.com',
     //   subject: `New Drone Inquiry - ${data.inquiryType}`,
     //   html: emailContent.adminEmail
     // });
@@ -263,8 +263,8 @@ function generateInquiryEmail(data: DroneInquiryData) {
             <p>If you have any immediate questions, please don't hesitate to contact us:</p>
             
             <div style="text-align: center; margin: 30px 0;">
-              <p style="margin: 5px 0;"><strong>Phone:</strong> <a href="tel:+254700000000" style="color: #D72638;">+254 700 000 000</a></p>
-              <p style="margin: 5px 0;"><strong>Email:</strong> <a href="mailto:sales@vantagevertical.co.ke" style="color: #D72638;">sales@vantagevertical.co.ke</a></p>
+              <p style="margin: 5px 0;"><strong>Phone:</strong> <a href="tel:+254704277687" style="color: #D72638;">+254 704 277 687</a></p>
+              <p style="margin: 5px 0;"><strong>Email:</strong> <a href="mailto:vantagevarticalltd@gmail.com" style="color: #D72638;">vantagevarticalltd@gmail.com</a></p>
               <p style="margin: 5px 0;"><strong>Website:</strong> <a href="https://vantagevertical.co.ke" style="color: #D72638;">www.vantagevertical.co.ke</a></p>
             </div>
 
@@ -277,7 +277,7 @@ function generateInquiryEmail(data: DroneInquiryData) {
 
           <div style="background: #f8f9fa; padding: 15px; text-align: center; border-top: 1px solid #dee2e6;">
             <p style="margin: 0; font-size: 12px; color: #6c757d;">
-              This email was sent from Vantage Vertical. If you have any questions, please contact us at sales@vantagevertical.co.ke
+              This email was sent from Vantage Vertical. If you have any questions, please contact us at vantagevarticalltd@gmail.com
             </p>
           </div>
         </div>

@@ -460,6 +460,103 @@
   .mobile-content-spacing {
     @apply mb-3 sm:mb-4 md:mb-6; /* Progressive content spacing */
   }
+  
+  /* Performance optimization utilities for layout shift prevention */
+  .prevent-layout-shift {
+    contain: layout style paint;
+  }
+  
+  .image-container-stable {
+    @apply prevent-layout-shift;
+    /* Reserve space to prevent CLS during image loading */
+    min-height: var(--image-min-height, 200px);
+  }
+  
+  .image-loading-smooth {
+    @apply transition-all duration-500 ease-out;
+    transform: translateZ(0); /* Force hardware acceleration */
+    will-change: opacity, transform;
+  }
+  
+  .image-loaded-smooth {
+    @apply opacity-100 scale-100;
+    will-change: auto; /* Remove will-change after loading */
+  }
+  
+  .image-loading-state {
+    @apply opacity-0 scale-105;
+  }
+  
+  /* Enhanced skeleton loading with better performance */
+  .skeleton-shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.4),
+      transparent
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+  
+  .skeleton-pulse-optimized {
+    animation: pulse-optimized 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  /* Optimized error boundary styling */
+  .error-boundary-container {
+    @apply bg-gradient-to-br from-gray-50 to-gray-100;
+    @apply border-2 border-dashed border-gray-200;
+    @apply flex flex-col items-center justify-center;
+    @apply text-gray-500 p-6 rounded-lg;
+    min-height: inherit;
+  }
+  
+  /* Performance monitoring utilities */
+  .performance-critical {
+    /* Mark critical rendering path elements */
+    contain: layout style;
+  }
+  
+  .gpu-accelerated {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+  
+  /* Typing Animation Utilities */
+  .typing-animation-container {
+    @apply gpu-accelerated prevent-layout-shift;
+    /* Prevent layout shift during typing animation */
+    min-height: 1.2em;
+    display: inline-block;
+  }
+  
+  .typing-cursor {
+    animation: typing-cursor 1s infinite;
+    @apply gpu-accelerated;
+  }
+  
+  .typing-text {
+    @apply gpu-accelerated;
+    animation: typing-fade-in 0.1s ease-in;
+  }
+  
+  /* Reduced motion support for typing animation */
+  @media (prefers-reduced-motion: reduce) {
+    .typing-animation-container {
+      animation: none;
+    }
+    
+    .typing-cursor {
+      animation: none;
+      opacity: 0;
+    }
+    
+    .typing-text {
+      animation: none;
+    }
+  }
 }
 
 /* Custom Keyframes */
@@ -532,6 +629,43 @@
   }
   50% {
     box-shadow: 0 0 30px rgba(59, 130, 246, 0.8);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes pulse-optimized {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Typing Animation Keyframes */
+@keyframes typing-cursor {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+@keyframes typing-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 

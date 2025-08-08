@@ -241,7 +241,7 @@ Response Time: ${formData.urgency === 'high' ? '24-48 hours' : formData.urgency 
   // Send email
   await transporter.sendMail({
     from: `"Vantage Vertical Website" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
-    to: process.env.CONTACT_EMAIL || 'info@vantagevertical.com',
+    to: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
     subject: `New ${urgencyLabel} Contact Form Submission - ${serviceLabel}`,
     text: textContent,
     html: htmlContent,

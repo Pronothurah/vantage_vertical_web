@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { OptimizedImage } from '@/components/ui';
+import { OptimizedImage, TypingAnimation } from '@/components/ui';
 import { imageSizes, imageQuality } from '@/lib/imageUtils';
 
 interface HeroSectionProps {
@@ -98,27 +98,32 @@ export default function HeroSection({
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex-1 flex flex-col justify-center pb-20">
-        {/* Tagline */}
+        {/* Tagline - Professional Aerial Intelligence - 2x larger and prominent with typing animation */}
         {tagline && (
           <div
             className={`transform transition-all duration-1000 ease-out ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
             }`}
           >
-            <p className="text-primary font-semibold text-sm sm:text-base uppercase tracking-wider mb-4">
-              {tagline}
-            </p>
+            <TypingAnimation
+              text={tagline}
+              className="text-primary font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl uppercase tracking-wider mb-6 md:mb-8 drop-shadow-lg block"
+              typingSpeed={120}
+              pauseDuration={3000}
+              deletingSpeed={80}
+              loop={true}
+            />
           </div>
         )}
 
-        {/* Main Title */}
+        {/* Main Title - Reduced font size by half */}
         <div
           className={`transform transition-all duration-1000 ease-out delay-200 ${
             isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}
         >
           <h1 className="font-heading font-bold text-white mb-6">
-            <span className="block text-4xl sm:text-5xl lg:text-6xl xl:text-7xl leading-tight">
+            <span className="block text-2xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl leading-tight">
               {title}
             </span>
           </h1>
