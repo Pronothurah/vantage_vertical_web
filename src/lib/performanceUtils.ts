@@ -76,8 +76,8 @@ export class PerformanceMonitor {
   private getMemoryUsage(): number | undefined {
     if (typeof window !== 'undefined' && 'performance' in window && 'memory' in performance) {
       // @ts-ignore - performance.memory is not in all TypeScript definitions
-      const memory = performance.memory;
-      return memory.usedJSHeapSize / (1024 * 1024); // Convert to MB
+      const memory = (performance as any).memory;
+      return memory?.usedJSHeapSize ? memory.usedJSHeapSize / (1024 * 1024) : undefined; // Convert to MB
     }
     return undefined;
   }
