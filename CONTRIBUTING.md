@@ -26,11 +26,10 @@ By participating in this project, you agree to abide by our Code of Conduct:
 
 ### Prerequisites
 
-- Node.js (v14 or higher)
-- npm or yarn
-- MongoDB
+- Node.js 18.0.0 or higher
+- npm 8.0.0 or higher
 - Git
-- Code editor (VS Code recommended)
+- Code editor (VS Code recommended with TypeScript support)
 
 ### Fork and Clone
 
@@ -48,24 +47,32 @@ By participating in this project, you agree to abide by our Code of Conduct:
 
 ## Development Setup
 
-1. Install all dependencies:
+1. Run the automated setup script (recommended):
    ```bash
-   npm run install-all
+   ./setup.sh
    ```
 
-2. Set up environment variables:
+   Or set up manually:
    ```bash
+   # Install dependencies
+   npm install
+   
+   # Set up environment variables
    cp .env.example .env
-   cp frontend/.env.example frontend/.env
-   cp backend/.env.example backend/.env
    ```
 
-3. Start MongoDB service
-
-4. Run the development servers:
+2. Start the development server:
    ```bash
-   npm start
+   npm run dev
    ```
+
+3. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+The development server includes:
+- Hot module replacement for instant updates
+- TypeScript compilation and type checking
+- Tailwind CSS processing
+- API routes for contact forms
 
 ## Making Changes
 
@@ -112,71 +119,85 @@ Fixes #123
 
 ## Coding Standards
 
-### JavaScript/React
+### TypeScript/React
 
-- Use ES6+ features
-- Follow React Hooks patterns
-- Use functional components over class components
-- Implement proper error boundaries
-- Use meaningful variable and function names
-- Add JSDoc comments for complex functions
+- Use TypeScript for all new code with proper type definitions
+- Follow React Hooks patterns and Next.js best practices
+- Use functional components with TypeScript interfaces
+- Implement proper error boundaries and loading states
+- Use meaningful variable and function names with type annotations
+- Add JSDoc comments for complex functions and components
+- Follow Next.js App Router conventions for routing and layouts
 
-### CSS
+### Styling
 
-- Use the existing CSS custom properties system
-- Follow BEM naming convention for new classes
-- Ensure responsive design principles
-- Optimize for performance (avoid unnecessary reflows)
+- Use Tailwind CSS utility classes for styling
+- Follow the existing design system and brand colors
+- Ensure responsive design with mobile-first approach
+- Use Tailwind's responsive prefixes (sm:, md:, lg:, xl:)
+- Optimize for performance and accessibility
+- Follow WCAG 2.1 AA compliance guidelines
 
-### Backend (Node.js/Express)
+### API Routes (Next.js)
 
-- Use async/await over callbacks
-- Implement proper error handling
-- Follow RESTful API conventions
+- Use Next.js API routes for server-side functionality
+- Implement proper error handling and status codes
 - Add input validation and sanitization
-- Use middleware appropriately
+- Use TypeScript for request/response types
+- Follow RESTful conventions where applicable
+- Handle CORS and security headers appropriately
 
 ### File Organization
 
-- Keep components small and focused
-- Use index.js files for clean imports
-- Organize files by feature, not by type
-- Keep assets organized in appropriate folders
+- Follow Next.js App Router structure (src/app/)
+- Keep components small, focused, and reusable
+- Use TypeScript interfaces in src/types/
+- Organize components by feature in src/components/
+- Use index.ts files for clean exports
+- Keep utilities in src/lib/ with proper typing
 
 ## Testing
 
-### Frontend Testing
+### Running Tests
 
 ```bash
-cd frontend
+# Run all tests
 npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage report
+npm run test:coverage
 ```
 
-- Write unit tests for utility functions
-- Add integration tests for complex components
-- Test user interactions and form submissions
-- Ensure accessibility compliance
+### Testing Guidelines
 
-### Backend Testing
+- Write unit tests for utility functions and components
+- Add integration tests for complex user interactions
+- Test form submissions and API route functionality
+- Ensure accessibility compliance with testing-library
+- Use TypeScript for test files with proper typing
+- Mock external dependencies and API calls
+- Test responsive behavior and mobile interactions
 
-```bash
-cd backend
-npm test
-```
+### Test Structure
 
-- Test API endpoints
-- Validate database operations
-- Test error handling scenarios
-- Mock external dependencies
+- Place tests in `src/__tests__/` or alongside components as `*.test.tsx`
+- Use Jest and React Testing Library for component testing
+- Follow the Arrange-Act-Assert pattern
+- Use descriptive test names that explain the expected behavior
+- Group related tests using `describe` blocks
 
 ### Manual Testing
 
 Before submitting:
-- Test on different screen sizes
-- Verify form submissions work
-- Check navigation and routing
-- Test with different browsers
-- Validate MongoDB connections
+- Test on different screen sizes and devices
+- Verify form submissions work correctly
+- Check navigation and routing functionality
+- Test with different browsers (Chrome, Firefox, Safari)
+- Validate static site generation with `npm run build`
+- Test deployment build locally
 
 ## Submitting Changes
 
@@ -269,29 +290,35 @@ For security-related issues:
 ### Useful Commands
 
 ```bash
-# Install all dependencies
-npm run install-all
+# Development
+npm run dev          # Start development server with hot reload
+npm run build        # Create optimized production build (static export)
+npm run start        # Start production server (after build)
 
-# Start development servers
-npm start
+# Code Quality
+npm run lint         # Run ESLint for code quality
+npm run type-check   # Run TypeScript type checking
+npm test             # Run Jest test suite
+npm run test:watch   # Run tests in watch mode
+npm run test:coverage # Run tests with coverage report
 
-# Build for production
-npm run build
+# Deployment
+npm run netlify-build # Build for Netlify deployment
 
-# Run tests
-npm test
-
-# Check for outdated packages
-npm outdated
+# Maintenance
+npm outdated         # Check for outdated packages
+npm audit            # Check for security vulnerabilities
 ```
 
 ### Debugging
 
-- Use React Developer Tools for frontend debugging
-- Use Node.js debugger for backend issues
-- Check browser console for JavaScript errors
+- Use React Developer Tools for component debugging
+- Use Next.js built-in debugging features
+- Check browser console for JavaScript/TypeScript errors
 - Monitor network requests in browser dev tools
-- Use MongoDB Compass for database inspection
+- Use TypeScript compiler for type checking issues
+- Inspect static site generation output in the `out/` directory
+- Use Next.js development error overlay for detailed error information
 
 ## Questions?
 

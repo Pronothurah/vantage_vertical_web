@@ -1,7 +1,7 @@
 {
-  "name": "vantage_vertical_web",
+  "name": "vantage-vertical-web",
   "version": "1.0.0",
-  "description": "Professional drone services website featuring aerial photography, mapping, surveillance, and training programs",
+  "description": "Professional drone services website built with Next.js, featuring aerial photography, mapping, surveillance, and training programs",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -21,19 +21,20 @@
     "surveillance",
     "nextjs",
     "typescript",
-    "tailwindcss"
+    "tailwindcss",
+    "static-site",
+    "netlify"
   ],
-  "author": "Vantage Vertical",
+  "author": "Vantage Vertical Ltd",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/Pronothurah/vantage_vertical_web.git"
   },
+  "homepage": "https://vantagevertical.co.ke",
   "dependencies": {
-    "@next/swc-linux-x64-gnu": "^15.4.5",
-    "@tailwindcss/line-clamp": "^0.4.4",
     "@types/nodemailer": "^6.4.17",
-    "next": "14.2.5",
+    "next": "^14.2.31",
     "nodemailer": "^7.0.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -52,7 +53,7 @@
     "autoprefixer": "^10.4.19",
     "clsx": "^2.1.1",
     "eslint": "^8.57.0",
-    "eslint-config-next": "14.2.5",
+    "eslint-config-next": "^14.2.31",
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.5",
     "postcss": "^8.4.39",

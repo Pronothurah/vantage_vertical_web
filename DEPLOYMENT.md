@@ -1,340 +1,364 @@
 # Deployment Guide - Vantage Vertical
 
-This guide covers different deployment options for the Vantage Vertical website.
+This guide covers deploying the Vantage Vertical Next.js website to Netlify using static site generation.
 
 ## Table of Contents
 
 1. [Production Build](#production-build)
 2. [Environment Configuration](#environment-configuration)
-3. [Database Setup](#database-setup)
-4. [Deployment Options](#deployment-options)
+3. [Netlify Deployment](#netlify-deployment)
+4. [Custom Domain Setup](#custom-domain-setup)
 5. [Monitoring and Maintenance](#monitoring-and-maintenance)
 
 ## Production Build
 
-### Frontend Build
+The Vantage Vertical website is built as a static Next.js application optimized for Netlify hosting.
+
+### Building the Static Export
 
 ```bash
-cd frontend
+# Install dependencies
+npm install
+
+# Run type checking (optional but recommended)
+npm run type-check
+
+# Build the static export
 npm run build
 ```
 
-This creates an optimized production build in the `frontend/build` directory.
+This creates an optimized static build in the `out/` directory, ready for deployment to Netlify.
 
-### Backend Preparation
+### Build Process Details
 
-Ensure your backend is production-ready:
-- Environment variables are properly configured
-- Database connections are secure
-- Error handling is implemented
-- Logging is configured
+The build process:
+1. Compiles TypeScript to JavaScript
+2. Optimizes and bundles all assets
+3. Generates static HTML pages for all routes
+4. Creates a static export in the `out/` directory
+5. Optimizes images and other assets for web delivery
 
 ## Environment Configuration
 
-### Production Environment Variables
+### Environment Variables for Netlify
 
-**Backend (.env):**
+Configure the following environment variables in your Netlify dashboard:
+
+#### Required Variables
+
 ```env
-NODE_ENV=production
-PORT=5000
-MONGODB_URI=mongodb://your-production-db-url/vantage_vertical
-FRONTEND_URL=https://your-domain.com
+# Site Configuration
+NEXT_PUBLIC_SITE_URL=https://vantagevertical.co.ke
+NEXT_PUBLIC_CONTACT_EMAIL=vantagevarticalltd@gmail.com
+NEXT_PUBLIC_PHONE_NUMBER=+254704277687
 ```
 
-**Frontend (.env):**
+#### Optional Variables
+
 ```env
-REACT_APP_API_URL=https://your-api-domain.com/api
-REACT_APP_SITE_URL=https://your-domain.com
+# Analytics (Optional)
+NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=your-google-verification-code
+NEXT_PUBLIC_BING_VERIFICATION=your-bing-verification-code
+
+# Email Configuration (for contact forms)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password
+SMTP_FROM=noreply@vantagevertical.co.ke
 ```
 
-## Database Setup
+### Setting Environment Variables in Netlify
 
-### MongoDB Atlas (Recommended)
+1. Go to your Netlify site dashboard
+2. Navigate to **Site settings** → **Environment variables**
+3. Click **Add variable** for each environment variable
+4. Enter the variable name and value
+5. Click **Save**
 
-1. Create a MongoDB Atlas account
-2. Create a new cluster
-3. Configure network access (IP whitelist)
-4. Create a database user
-5. Get the connection string
-6. Update `MONGODB_URI` in your backend .env
+**Important:** Only variables prefixed with `NEXT_PUBLIC_` are available in the browser. Server-side variables (like SMTP credentials) are only available during the build process.
 
-### Self-hosted MongoDB
+## Netlify Deployment
 
-1. Install MongoDB on your server
-2. Configure authentication
-3. Set up proper security rules
-4. Configure backups
-5. Update connection string
+### Option 1: Git-based Deployment (Recommended)
 
-## Deployment Options
+This is the most common and recommended approach for continuous deployment.
 
-### Option 1: Traditional VPS/Server
+#### Initial Setup
 
-**Requirements:**
-- Ubuntu/CentOS server
-- Node.js 14+
-- MongoDB
-- Nginx (recommended)
-- PM2 for process management
+1. **Connect Repository:**
+   - Log in to [Netlify](https://netlify.com)
+   - Click **New site from Git**
+   - Choose your Git provider (GitHub, GitLab, Bitbucket)
+   - Select the `vantage_vertical_web` repository
 
-**Steps:**
+2. **Configure Build Settings:**
+   - **Base directory:** Leave empty (root directory)
+   - **Build command:** `npm run build`
+   - **Publish directory:** `out`
+   - **Production branch:** `main` (or your default branch)
 
-1. **Server Setup:**
+3. **Deploy:**
+   - Click **Deploy site**
+   - Netlify will automatically build and deploy your site
+   - You'll get a random subdomain like `https://amazing-site-123456.netlify.app`
+
+#### Automatic Deployments
+
+Once set up, Netlify will automatically:
+- Deploy when you push to the main branch
+- Create deploy previews for pull requests
+- Show build logs and deployment status
+
+### Option 2: Manual Deployment
+
+For one-time deployments or testing:
+
+1. **Build Locally:**
    ```bash
-   # Update system
-   sudo apt update && sudo apt upgrade -y
-   
-   # Install Node.js
-   curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-   sudo apt-get install -y nodejs
-   
-   # Install PM2
-   sudo npm install -g pm2
-   
-   # Install Nginx
-   sudo apt install nginx -y
+   npm install
+   npm run build
    ```
 
-2. **Deploy Application:**
+2. **Deploy via Netlify CLI:**
    ```bash
-   # Clone repository
-   git clone https://github.com/Pronothurah/vantage_vertical_web.git
-   cd vantage_vertical_web
+   # Install Netlify CLI
+   npm install -g netlify-cli
    
-   # Install dependencies
-   npm run install-all
+   # Login to Netlify
+   netlify login
    
-   # Build frontend
-   cd frontend && npm run build && cd ..
-   
-   # Configure environment
-   cp .env.example .env
-   cp backend/.env.example backend/.env
-   # Edit .env files with production values
-   
-   # Start backend with PM2
-   pm2 start backend/index.js --name "vantage-backend"
-   pm2 startup
-   pm2 save
+   # Deploy to production
+   netlify deploy --prod --dir=out
    ```
 
-3. **Nginx Configuration:**
-   ```nginx
-   server {
-       listen 80;
-       server_name your-domain.com;
-       
-       # Frontend (React build)
-       location / {
-           root /path/to/vantage_vertical_web/frontend/build;
-           index index.html index.htm;
-           try_files $uri $uri/ /index.html;
-       }
-       
-       # Backend API
-       location /api {
-           proxy_pass http://localhost:5000;
-           proxy_http_version 1.1;
-           proxy_set_header Upgrade $http_upgrade;
-           proxy_set_header Connection 'upgrade';
-           proxy_set_header Host $host;
-           proxy_set_header X-Real-IP $remote_addr;
-           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-           proxy_set_header X-Forwarded-Proto $scheme;
-           proxy_cache_bypass $http_upgrade;
-       }
-   }
-   ```
+3. **Deploy via Web Interface:**
+   - Go to [Netlify](https://netlify.com)
+   - Drag and drop the `out/` folder to the deploy area
 
-### Option 2: Heroku
+### Build Configuration
 
-**Frontend (Netlify/Vercel recommended for React):**
+Create a `netlify.toml` file in your project root for advanced configuration:
 
-1. Build the frontend locally
-2. Deploy the build folder to Netlify or Vercel
-3. Configure environment variables
+```toml
+[build]
+  command = "npm run build"
+  publish = "out"
 
-**Backend (Heroku):**
+[build.environment]
+  NODE_VERSION = "18"
 
-1. Create a Heroku app
-2. Add MongoDB Atlas add-on or use external MongoDB
-3. Configure environment variables
-4. Deploy:
-   ```bash
-   # In backend directory
-   git init
-   git add .
-   git commit -m "Initial commit"
-   heroku git:remote -a your-app-name
-   git push heroku main
-   ```
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
 
-### Option 3: Docker Deployment
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Cache-Control = "no-cache"
 
-**Dockerfile (Backend):**
-```dockerfile
-FROM node:18-alpine
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
 
-WORKDIR /app
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
 
-COPY backend/package*.json ./
-RUN npm ci --only=production
-
-COPY backend/ .
-
-EXPOSE 5000
-
-CMD ["node", "index.js"]
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
 ```
 
-**docker-compose.yml:**
-```yaml
-version: '3.8'
+## Custom Domain Setup
 
-services:
-  backend:
-    build: .
-    ports:
-      - "5000:5000"
-    environment:
-      - NODE_ENV=production
-      - MONGODB_URI=mongodb://mongo:27017/vantage_vertical
-    depends_on:
-      - mongo
+### Adding Your Custom Domain
 
-  mongo:
-    image: mongo:5.0
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
+1. **In Netlify Dashboard:**
+   - Go to **Site settings** → **Domain management**
+   - Click **Add custom domain**
+   - Enter your domain (e.g., `vantagevertical.co.ke`)
+   - Click **Verify**
 
-  nginx:
-    image: nginx:alpine
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./frontend/build:/usr/share/nginx/html
+2. **DNS Configuration:**
+   
+   **Option A: Netlify DNS (Recommended)**
+   - Use Netlify's nameservers for full DNS management
+   - Netlify will provide nameservers like:
+     ```
+     dns1.p01.nsone.net
+     dns2.p01.nsone.net
+     dns3.p01.nsone.net
+     dns4.p01.nsone.net
+     ```
+   - Update your domain registrar to use these nameservers
 
-volumes:
-  mongo_data:
-```
+   **Option B: External DNS**
+   - Keep your current DNS provider
+   - Add these DNS records:
+     ```
+     Type: CNAME
+     Name: www
+     Value: your-site-name.netlify.app
+     
+     Type: A
+     Name: @
+     Value: 75.2.60.5
+     ```
 
-### Option 4: Cloud Platforms
+### SSL Certificate
 
-**AWS:**
-- Frontend: S3 + CloudFront
-- Backend: EC2 or Elastic Beanstalk
-- Database: DocumentDB or MongoDB Atlas
+Netlify automatically provides free SSL certificates via Let's Encrypt:
 
-**Google Cloud:**
-- Frontend: Firebase Hosting
-- Backend: App Engine or Compute Engine
-- Database: MongoDB Atlas
+1. **Automatic SSL:**
+   - SSL is enabled automatically for custom domains
+   - Certificates auto-renew every 90 days
+   - No manual configuration required
 
-**Azure:**
-- Frontend: Static Web Apps
-- Backend: App Service
-- Database: Cosmos DB or MongoDB Atlas
+2. **Force HTTPS:**
+   - Go to **Site settings** → **Domain management**
+   - Enable **Force HTTPS redirect**
+   - All HTTP traffic will redirect to HTTPS
 
-## SSL/HTTPS Setup
+### Domain Verification
 
-### Using Let's Encrypt (Free)
-
-```bash
-# Install Certbot
-sudo apt install certbot python3-certbot-nginx
-
-# Get SSL certificate
-sudo certbot --nginx -d your-domain.com
-
-# Auto-renewal
-sudo crontab -e
-# Add: 0 12 * * * /usr/bin/certbot renew --quiet
-```
+After DNS changes:
+1. Wait for DNS propagation (can take up to 48 hours)
+2. Netlify will automatically verify the domain
+3. SSL certificate will be issued automatically
+4. Your site will be available at your custom domain
 
 ## Monitoring and Maintenance
 
-### Health Checks
+### Netlify Analytics
 
-The backend includes a health check endpoint:
-```
-GET /health
-```
-
-### Logging
-
-Configure proper logging for production:
-- Application logs
-- Error logs
-- Access logs
-- Database logs
-
-### Backup Strategy
-
-1. **Database Backups:**
-   ```bash
-   # MongoDB backup
-   mongodump --uri="mongodb://localhost:27017/vantage_vertical" --out=/backup/$(date +%Y%m%d)
-   ```
-
-2. **Application Backups:**
-   - Code repository (Git)
-   - Environment configurations
-   - SSL certificates
-   - Static assets
+Enable Netlify Analytics for insights:
+1. Go to **Site settings** → **Analytics**
+2. Enable **Netlify Analytics**
+3. View traffic, performance, and user data
 
 ### Performance Monitoring
 
-- Use PM2 monitoring for Node.js
-- Set up uptime monitoring (UptimeRobot, Pingdom)
-- Monitor database performance
-- Set up error tracking (Sentry)
+#### Built-in Monitoring
+- **Deploy logs:** View build and deployment logs
+- **Function logs:** Monitor serverless function performance
+- **Bandwidth usage:** Track data transfer
+- **Build minutes:** Monitor build time usage
 
-### Security Checklist
+#### External Monitoring
+- **Google Analytics:** Add your GA measurement ID to environment variables
+- **Uptime monitoring:** Use services like UptimeRobot or Pingdom
+- **Performance monitoring:** Use Google PageSpeed Insights or GTmetrix
 
-- [ ] HTTPS enabled
-- [ ] Environment variables secured
-- [ ] Database authentication enabled
-- [ ] Firewall configured
-- [ ] Regular security updates
-- [ ] Input validation implemented
-- [ ] Rate limiting configured
-- [ ] CORS properly configured
+### Maintenance Tasks
+
+#### Regular Updates
+```bash
+# Update dependencies
+npm update
+
+# Check for security vulnerabilities
+npm audit
+
+# Fix vulnerabilities
+npm audit fix
+```
+
+#### Performance Optimization
+- Monitor Core Web Vitals in Google Search Console
+- Optimize images using Next.js Image component
+- Review and minimize bundle size
+- Enable compression and caching headers
+
+### Backup Strategy
+
+#### Automated Backups
+- **Git repository:** Your code is backed up in your Git repository
+- **Netlify deploys:** Netlify keeps a history of all deployments
+- **Environment variables:** Export and backup your environment variables
+
+#### Manual Backups
+```bash
+# Export site configuration
+netlify sites:list
+netlify env:list --site-id=your-site-id
+
+# Backup build artifacts
+cp -r out/ backup/$(date +%Y%m%d)/
+```
 
 ## Troubleshooting
 
-### Common Issues
+### Common Build Issues
 
 1. **Build Failures:**
-   - Check Node.js version compatibility
-   - Clear npm cache: `npm cache clean --force`
-   - Delete node_modules and reinstall
+   ```bash
+   # Clear npm cache
+   npm cache clean --force
+   
+   # Delete node_modules and reinstall
+   rm -rf node_modules package-lock.json
+   npm install
+   
+   # Check Node.js version (should be 18+)
+   node --version
+   ```
 
-2. **Database Connection Issues:**
-   - Verify MongoDB is running
-   - Check connection string format
-   - Verify network access/firewall rules
+2. **Environment Variable Issues:**
+   - Ensure variables are set in Netlify dashboard
+   - Check variable names (case-sensitive)
+   - Verify `NEXT_PUBLIC_` prefix for client-side variables
 
-3. **CORS Errors:**
-   - Verify FRONTEND_URL in backend .env
-   - Check CORS configuration in backend
+3. **Static Export Issues:**
+   - Check `next.config.js` has `output: 'export'`
+   - Ensure no server-side features are used inappropriately
+   - Review build logs for specific errors
 
-4. **Performance Issues:**
-   - Enable gzip compression
+### Common Deployment Issues
+
+1. **404 Errors:**
+   - Verify `publish` directory is set to `out`
+   - Check that all routes are properly generated
+   - Ensure trailing slashes are configured correctly
+
+2. **Asset Loading Issues:**
+   - Verify `NEXT_PUBLIC_SITE_URL` is set correctly
+   - Check image optimization settings
+   - Review asset paths in build output
+
+3. **Custom Domain Issues:**
+   - Verify DNS records are correct
+   - Wait for DNS propagation (up to 48 hours)
+   - Check domain verification status in Netlify
+
+### Performance Issues
+
+1. **Slow Loading:**
    - Optimize images and assets
-   - Use CDN for static files
-   - Monitor database queries
+   - Enable compression in `netlify.toml`
+   - Use Next.js Image component for automatic optimization
+   - Review bundle size and remove unused dependencies
 
-### Support
+2. **Build Time Issues:**
+   - Review build logs for bottlenecks
+   - Optimize dependencies and imports
+   - Consider build caching strategies
 
-For deployment issues:
-- Check application logs
-- Verify environment variables
-- Test database connectivity
-- Review server resources (CPU, memory, disk)
+### Getting Help
+
+- **Netlify Support:** [Netlify Support Center](https://support.netlify.com)
+- **Build Logs:** Check detailed build logs in Netlify dashboard
+- **Community:** [Netlify Community Forum](https://community.netlify.com)
+- **Next.js Documentation:** [Next.js Static Export Guide](https://nextjs.org/docs/app/building-your-application/deploying/static-exports)
 
 ---
 
-**Note:** Always test your deployment in a staging environment before going to production.
+**Note:** Always test your deployment with a staging site before deploying to production. Netlify makes this easy with branch deploys and deploy previews.
