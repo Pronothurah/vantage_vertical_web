@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: DroneDetailPageProps): Promis
       title: `${drone.name} - Professional Drone for Sale`,
       description: `${drone.description} Buy ${drone.name} in Kenya with expert support.`,
       image: drone.featuredImage,
-      type: 'product',
+      type: 'website',
     },
   });
 }

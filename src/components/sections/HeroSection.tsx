@@ -79,14 +79,7 @@ export default function HeroSection({
               quality={imageQuality.hero}
               sizes={imageSizes.hero}
             />
-            {/* Debug: Add a regular img tag to test if the image loads */}
-            <img 
-              src={backgroundImage} 
-              alt="Debug background" 
-              className="absolute inset-0 w-full h-full object-cover opacity-0 pointer-events-none"
-              onLoad={() => console.log('Background image loaded successfully:', backgroundImage)}
-              onError={() => console.error('Background image failed to load:', backgroundImage)}
-            />
+
           </>
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-gray-900 to-charcoal" />

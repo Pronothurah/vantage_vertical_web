@@ -101,6 +101,7 @@ export function createBlogPost(postData: BlogPostInput): BlogPost {
     content: postData.content,
     author: postData.author,
     publishedAt: now,
+    updatedAt: now,
     tags: postData.tags,
     category: postData.category,
     featuredImage: postData.featuredImage,
@@ -124,7 +125,7 @@ export function updateBlogPost(updateData: BlogPostUpdate): BlogPost {
   const updatedPost: BlogPost = {
     ...existingPost,
     ...updateData,
-    updatedAt: new Date().toISOString().split('T')[0]
+    updatedAt: new Date()
   };
 
   // Recalculate slug if title changed
@@ -160,7 +161,7 @@ export function deleteBlogPost(postId: string): boolean {
 // Category management
 export function createCategory(name: string, description: string): BlogCategory {
   const slug = generateSlug(name);
-  const existingCategory = blogCategories.find(cat => cat.slug === slug);
+  const existingCategory = blogCategories.find(cat => cat.value === slug);
   
   if (existingCategory) {
     throw new Error('Category with this name already exists');
@@ -169,15 +170,15 @@ export function createCategory(name: string, description: string): BlogCategory 
   const newCategory: BlogCategory = {
     id: slug,
     name,
-    slug,
-    description,
+    value: slug,
+    label: name,
     count: 0
   };
 
   return newCategory;
 }
 
-export function updateCategory(categoryId: string, updates: Partial<Pick<BlogCategory, 'name' | 'description'>>): BlogCategory {
+export function updateCategory(categoryId: string, updates: Partial<Pick<BlogCategory, 'name'>>): BlogCategory {
   const category = blogCategories.find(cat => cat.id === categoryId);
   if (!category) {
     throw new Error('Category not found');
@@ -185,9 +186,10 @@ export function updateCategory(categoryId: string, updates: Partial<Pick<BlogCat
 
   const updatedCategory = { ...category, ...updates };
   
-  // Update slug if name changed
+  // Update value if name changed
   if (updates.name && updates.name !== category.name) {
-    updatedCategory.slug = generateSlug(updates.name);
+    updatedCategory.value = generateSlug(updates.name);
+    updatedCategory.label = updates.name;
   }
 
   return updatedCategory;

@@ -37,9 +37,9 @@ export function trackWebVitals() {
   if (typeof window === 'undefined') return;
 
   // Dynamic import of web-vitals library
-  import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
+  import('web-vitals').then(({ onCLS, onINP, onFCP, onLCP, onTTFB }) => {
     // Largest Contentful Paint
-    getLCP((metric) => {
+    onLCP((metric) => {
       const webVitalsMetric: WebVitalsMetric = {
         name: 'LCP',
         value: metric.value,
@@ -52,12 +52,12 @@ export function trackWebVitals() {
       reportWebVital(webVitalsMetric);
     });
 
-    // First Input Delay
-    getFID((metric) => {
+    // Interaction to Next Paint (replaces FID)
+    onINP((metric) => {
       const webVitalsMetric: WebVitalsMetric = {
-        name: 'FID',
+        name: 'INP',
         value: metric.value,
-        rating: getPerformanceRating('FID', metric.value),
+        rating: getPerformanceRating('FID', metric.value), // Use FID thresholds for now
         delta: metric.delta,
         id: metric.id,
         navigationType: metric.navigationType,
@@ -67,7 +67,7 @@ export function trackWebVitals() {
     });
 
     // Cumulative Layout Shift
-    getCLS((metric) => {
+    onCLS((metric) => {
       const webVitalsMetric: WebVitalsMetric = {
         name: 'CLS',
         value: metric.value,
@@ -81,7 +81,7 @@ export function trackWebVitals() {
     });
 
     // First Contentful Paint
-    getFCP((metric) => {
+    onFCP((metric) => {
       const webVitalsMetric: WebVitalsMetric = {
         name: 'FCP',
         value: metric.value,
@@ -95,7 +95,7 @@ export function trackWebVitals() {
     });
 
     // Time to First Byte
-    getTTFB((metric) => {
+    onTTFB((metric) => {
       const webVitalsMetric: WebVitalsMetric = {
         name: 'TTFB',
         value: metric.value,
@@ -187,7 +187,7 @@ export function checkPerformanceBudgets(): PerformanceBudget[] {
     });
 
     // DOM Content Loaded budget
-    const dcl = navigation.domContentLoadedEventEnd - navigation.navigationStart;
+    const dcl = navigation.domContentLoadedEventEnd - navigation.fetchStart;
     budgets.push({
       metric: 'DCL',
       budget: 2000, // 2s budget
@@ -196,7 +196,7 @@ export function checkPerformanceBudgets(): PerformanceBudget[] {
     });
 
     // Load Complete budget
-    const loadComplete = navigation.loadEventEnd - navigation.navigationStart;
+    const loadComplete = navigation.loadEventEnd - navigation.fetchStart;
     budgets.push({
       metric: 'Load',
       budget: 3000, // 3s budget

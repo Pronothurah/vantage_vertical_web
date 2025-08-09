@@ -342,7 +342,7 @@ export class EmailService {
     // Send both emails concurrently
     const [adminResult, studentResult] = await Promise.allSettled([
       this.sendEmail({
-        to: this.config?.contactEmail || 'vantagevarticalltd@gmail.com',
+        to: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
         subject: adminNotification.subject,
         html: adminNotification.html,
         text: adminNotification.text,
@@ -361,7 +361,7 @@ export class EmailService {
         error: adminResult.reason,
         retryCount: 0,
         timestamp: new Date(),
-        recipient: this.config?.contactEmail || 'vantagevarticalltd@gmail.com',
+        recipient: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
         subject: adminNotification.subject,
       },
       studentResult: studentResult.status === 'fulfilled' ? studentResult.value : {

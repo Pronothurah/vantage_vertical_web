@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { BlogPost, BlogCategory, BlogAuthor } from '@/types/forms';
 import { 
   getBlogStatistics, 
@@ -143,9 +144,11 @@ export default function BlogAdminPage() {
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-4">
             <div className="relative w-16 h-16">
-              <img
+              <Image
                 src="/vantage-logo.png"
                 alt="Vantage Vertical Logo"
+                width={64}
+                height={64}
                 className="w-full h-full object-contain"
               />
             </div>
