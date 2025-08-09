@@ -5,6 +5,7 @@ import BlogListing from '@/components/sections/BlogListing';
 import { generateMetadata, pageConfigs } from '@/lib/seo';
 
 export const metadata: Metadata = generateMetadata(pageConfigs.blog);
+export const dynamic = 'force-static';
 
 interface BlogPageProps {
   searchParams: {
@@ -15,12 +16,12 @@ interface BlogPageProps {
   };
 }
 
-export default function BlogPage({ searchParams }: BlogPageProps) {
+export default function BlogPage() {
   const blogParams = {
-    query: searchParams.query,
-    category: searchParams.category,
-    tag: searchParams.tag,
-    page: searchParams.page ? parseInt(searchParams.page) : 1,
+    query: undefined,
+    category: undefined,
+    tag: undefined,
+    page: 1,
     limit: 6
   };
 

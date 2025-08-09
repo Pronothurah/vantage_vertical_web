@@ -89,7 +89,12 @@ jest.mock('@/components/ui/TypingAnimation', () => ({
 // Mock Next.js server APIs for API route testing
 global.Request = class Request {
   constructor(url, options = {}) {
-    this.url = url;
+    Object.defineProperty(this, 'url', {
+      value: url,
+      writable: false,
+      enumerable: true,
+      configurable: true
+    });
     this.method = options.method || 'GET';
     this.headers = new Map(Object.entries(options.headers || {}));
     this.body = options.body;
@@ -118,6 +123,16 @@ global.Response = class Response {
 
   async text() {
     return this.body;
+  }
+
+  static json(data, options = {}) {
+    return new Response(JSON.stringify(data), {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+      }
+    });
   }
 };
 

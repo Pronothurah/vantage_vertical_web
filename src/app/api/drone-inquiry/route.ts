@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { emailService } from '@/lib/email/emailService';
+import { DroneInquiryData } from '@/types/forms';
 import { 
-  DroneInquiryData, 
   generateDroneInquiryAdminEmail, 
   generateDroneInquiryCustomerEmail 
 } from '@/lib/email/templates/droneInquiry';

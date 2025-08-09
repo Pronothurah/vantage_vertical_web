@@ -77,7 +77,7 @@ export default function NewsletterForm({
 
       // Call success callback if provided
       if (onSuccess) {
-        onSuccess(email.trim());
+        onSuccess();
       }
 
       // Clear email field

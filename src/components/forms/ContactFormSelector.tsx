@@ -17,7 +17,7 @@ export default function ContactFormSelector({ variant = 'full' }: ContactFormSel
   const showDroneForm = service === 'drone-sales' || product;
 
   if (showDroneForm) {
-    return <DroneInquiryForm droneId={product || ''} />;
+    return <DroneInquiryForm preselectedDroneId={product || ''} />;
   }
 
   return <ContactForm variant={variant} />;

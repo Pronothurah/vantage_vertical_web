@@ -22,7 +22,7 @@
   - Test drone inquiry form submission with actual email delivery
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
 
-- [-] 4. Complete training enrollment email integration
+- [x] 4. Complete training enrollment email integration
   - Update `src/app/api/enrollment/route.ts` to implement actual email sending using shared EmailService
   - Create `src/lib/email/templates/enrollment.ts` with student confirmation and admin notification templates
   - Add enrollment-specific email content including course details, schedule, and preparation instructions

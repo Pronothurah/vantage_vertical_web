@@ -19,7 +19,7 @@ export const ariaAttributes = {
   }),
   
   link: (isActive?: boolean, describedBy?: string) => ({
-    'aria-current': isActive ? 'page' : undefined,
+    'aria-current': isActive ? ('page' as const) : undefined,
     'aria-describedby': describedBy || undefined,
   }),
 };

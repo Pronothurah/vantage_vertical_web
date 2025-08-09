@@ -56,8 +56,8 @@ export function paginateBlogPosts(
       currentPage: page,
       totalPages,
       totalPosts: posts.length,
-      hasNext: page < totalPages,
-      hasPrev: page > 1
+      hasNextPage: page < totalPages,
+      hasPrevPage: page > 1
     }
   };
 }
@@ -81,7 +81,7 @@ export function getFilteredAndPaginatedPosts(params: BlogSearchParams) {
   }
   
   // Apply pagination
-  return paginateBlogPosts(posts, params.page || 1, params.limit || 6);
+  return paginateBlogPosts(posts, Number(params.page) || 1, params.limit || 6);
 }
 
 export function getRelatedPosts(currentPost: BlogPost, limit: number = 3): BlogPost[] {

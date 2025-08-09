@@ -76,9 +76,9 @@ export interface BlogPost {
 export interface BlogCategory {
   id: string;
   name: string;
-  slug: string;
-  description: string;
-  postCount: number;
+  value: string;
+  label: string;
+  count: number;
 }
 
 export interface EnrollmentData {
@@ -108,4 +108,81 @@ export interface BlogAuthor {
     linkedin?: string;
     email?: string;
   };
+}
+
+export interface PortfolioProject {
+  id: string;
+  title: string;
+  category: string;
+  serviceType: string;
+  description: string;
+  image: string;
+  featuredImage: string;
+  images: string[];
+  client: string;
+  location: string;
+  date: string;
+  duration: string;
+  featured: boolean;
+  services: string[];
+  challenge: string;
+  solution: string;
+  technologies: string[];
+  tags: string[];
+  results: Array<{
+    value: string;
+    metric: string;
+    improvement: string;
+  }>;
+  testimonial: {
+    quote: string;
+    author: string;
+    role: string;
+    company: string;
+  };
+}
+
+export interface NewsletterFormData {
+  email: string;
+  name?: string;
+}
+
+export interface NewsletterFormProps {
+  variant?: 'inline' | 'modal' | 'footer';
+  onSubmit?: (data: NewsletterFormData) => Promise<void>;
+  className?: string;
+  placeholder?: string;
+  buttonText?: string;
+  onSuccess?: () => void;
+}
+
+export interface NewsletterFormState {
+  isSubmitting: boolean;
+  isSubmitted: boolean;
+  error?: string;
+  success: boolean;
+}
+
+export interface BlogSearchParams {
+  category?: string;
+  tag?: string;
+  search?: string;
+  query?: string;
+  page?: string | number;
+  limit?: number;
+}
+
+export interface BlogPagination {
+  currentPage: number;
+  totalPages: number;
+  totalPosts: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
+
+export interface BlogTag {
+  id: string;
+  name: string;
+  slug: string;
+  count: number;
 }

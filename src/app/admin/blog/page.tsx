@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { BlogPost, BlogCategory, BlogAuthor } from '@/types/forms';
 import { 
   getBlogStatistics, 
@@ -143,9 +144,11 @@ export default function BlogAdminPage() {
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-4">
             <div className="relative w-16 h-16">
-              <img
+              <Image
                 src="/vantage-logo.png"
                 alt="Vantage Vertical Logo"
+                width={64}
+                height={64}
                 className="w-full h-full object-contain"
               />
             </div>
@@ -573,10 +576,9 @@ export default function BlogAdminPage() {
               {blogCategories.filter(cat => cat.id !== 'all').map((category) => (
                 <div key={category.id} className="border border-gray-200 rounded-lg p-4">
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">{category.name}</h3>
-                  <p className="text-gray-600 text-sm mb-3">{category.description}</p>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-500">{category.count} posts</span>
-                    <span className="text-xs bg-gray-100 px-2 py-1 rounded">{category.slug}</span>
+                    <span className="text-xs bg-gray-100 px-2 py-1 rounded">{category.value}</span>
                   </div>
                 </div>
               ))}
