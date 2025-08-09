@@ -30,7 +30,7 @@
   - Test training enrollment form with complete email delivery flow
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
 
-- [ ] 5. Standardize existing contact form email handling
+- [-] 5. Standardize existing contact form email handling
   - Refactor `src/app/api/contact/route.ts` to use shared EmailService while preserving existing functionality
   - Create `src/lib/email/templates/contact.ts` using the existing email template with base template styling
   - Update error handling to use standardized EmailError types and retry logic

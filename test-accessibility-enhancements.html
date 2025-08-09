@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Menu Accessibility Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+        }
+        
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .test-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+        }
+        
+        .pass {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        
+        .fail {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        
+        .instructions {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        
+        .code {
+            background: #f1f3f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Mobile Menu Accessibility Enhancements Test</h1>
+        
+        <div class="instructions">
+            <h3>Testing Instructions</h3>
+            <p>This page helps verify that the mobile menu accessibility enhancements are working correctly. Follow these steps:</p>
+            <ol>
+                <li>Open the Vantage Vertical website in a mobile viewport (or resize browser to mobile width)</li>
+                <li>Open the mobile menu by clicking the hamburger button</li>
+                <li>Test each accessibility feature listed below</li>
+                <li>Use screen reader software (VoiceOver, NVDA, JAWS) to test announcements</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h3>1. ARIA Attributes for Scrollable Content</h3>
+            <div class="test-item">
+                <strong>Test:</strong> Mobile menu container has proper ARIA attributes<br>
+                <strong>Expected:</strong> Container should have <span class="code">aria-live="polite"</span>, <span class="code">aria-atomic="false"</span>, <span class="code">aria-relevant="additions text"</span><br>
+                <strong>How to test:</strong> Inspect the mobile menu container element in browser dev tools
+            </div>
+            <div class="test-item">
+                <strong>Test:</strong> Scroll state data attributes are present<br>
+                <strong>Expected:</strong> Container should have <span class="code">data-scrollable</span>, <span class="code">data-can-scroll-up</span>, <span class="code">data-can-scroll-down</span>, <span class="code">data-scroll-percentage</span><br>
+                <strong>How to test:</strong> Inspect the mobile menu container and check for data attributes
+            </div>
+            <div class="test-item">
+                <strong>Test:</strong> Menu items have position information<br>
+                <strong>Expected:</strong> Each menu item should have <span class="code">aria-setsize</span> and <span class="code">aria-posinset</span> attributes<br>
+                <strong>How to test:</strong> Inspect individual menu item elements
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. Screen Reader Announcements</h3>
+            <div class="test-item">
+                <strong>Test:</strong> Menu open/close announcements<br>
+                <strong>Expected:</strong> Screen reader should announce "Mobile menu opened" and "Mobile menu closed"<br>
+                <strong>How to test:</strong> Use screen reader and open/close mobile menu
+            </div>
+            <div class="test-item">
+                <strong>Test:</strong> Scroll availability announcement<br>
+                <strong>Expected:</strong> When menu is scrollable, screen reader should announce scroll instructions<br>
+                <strong>How to test:</strong> Open menu on small screen where content exceeds viewport height
+            </div>
+            <div class="test-item">
+                <strong>Test:</strong> Scroll boundary announcements<br>
+                <strong>Expected:</strong> Screen reader should announce when reaching top/bottom of scrollable menu<br>
+                <strong>How to test:</strong> Scroll to top/bottom of menu and listen for announcements
+            </div>
+            <div class="test-item">
+                <strong>Test:</strong> Current item position during keyboard navigation<br>
+                <strong>Expected:</strong> Screen reader should announce "Item name, X of Y" when navigating with arrow keys<br>
+                <strong>How to test:</strong> Use arrow keys to navigate menu items with screen reader active
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. Reduced Motion Preferences</h3>
+            <div class="test-item">
+                <strong>Test:</strong> Respect reduced motion preference<br>
+                <strong>Expected:</strong> When <span class="code">prefers-reduced-motion: reduce</span> is set, scrolling should use <span class="code">scroll-behavior: auto</span><br>
+                <strong>How to test:</strong> 
+                <ol>
+                    <li>Enable reduced motion in OS settings</li>
+                    <li>Open mobile menu</li>
+                    <li>Check computed styles show <span class="code">scroll-behavior: auto</span></li>
+                </ol>
+            </div>
+            <div class="test-item">
+                <strong>Test:</strong> Smooth scrolling when reduced motion is disabled<br>
+                <strong>Expected:</strong> Normal scrolling should use <span class="code">scroll-behavior: smooth</span><br>
+                <strong>How to test:</strong> Disable reduced motion and verify smooth scrolling behavior
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>4. Focus Management with Assistive Technologies</h3>
+            <div class="test-item">
+                <strong>Test:</strong> Focus remains within scrollable menu<br>
+                <strong>Expected:</strong> Tab navigation should stay within menu boundaries<br>
+                <strong>How to test:</strong> Open menu and use Tab key to navigate through items
+            </div>
+            <div class="test-item">
+                <strong>Test:</strong> Focused element scrolls into view automatically<br>
+                <strong>Expected:</strong> When using arrow keys, focused item should scroll into view if needed<br>
+                <strong>How to test:</strong> Use arrow keys to navigate to items that might be out of view
+            </div>
+            <div class="test-item">
+                <strong>Test:</strong> Home and End key navigation<br>
+                <strong>Expected:</strong> Home key focuses first item, End key focuses last item<br>
+                <strong>How to test:</strong> Press Home and End keys while menu is open
+            </div>
+            <div class="test-item">
+                <strong>Test:</strong> Focus restoration on menu close<br>
+                <strong>Expected:</strong> When menu closes, focus should return to menu button<br>
+                <strong>How to test:</strong> Open menu, press Escape, verify focus is on menu button
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>5. Screen Reader Compatibility</h3>
+            <div class="test-item">
+                <strong>Test:</strong> VoiceOver (macOS/iOS) compatibility<br>
+                <strong>Expected:</strong> All menu items should be announced with position information<br>
+                <strong>How to test:</strong> Enable VoiceOver and navigate through mobile menu
+            </div>
+            <div class="test-item">
+                <strong>Test:</strong> NVDA (Windows) compatibility<br>
+                <strong>Expected:</strong> Menu structure and scroll state should be properly announced<br>
+                <strong>How to test:</strong> Use NVDA to test menu navigation and announcements
+            </div>
+            <div class="test-item">
+                <strong>Test:</strong> JAWS (Windows) compatibility<br>
+                <strong>Expected:</strong> All accessibility features should work with JAWS<br>
+                <strong>How to test:</strong> Test with JAWS screen reader software
+            </div>
+            <div class="test-item">
+                <strong>Test:</strong> TalkBack (Android) compatibility<br>
+                <strong>Expected:</strong> Mobile menu should work properly with TalkBack<br>
+                <strong>How to test:</strong> Test on Android device with TalkBack enabled
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>6. Additional Accessibility Features</h3>
+            <div class="test-item">
+                <strong>Test:</strong> Scroll instructions are provided<br>
+                <strong>Expected:</strong> Hidden instructions element should exist with ID "scroll-instructions"<br>
+                <strong>How to test:</strong> Check DOM for element with ID "scroll-instructions" when menu is open
+            </div>
+            <div class="test-item">
+                <strong>Test:</strong> High contrast mode support<br>
+                <strong>Expected:</strong> Menu should remain usable in high contrast mode<br>
+                <strong>How to test:</strong> Enable high contrast mode in OS and verify menu visibility
+            </div>
+            <div class="test-item">
+                <strong>Test:</strong> Touch interaction accessibility<br>
+                <strong>Expected:</strong> Touch scrolling should not interfere with accessibility features<br>
+                <strong>How to test:</strong> Use touch gestures to scroll menu while screen reader is active
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Test Results Summary</h3>
+            <p>Use this section to record your test results:</p>
+            <div class="test-item">
+                <strong>ARIA Attributes:</strong> ☐ Pass ☐ Fail<br>
+                <strong>Screen Reader Announcements:</strong> ☐ Pass ☐ Fail<br>
+                <strong>Reduced Motion Support:</strong> ☐ Pass ☐ Fail<br>
+                <strong>Focus Management:</strong> ☐ Pass ☐ Fail<br>
+                <strong>Screen Reader Compatibility:</strong> ☐ Pass ☐ Fail<br>
+                <strong>Additional Features:</strong> ☐ Pass ☐ Fail
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add some interactive functionality for testing
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Accessibility test page loaded');
+            console.log('Open browser dev tools to inspect ARIA attributes and data attributes');
+            console.log('Enable screen reader software to test announcements');
+        });
+    </script>
+</body>
+</html>
