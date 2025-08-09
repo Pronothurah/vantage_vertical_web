@@ -6,8 +6,7 @@ import TestimonialSlider from '@/components/sections/TestimonialSlider';
 import ServiceIcon from '@/components/ui/ServiceIcon';
 import { mainServices, industries, whyChooseUsFeatures, testimonials } from '@/data';
 import { generateMetadata, pageConfigs, generateServiceSchema } from '@/lib/seo';
-import { OptimizedImage } from '@/components/ui';
-import { imageSizes, imageQuality } from '@/lib/imageUtils';
+
 
 export const metadata: Metadata = generateMetadata(pageConfigs.home);
 

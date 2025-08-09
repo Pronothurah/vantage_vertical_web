@@ -144,6 +144,9 @@ export function useMobileMenuDimensions({
   useEffect(() => {
     if (!enabled || typeof window === 'undefined') return;
 
+    // Capture the current debounced function to avoid stale closure issues
+    const currentDebouncedUpdate = debouncedDimensionUpdate.current;
+
     // Add passive resize listener
     removeResizeListenerRef.current = addPassiveEventListener(
       window,
@@ -162,7 +165,9 @@ export function useMobileMenuDimensions({
 
     // Add cleanup tasks to memory manager
     const cleanupTask = () => {
-      debouncedDimensionUpdate.current.cancel();
+      if (currentDebouncedUpdate) {
+        currentDebouncedUpdate.cancel();
+      }
     };
     memoryManagerRef.current?.addCleanupTask(cleanupTask);
 
@@ -170,8 +175,6 @@ export function useMobileMenuDimensions({
       removeResizeListenerRef.current?.();
       removeOrientationListenerRef.current?.();
       memoryManagerRef.current?.removeCleanupTask(cleanupTask);
-      // Capture the current ref value to avoid stale closure issues
-      const currentDebouncedUpdate = debouncedDimensionUpdate.current;
       if (currentDebouncedUpdate) {
         currentDebouncedUpdate.cancel();
       }

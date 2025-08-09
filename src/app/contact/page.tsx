@@ -1,11 +1,7 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
-import ContactForm from '@/components/forms/ContactForm';
-import DroneInquiryForm from '@/components/forms/DroneInquiryForm';
 import ContactFormSelector from '@/components/forms/ContactFormSelector';
-import { companyInfo } from '@/data';
 
 // Contact information data
 const contactInfo = {
