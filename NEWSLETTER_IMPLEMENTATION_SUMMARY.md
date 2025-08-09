@@ -58,7 +58,7 @@
 - Uses `generateNewsletterWelcomeEmail()` template
 
 **Requirement 3.2**: ✅ Newsletter subscription sends notification to admin
-- Admin notification sent to `vantagevarticalltd@gmail.com`
+- Admin notification sent to `vantageverticalltd@gmail.com`
 - Uses `generateNewsletterAdminNotification()` template
 
 **Requirement 3.3**: ✅ Welcome email includes company info and confirmation

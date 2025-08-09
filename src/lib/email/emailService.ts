@@ -488,7 +488,7 @@ export class EmailService {
     // Send both emails concurrently
     const [adminResult, studentResult] = await Promise.allSettled([
       this.sendEmail({
-        to: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
+        to: process.env.CONTACT_EMAIL || 'vantageverticalltd@gmail.com',
         subject: adminNotification.subject,
         html: adminNotification.html,
         text: adminNotification.text,
@@ -507,7 +507,7 @@ export class EmailService {
         error: adminResult.reason,
         retryCount: 0,
         timestamp: new Date(),
-        recipient: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
+        recipient: process.env.CONTACT_EMAIL || 'vantageverticalltd@gmail.com',
         subject: adminNotification.subject,
       },
       studentResult: studentResult.status === 'fulfilled' ? studentResult.value : {
@@ -627,7 +627,7 @@ export class EmailService {
     // Queue admin notification email (high priority)
     const adminQueueId = await this.sendEmailAsync(
       {
-        to: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
+        to: process.env.CONTACT_EMAIL || 'vantageverticalltd@gmail.com',
         subject: adminNotification.subject,
         html: adminNotification.html,
         text: adminNotification.text,
@@ -691,7 +691,7 @@ export class EmailService {
     // Queue admin notification email (high priority)
     const adminQueueId = await this.sendEmailAsync(
       {
-        to: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
+        to: process.env.CONTACT_EMAIL || 'vantageverticalltd@gmail.com',
         subject: adminEmailTemplate.subject,
         html: adminEmailTemplate.html,
         text: adminEmailTemplate.text,
@@ -750,7 +750,7 @@ export class EmailService {
     // Queue admin notification email (high priority)
     const adminQueueId = await this.sendEmailAsync(
       {
-        to: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
+        to: process.env.CONTACT_EMAIL || 'vantageverticalltd@gmail.com',
         subject: adminNotification.subject,
         html: adminNotification.html,
         text: adminNotification.text,
@@ -830,7 +830,7 @@ export class EmailService {
     // Queue admin notification email (low priority)
     const adminQueueId = await this.sendEmailAsync(
       {
-        to: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
+        to: process.env.CONTACT_EMAIL || 'vantageverticalltd@gmail.com',
         subject: adminNotification.subject,
         html: adminNotification.html,
         text: adminNotification.text,

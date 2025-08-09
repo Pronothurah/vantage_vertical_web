@@ -209,7 +209,7 @@ async function testEmailService(): Promise<boolean> {
 async function sendTestEmail(recipient?: string): Promise<boolean> {
   printHeader('Test Email Send');
   
-  const testRecipient = recipient || process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com';
+  const testRecipient = recipient || process.env.CONTACT_EMAIL || 'vantageverticalltd@gmail.com';
   
   if (!testRecipient) {
     printError('No recipient specified and no CONTACT_EMAIL configured');
@@ -339,7 +339,7 @@ SMTP_USER=your-email@gmail.com
 SMTP_PASS=your-app-password
 SMTP_FROM=your-email@gmail.com
 SMTP_FROM_NAME="Your Website"
-CONTACT_EMAIL=vantagevarticalltd@gmail.com
+CONTACT_EMAIL=vantageverticalltd@gmail.com
   `.trim(), 'yellow'));
 }
 

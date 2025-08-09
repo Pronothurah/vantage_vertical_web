@@ -272,7 +272,7 @@ export const companyInfo = {
   tagline: 'See More. Do More. From Above.',
   description: 'A leading Unmanned Aircraft company in East Africa that offers professional services in aerial mapping, surveillance, agritech solutions, commercial photography, and comprehensive drone training programs.',
   phone: '+254704277687',
-  email: 'vantagevarticalltd@gmail.com',
+  email: 'vantageverticalltd@gmail.com',
   founded: 'December 2022',
   location: 'Nairobi, Kenya',
   employees: '10+',

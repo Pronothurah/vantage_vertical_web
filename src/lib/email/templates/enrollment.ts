@@ -233,7 +233,7 @@ export function generateEnrollmentStudentConfirmation(enrollmentData: Enrollment
     <p>If you have any questions about the program or need to make changes to your enrollment, please don't hesitate to contact us:</p>
     
     <div class="text-center">
-      ${TemplateUtils.createButton('Contact Training Team', 'mailto:vantagevarticalltd@gmail.com?subject=Training Enrollment Question', 'primary')}
+      ${TemplateUtils.createButton('Contact Training Team', 'mailto:vantageverticalltd@gmail.com?subject=Training Enrollment Question', 'primary')}
     </div>
     
     <p>We look forward to training you and helping you achieve your drone operation goals!</p>

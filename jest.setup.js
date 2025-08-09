@@ -137,5 +137,5 @@ global.Response = class Response {
 };
 
 // Mock environment variables for testing
-process.env.CONTACT_EMAIL = 'vantagevarticalltd@gmail.com';
+process.env.CONTACT_EMAIL = 'vantageverticalltd@gmail.com';
 process.env.NODE_ENV = 'test';

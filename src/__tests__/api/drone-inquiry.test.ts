@@ -252,7 +252,7 @@ describe('/api/drone-inquiry', () => {
     // Verify admin email was sent
     expect(mockEmailService.sendEmail).toHaveBeenCalledWith(
       expect.objectContaining({
-        to: 'vantagevarticalltd@gmail.com',
+        to: 'vantageverticalltd@gmail.com',
         subject: expect.stringContaining('New Drone Inquiry'),
         html: expect.stringContaining('John Doe'),
         text: expect.stringContaining('John Doe'),

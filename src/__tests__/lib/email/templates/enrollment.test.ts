@@ -205,9 +205,9 @@ describe('Enrollment Email Templates', () => {
       const template = generateEnrollmentStudentConfirmation(mockEnrollmentData);
 
       expect(template.html).toContain('Vantage Vertical');
-      expect(template.html).toContain('vantagevarticalltd@gmail.com');
+      expect(template.html).toContain('vantageverticalltd@gmail.com');
       expect(template.text).toContain('Vantage Vertical');
-      expect(template.text).toContain('vantagevarticalltd@gmail.com');
+      expect(template.text).toContain('vantageverticalltd@gmail.com');
     });
   });
 });

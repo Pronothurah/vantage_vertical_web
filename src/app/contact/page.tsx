@@ -8,12 +8,12 @@ const contactInfo = {
   office: {
     address: 'Westlands Business Park, Suite 402\nWaiyaki Way, Westlands\nNairobi, Kenya',
     phone: '+254704277687',
-    email: 'vantagevarticalltd@gmail.com',
+    email: 'vantageverticalltd@gmail.com',
     hours: 'Monday - Friday: 8:00 AM - 6:00 PM\nSaturday: 9:00 AM - 4:00 PM\nSunday: Emergency calls only'
   },
   emergency: {
     phone: '+254704277687',
-    email: 'vantagevarticalltd@gmail.com',
+    email: 'vantageverticalltd@gmail.com',
     responseTime: '24/7 Emergency Response\nAverage response time: 2 hours',
     services: [
       'Emergency surveillance',
@@ -26,25 +26,25 @@ const contactInfo = {
     {
       name: 'Sales & General Inquiries',
       phone: '+254704277687',
-      email: 'vantagevarticalltd@gmail.com',
+      email: 'vantageverticalltd@gmail.com',
       description: 'New projects, quotes, and general information'
     },
     {
       name: 'Training Academy',
       phone: '+254704277687',
-      email: 'vantagevarticalltd@gmail.com',
+      email: 'vantageverticalltd@gmail.com',
       description: 'Drone pilot certification and training programs'
     },
     {
       name: 'Technical Support',
       phone: '+254704277687',
-      email: 'vantagevarticalltd@gmail.com',
+      email: 'vantageverticalltd@gmail.com',
       description: 'Equipment support and technical assistance'
     },
     {
       name: 'Drone Sales',
       phone: '+254704277687',
-      email: 'vantagevarticalltd@gmail.com',
+      email: 'vantageverticalltd@gmail.com',
       description: 'Drone purchases, equipment, and accessories'
     }
   ]

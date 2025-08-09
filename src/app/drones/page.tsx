@@ -220,7 +220,7 @@ export default function DronesPage() {
               Call +254 704 277 687
             </a>
             <a
-              href="mailto:vantagevarticalltd@gmail.com"
+              href="mailto:vantageverticalltd@gmail.com"
               className="btn-secondary border-white text-white hover:bg-white hover:text-primary inline-flex items-center justify-center px-8 py-3 text-lg font-semibold rounded-lg transition-all duration-200 hover:scale-105 group"
             >
               <svg
