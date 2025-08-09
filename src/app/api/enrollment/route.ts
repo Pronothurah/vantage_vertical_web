@@ -74,75 +74,60 @@ export async function POST(request: NextRequest) {
       timestamp: new Date().toISOString()
     });
 
-    // Send enrollment emails asynchronously
-    let emailResults;
+    // Send enrollment emails asynchronously for better performance
+    let queueIds;
     try {
-      emailResults = await emailService.sendEnrollmentEmails(enrollmentData);
+      // Use async email processing to avoid blocking user response
+      queueIds = await emailService.sendEnrollmentEmailsAsync(
+        enrollmentData,
+        (results) => {
+          // Log email results for monitoring (processed in background)
+          console.log('Enrollment email processing completed:', {
+            enrollmentId,
+            adminEmailSuccess: results.adminResult.success,
+            studentEmailSuccess: results.studentResult.success,
+            adminEmailError: results.adminResult.error?.message,
+            studentEmailError: results.studentResult.error?.message,
+            timestamp: new Date().toISOString()
+          });
+        }
+      );
       
-      // Log email results
-      console.log('Enrollment email results:', {
+      console.log('Enrollment emails queued for processing:', {
         enrollmentId,
-        adminEmailSuccess: emailResults.adminResult.success,
-        studentEmailSuccess: emailResults.studentResult.success,
-        adminEmailError: emailResults.adminResult.error?.message,
-        studentEmailError: emailResults.studentResult.error?.message
+        adminQueueId: queueIds.adminQueueId,
+        studentQueueId: queueIds.studentQueueId,
+        enrollmentData: {
+          name: enrollmentData.name,
+          email: enrollmentData.email,
+          program: enrollmentData.program,
+          session: enrollmentData.session
+        }
       });
       
-    } catch (error) {
-      console.error('Failed to send enrollment emails:', error);
-      // Continue with success response even if emails fail
-      emailResults = {
-        adminResult: { success: false, error: error as any },
-        studentResult: { success: false, error: error as any }
-      };
+    } catch (emailError) {
+      console.error('Failed to queue enrollment emails:', emailError);
+      
+      // Continue with success response even if email queueing fails
+      // This ensures user experience is not blocked by email issues
+      queueIds = null;
     }
 
-    // Determine response based on email success
-    const bothEmailsSuccessful = emailResults.adminResult.success && emailResults.studentResult.success;
-    const anyEmailSuccessful = emailResults.adminResult.success || emailResults.studentResult.success;
-
-    if (bothEmailsSuccessful) {
-      return NextResponse.json(
-        { 
-          message: 'Enrollment submitted successfully. Confirmation emails have been sent.',
-          enrollmentId,
-          status: 'confirmed',
-          emailStatus: {
-            confirmationSent: true,
-            adminNotified: true
-          }
-        },
-        { status: 200 }
-      );
-    } else if (anyEmailSuccessful) {
-      return NextResponse.json(
-        { 
-          message: 'Enrollment submitted successfully. Some confirmation emails may have failed to send.',
-          enrollmentId,
-          status: 'pending_confirmation',
-          emailStatus: {
-            confirmationSent: emailResults.studentResult.success,
-            adminNotified: emailResults.adminResult.success,
-            warning: 'Some emails failed to send. Our team will follow up manually.'
-          }
-        },
-        { status: 200 }
-      );
-    } else {
-      return NextResponse.json(
-        { 
-          message: 'Enrollment submitted successfully, but confirmation emails could not be sent. Our team will contact you directly.',
-          enrollmentId,
-          status: 'pending_manual_confirmation',
-          emailStatus: {
-            confirmationSent: false,
-            adminNotified: false,
-            error: 'Email delivery failed. Manual follow-up required.'
-          }
-        },
-        { status: 200 }
-      );
-    }
+    // Return immediate success response with email processing status
+    return NextResponse.json(
+      { 
+        message: 'Enrollment submitted successfully. Confirmation emails are being processed.',
+        enrollmentId,
+        status: 'confirmed',
+        emailStatus: {
+          processing: true,
+          adminQueueId: queueIds?.adminQueueId,
+          studentQueueId: queueIds?.studentQueueId,
+          note: 'Email confirmations will be sent shortly. You will receive confirmation emails once processing is complete.'
+        }
+      },
+      { status: 200 }
+    );
 
   } catch (error) {
     console.error('Enrollment submission error:', error);

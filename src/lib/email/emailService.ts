@@ -11,7 +11,11 @@ import {
   validateSMTPConfig, 
   getEmailConfig, 
   isValidEmail,
-  sanitizeEmailContent
+  sanitizeEmailContent,
+  isEmailTestMode,
+  devEmailLogger,
+  createMockEmailResult,
+  getEmailServiceStatus
 } from './utils';
 import { EmailErrorHandler, emailErrorHandler } from './errorHandler';
 
@@ -219,6 +223,34 @@ export class EmailService {
         result,
         Date.now() - startTime,
         { recipient: options.to, subject: options.subject }
+      );
+      
+      return result;
+    }
+
+    // Handle test mode - log email instead of sending
+    if (isEmailTestMode()) {
+      const mockOptions = {
+        to: options.to,
+        subject: options.subject,
+        html: options.html,
+        text: options.text,
+        from: options.from || process.env.SMTP_FROM || process.env.SMTP_USER || 'noreply@example.com',
+      };
+      
+      devEmailLogger.logEmail(mockOptions);
+      
+      const result = createMockEmailResult({
+        to: options.to,
+        subject: options.subject,
+        success: true,
+      });
+      
+      emailErrorHandler.logOperation(
+        'send',
+        result,
+        Date.now() - startTime,
+        { recipient: options.to, subject: options.subject, testMode: true }
       );
       
       return result;
@@ -494,6 +526,341 @@ export class EmailService {
    */
   resetCircuitBreaker(): void {
     emailErrorHandler.resetCircuitBreaker();
+  }
+
+  /**
+   * Gets comprehensive email service status including configuration validation
+   * @returns Object with detailed service status
+   */
+  getServiceStatus() {
+    const baseStatus = this.getStatus();
+    const serviceStatus = getEmailServiceStatus();
+    
+    return {
+      ...baseStatus,
+      ...serviceStatus,
+      developmentLogs: isEmailTestMode() ? {
+        totalLogs: devEmailLogger.getLogs().length,
+        recentLogs: devEmailLogger.getRecentLogs(5),
+      } : null,
+    };
+  }
+
+  /**
+   * Gets development mode email logs
+   * @param count - Number of recent logs to return (default: 10)
+   * @returns Array of recent email logs
+   */
+  getDevLogs(count: number = 10) {
+    if (!isEmailTestMode()) {
+      return null;
+    }
+    return devEmailLogger.getRecentLogs(count);
+  }
+
+  /**
+   * Clears development mode email logs
+   */
+  clearDevLogs(): void {
+    if (isEmailTestMode()) {
+      devEmailLogger.clearLogs();
+    }
+  }
+
+  /**
+   * Gets logs for a specific recipient in development mode
+   * @param recipient - Email address to filter by
+   * @returns Array of logs for the recipient
+   */
+  getDevLogsForRecipient(recipient: string) {
+    if (!isEmailTestMode()) {
+      return null;
+    }
+    return devEmailLogger.getLogsForRecipient(recipient);
+  }
+
+  /**
+   * Sends an email asynchronously using the queue system
+   * @param options - Email options
+   * @param priority - Email priority (high, normal, low)
+   * @param callback - Optional callback for when email is processed
+   * @returns Promise<string> - Queue ID for tracking
+   */
+  async sendEmailAsync(
+    options: EmailOptions,
+    priority: 'high' | 'normal' | 'low' = 'normal',
+    callback?: (result: EmailResult) => void
+  ): Promise<string> {
+    // Import here to avoid circular dependency
+    const { getAsyncEmailQueue } = await import('./asyncEmailQueue');
+    const queue = getAsyncEmailQueue();
+    
+    return queue.queueEmail(options, priority, callback);
+  }
+
+  /**
+   * Sends contact form emails asynchronously
+   * @param formData - Contact form data
+   * @param callback - Optional callback for results
+   * @returns Promise<{ adminQueueId: string, customerQueueId: string }>
+   */
+  async sendContactEmailsAsync(
+    formData: any,
+    callback?: (results: { adminResult: EmailResult, customerResult: EmailResult }) => void
+  ): Promise<{ adminQueueId: string, customerQueueId: string }> {
+    const { generateContactEmails } = await import('./templates/contact');
+    const { adminNotification, customerConfirmation } = generateContactEmails(formData);
+
+    const results = { adminResult: null as EmailResult | null, customerResult: null as EmailResult | null };
+    let completedCount = 0;
+
+    const checkCompletion = () => {
+      completedCount++;
+      if (completedCount === 2 && callback && results.adminResult && results.customerResult) {
+        callback({
+          adminResult: results.adminResult,
+          customerResult: results.customerResult
+        });
+      }
+    };
+
+    // Queue admin notification email (high priority)
+    const adminQueueId = await this.sendEmailAsync(
+      {
+        to: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
+        subject: adminNotification.subject,
+        html: adminNotification.html,
+        text: adminNotification.text,
+      },
+      'high',
+      (result) => {
+        results.adminResult = result;
+        checkCompletion();
+      }
+    );
+
+    // Queue customer confirmation email (normal priority)
+    const customerQueueId = await this.sendEmailAsync(
+      {
+        to: formData.email,
+        subject: customerConfirmation.subject,
+        html: customerConfirmation.html,
+        text: customerConfirmation.text,
+      },
+      'normal',
+      (result) => {
+        results.customerResult = result;
+        checkCompletion();
+      }
+    );
+
+    return { adminQueueId, customerQueueId };
+  }
+
+  /**
+   * Sends drone inquiry emails asynchronously
+   * @param inquiryData - Drone inquiry data
+   * @param callback - Optional callback for results
+   * @returns Promise<{ adminQueueId: string, customerQueueId: string }>
+   */
+  async sendDroneInquiryEmailsAsync(
+    inquiryData: any,
+    callback?: (results: { adminResult: EmailResult, customerResult: EmailResult }) => void
+  ): Promise<{ adminQueueId: string, customerQueueId: string }> {
+    const { 
+      generateDroneInquiryAdminEmail, 
+      generateDroneInquiryCustomerEmail 
+    } = await import('./templates/droneInquiry');
+    
+    const adminEmailTemplate = generateDroneInquiryAdminEmail(inquiryData);
+    const customerEmailTemplate = generateDroneInquiryCustomerEmail(inquiryData);
+
+    const results = { adminResult: null as EmailResult | null, customerResult: null as EmailResult | null };
+    let completedCount = 0;
+
+    const checkCompletion = () => {
+      completedCount++;
+      if (completedCount === 2 && callback && results.adminResult && results.customerResult) {
+        callback({
+          adminResult: results.adminResult,
+          customerResult: results.customerResult
+        });
+      }
+    };
+
+    // Queue admin notification email (high priority)
+    const adminQueueId = await this.sendEmailAsync(
+      {
+        to: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
+        subject: adminEmailTemplate.subject,
+        html: adminEmailTemplate.html,
+        text: adminEmailTemplate.text,
+      },
+      'high',
+      (result) => {
+        results.adminResult = result;
+        checkCompletion();
+      }
+    );
+
+    // Queue customer acknowledgment email (normal priority)
+    const customerQueueId = await this.sendEmailAsync(
+      {
+        to: inquiryData.email,
+        subject: customerEmailTemplate.subject,
+        html: customerEmailTemplate.html,
+        text: customerEmailTemplate.text,
+      },
+      'normal',
+      (result) => {
+        results.customerResult = result;
+        checkCompletion();
+      }
+    );
+
+    return { adminQueueId, customerQueueId };
+  }
+
+  /**
+   * Sends enrollment emails asynchronously
+   * @param enrollmentData - Training enrollment data
+   * @param callback - Optional callback for results
+   * @returns Promise<{ adminQueueId: string, studentQueueId: string }>
+   */
+  async sendEnrollmentEmailsAsync(
+    enrollmentData: any,
+    callback?: (results: { adminResult: EmailResult, studentResult: EmailResult }) => void
+  ): Promise<{ adminQueueId: string, studentQueueId: string }> {
+    const { generateEnrollmentEmails } = await import('./templates/enrollment');
+    const { adminNotification, studentConfirmation } = generateEnrollmentEmails(enrollmentData);
+
+    const results = { adminResult: null as EmailResult | null, studentResult: null as EmailResult | null };
+    let completedCount = 0;
+
+    const checkCompletion = () => {
+      completedCount++;
+      if (completedCount === 2 && callback && results.adminResult && results.studentResult) {
+        callback({
+          adminResult: results.adminResult,
+          studentResult: results.studentResult
+        });
+      }
+    };
+
+    // Queue admin notification email (high priority)
+    const adminQueueId = await this.sendEmailAsync(
+      {
+        to: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
+        subject: adminNotification.subject,
+        html: adminNotification.html,
+        text: adminNotification.text,
+      },
+      'high',
+      (result) => {
+        results.adminResult = result;
+        checkCompletion();
+      }
+    );
+
+    // Queue student confirmation email (normal priority)
+    const studentQueueId = await this.sendEmailAsync(
+      {
+        to: enrollmentData.email,
+        subject: studentConfirmation.subject,
+        html: studentConfirmation.html,
+        text: studentConfirmation.text,
+      },
+      'normal',
+      (result) => {
+        results.studentResult = result;
+        checkCompletion();
+      }
+    );
+
+    return { adminQueueId, studentQueueId };
+  }
+
+  /**
+   * Sends newsletter emails asynchronously
+   * @param subscriptionData - Newsletter subscription data
+   * @param confirmationUrl - Confirmation URL
+   * @param callback - Optional callback for results
+   * @returns Promise<{ welcomeQueueId: string, adminQueueId?: string }>
+   */
+  async sendNewsletterEmailsAsync(
+    subscriptionData: any,
+    confirmationUrl: string,
+    callback?: (results: { welcomeResult: EmailResult, adminResult?: EmailResult }) => void
+  ): Promise<{ welcomeQueueId: string, adminQueueId?: string }> {
+    const { generateNewsletterEmails } = await import('./templates/newsletter');
+    const { welcomeEmail, adminNotification } = generateNewsletterEmails(
+      subscriptionData,
+      confirmationUrl
+    );
+
+    const results = { welcomeResult: null as EmailResult | null, adminResult: null as EmailResult | null };
+    let completedCount = 0;
+    const expectedCount = 2;
+
+    const checkCompletion = () => {
+      completedCount++;
+      if (completedCount === expectedCount && callback && results.welcomeResult) {
+        callback({
+          welcomeResult: results.welcomeResult,
+          adminResult: results.adminResult || undefined
+        });
+      }
+    };
+
+    // Queue welcome email to subscriber (high priority)
+    const welcomeQueueId = await this.sendEmailAsync(
+      {
+        to: subscriptionData.email,
+        subject: welcomeEmail.subject,
+        html: welcomeEmail.html,
+        text: welcomeEmail.text,
+      },
+      'high',
+      (result) => {
+        results.welcomeResult = result;
+        checkCompletion();
+      }
+    );
+
+    // Queue admin notification email (low priority)
+    const adminQueueId = await this.sendEmailAsync(
+      {
+        to: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
+        subject: adminNotification.subject,
+        html: adminNotification.html,
+        text: adminNotification.text,
+      },
+      'low',
+      (result) => {
+        results.adminResult = result;
+        checkCompletion();
+      }
+    );
+
+    return { welcomeQueueId, adminQueueId };
+  }
+
+  /**
+   * Gets async email queue metrics
+   */
+  async getAsyncQueueMetrics() {
+    const { getAsyncEmailQueue } = await import('./asyncEmailQueue');
+    const queue = getAsyncEmailQueue();
+    return queue.getMetrics();
+  }
+
+  /**
+   * Gets async email queue status
+   */
+  async getAsyncQueueStatus() {
+    const { getAsyncEmailQueue } = await import('./asyncEmailQueue');
+    const queue = getAsyncEmailQueue();
+    return queue.getQueueStatus();
   }
 }
 

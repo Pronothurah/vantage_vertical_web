@@ -249,40 +249,52 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Send contact form emails using shared EmailService
-    let emailResults;
+    // Send contact form emails asynchronously for better performance
+    let queueIds;
     try {
-      emailResults = await sendContactEmails(formData);
-      
-      // Log email results for monitoring
-      if (!emailResults.adminResult.success) {
-        console.error('Failed to send admin notification email:', emailResults.adminResult.error);
-      }
-      
-      if (!emailResults.customerResult.success) {
-        console.error('Failed to send customer confirmation email:', emailResults.customerResult.error);
-      }
-      
-      // Check if both emails failed due to configuration issues
-      const adminError = emailResults.adminResult.error;
-      const customerError = emailResults.customerResult.error;
-      
-      if (!emailResults.adminResult.success && !emailResults.customerResult.success) {
-        // If both failed due to configuration errors, we might want to handle differently
-        if (adminError?.type === EmailErrorType.CONFIGURATION_ERROR || 
-            customerError?.type === EmailErrorType.CONFIGURATION_ERROR) {
-          console.warn('Email service not configured properly, continuing without email notifications');
+      // Use async email processing to avoid blocking user response
+      queueIds = await emailService.sendContactEmailsAsync(
+        formData,
+        (results) => {
+          // Log email results for monitoring (processed in background)
+          console.log('Contact form email processing completed:', {
+            adminEmailSuccess: results.adminResult.success,
+            customerEmailSuccess: results.customerResult.success,
+            adminEmailError: results.adminResult.error?.message,
+            customerEmailError: results.customerResult.error?.message,
+            timestamp: new Date().toISOString()
+          });
+          
+          // Check if both emails failed due to configuration issues
+          if (!results.adminResult.success && !results.customerResult.success) {
+            const adminError = results.adminResult.error;
+            const customerError = results.customerResult.error;
+            
+            if (adminError?.type === EmailErrorType.CONFIGURATION_ERROR || 
+                customerError?.type === EmailErrorType.CONFIGURATION_ERROR) {
+              console.warn('Email service not configured properly for contact form');
+            }
+          }
         }
-      }
+      );
+      
+      console.log('Contact form emails queued for processing:', {
+        adminQueueId: queueIds.adminQueueId,
+        customerQueueId: queueIds.customerQueueId,
+        formData: {
+          name: formData.name,
+          email: formData.email,
+          service: formData.service,
+          urgency: formData.urgency
+        }
+      });
       
     } catch (emailError) {
-      console.error('Unexpected error in email sending process:', emailError);
+      console.error('Failed to queue contact form emails:', emailError);
       
-      // Continue processing even if email fails - don't block user experience
-      emailResults = {
-        adminResult: { success: false, error: emailError },
-        customerResult: { success: false, error: emailError }
-      };
+      // Continue with success response even if email queueing fails
+      // This ensures user experience is not blocked by email issues
+      queueIds = null;
     }
 
     // Return success response

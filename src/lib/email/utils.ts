@@ -219,7 +219,7 @@ export async function testSMTPConnection(config?: SMTPConfig): Promise<Connectio
 
   try {
     // Create transporter for testing
-    const transporter = nodemailer.createTransporter({
+    const transporter = nodemailer.createTransport({
       host: smtpConfig.host,
       port: smtpConfig.port,
       secure: smtpConfig.port === 465,
@@ -261,4 +261,205 @@ export async function testSMTPConnection(config?: SMTPConfig): Promise<Connectio
       errorMessage = `Connection timeout to ${smtpConfig.host}:${smtpConfig.port}. Check network connectivity.`;
     } else if (error.responseCode === 535) {
       errorMessage = 'Authentication failed. Check username and password.';
-    } else if (error.r
+    } else if (error.responseCode === 550) {
+      errorMessage = 'Mailbox unavailable. Check recipient address or sender reputation.';
+    }
+    
+    return {
+      success: false,
+      error: errorMessage,
+      details: {
+        host: smtpConfig.host,
+        port: smtpConfig.port,
+        secure: smtpConfig.port === 465,
+        responseTime,
+      },
+    };
+  }
+}
+
+/**
+ * Development mode email logger
+ */
+class DevEmailLogger {
+  private logs: DevEmailLog[] = [];
+  private maxLogs = 100;
+
+  /**
+   * Logs an email in development mode instead of sending it
+   * @param emailOptions - Email options to log
+   */
+  logEmail(emailOptions: {
+    to: string;
+    subject: string;
+    html: string;
+    text?: string;
+    from: string;
+  }): void {
+    const logEntry: DevEmailLog = {
+      timestamp: new Date(),
+      to: emailOptions.to,
+      subject: emailOptions.subject,
+      html: emailOptions.html,
+      text: emailOptions.text,
+      from: emailOptions.from,
+    };
+
+    this.logs.unshift(logEntry);
+    
+    // Keep only the most recent logs
+    if (this.logs.length > this.maxLogs) {
+      this.logs = this.logs.slice(0, this.maxLogs);
+    }
+
+    // Console log for immediate feedback
+    console.log('📧 [DEV MODE] Email logged instead of sent:', {
+      to: emailOptions.to,
+      subject: emailOptions.subject,
+      from: emailOptions.from,
+      timestamp: logEntry.timestamp.toISOString(),
+    });
+  }
+
+  /**
+   * Gets all logged emails
+   * @returns Array of logged emails
+   */
+  getLogs(): DevEmailLog[] {
+    return [...this.logs];
+  }
+
+  /**
+   * Gets recent logs (last N emails)
+   * @param count - Number of recent logs to return
+   * @returns Array of recent logged emails
+   */
+  getRecentLogs(count: number = 10): DevEmailLog[] {
+    return this.logs.slice(0, count);
+  }
+
+  /**
+   * Clears all logged emails
+   */
+  clearLogs(): void {
+    this.logs = [];
+    console.log('📧 [DEV MODE] Email logs cleared');
+  }
+
+  /**
+   * Gets logs for a specific recipient
+   * @param recipient - Email address to filter by
+   * @returns Array of logs for the recipient
+   */
+  getLogsForRecipient(recipient: string): DevEmailLog[] {
+    return this.logs.filter(log => log.to === recipient);
+  }
+}
+
+// Export singleton instance for development mode
+export const devEmailLogger = new DevEmailLogger();
+
+/**
+ * Checks if the application is in development mode
+ * @returns true if in development mode
+ */
+export function isDevelopmentMode(): boolean {
+  return process.env.NODE_ENV === 'development';
+}
+
+/**
+ * Checks if email testing mode is enabled
+ * @returns true if email testing mode is enabled
+ */
+export function isEmailTestMode(): boolean {
+  return process.env.EMAIL_TEST_MODE === 'true' || 
+         (isDevelopmentMode() && !hasValidSMTPConfig());
+}
+
+/**
+ * Checks if SMTP configuration is available and valid
+ * @returns true if SMTP config is valid
+ */
+export function hasValidSMTPConfig(): boolean {
+  const validation = validateSMTPConfigDetailed();
+  return validation.isValid;
+}
+
+/**
+ * Gets graceful degradation status for email service
+ * @returns Object with degradation status and recommendations
+ */
+export function getEmailServiceStatus() {
+  const validation = validateSMTPConfigDetailed();
+  const isTestMode = isEmailTestMode();
+  const isDev = isDevelopmentMode();
+
+  return {
+    isConfigured: validation.isValid,
+    isTestMode,
+    isDevelopmentMode: isDev,
+    canSendEmails: validation.isValid && !isTestMode,
+    errors: validation.errors,
+    warnings: validation.warnings,
+    recommendations: getConfigurationRecommendations(validation),
+  };
+}
+
+/**
+ * Gets configuration recommendations based on validation results
+ * @param validation - Configuration validation result
+ * @returns Array of recommendation strings
+ */
+function getConfigurationRecommendations(validation: ConfigValidationResult): string[] {
+  const recommendations: string[] = [];
+
+  if (!validation.isValid) {
+    recommendations.push('Configure SMTP settings in your .env file to enable email functionality');
+    
+    if (validation.errors.some(e => e.includes('SMTP_HOST'))) {
+      recommendations.push('Set SMTP_HOST to your email provider\'s SMTP server (e.g., smtp.gmail.com)');
+    }
+    
+    if (validation.errors.some(e => e.includes('SMTP_PORT'))) {
+      recommendations.push('Set SMTP_PORT to 587 for STARTTLS or 465 for SSL');
+    }
+    
+    if (validation.errors.some(e => e.includes('SMTP_USER'))) {
+      recommendations.push('Set SMTP_USER to your email address');
+    }
+    
+    if (validation.errors.some(e => e.includes('SMTP_PASS'))) {
+      recommendations.push('Set SMTP_PASS to your email password or app-specific password');
+    }
+  }
+
+  if (validation.warnings.length > 0) {
+    recommendations.push('Review configuration warnings for optimal setup');
+  }
+
+  if (isDevelopmentMode() && validation.isValid) {
+    recommendations.push('Consider using EMAIL_TEST_MODE=true in development to avoid sending real emails');
+  }
+
+  return recommendations;
+}
+
+/**
+ * Creates a mock email result for testing/development mode
+ * @param options - Email options
+ * @returns Mock EmailResult
+ */
+export function createMockEmailResult(options: {
+  to: string;
+  subject: string;
+  success?: boolean;
+}): any {
+  return {
+    success: options.success ?? true,
+    messageId: `mock-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+    retryCount: 0,
+    timestamp: new Date(),
+    recipient: options.to,
+    subject: options.subject,
+  };
+}

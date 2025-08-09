@@ -84,7 +84,7 @@ export class TouchGestureManager {
   private config: TouchGestureConfig;
   private touchState: TouchState;
   private momentumState: MomentumState;
-  private boundHandlers: Map<string, (() => void)>;
+  private boundHandlers: Map<string, EventListener | (() => void)>;
   private isDestroyed: boolean = false;
   private performanceMonitor: PerformanceMonitor | null = null;
   private errorBoundary: MobileMenuErrorBoundary | null = null;
@@ -157,7 +157,8 @@ export class TouchGestureManager {
   }
 
   private setupTouchHandlers(): void {
-    const options = this.config.passiveListeners ? { passive: false } : false;
+    const passiveOptions: AddEventListenerOptions = this.config.passiveListeners ? { passive: false } : {};
+    const regularOptions: AddEventListenerOptions | boolean = this.config.passiveListeners ? { passive: false } : false;
     
     // Bind handlers to maintain context with error handling
     const handleTouchStart = this.errorBoundary?.wrapFunction(
@@ -181,31 +182,31 @@ export class TouchGestureManager {
     ) || this.handleTouchCancel.bind(this);
     
     // Store bound handlers for cleanup
-    this.boundHandlers.set('touchstart', handleTouchStart);
-    this.boundHandlers.set('touchmove', handleTouchMove);
-    this.boundHandlers.set('touchend', handleTouchEnd);
-    this.boundHandlers.set('touchcancel', handleTouchCancel);
+    this.boundHandlers.set('touchstart', handleTouchStart as EventListener);
+    this.boundHandlers.set('touchmove', handleTouchMove as EventListener);
+    this.boundHandlers.set('touchend', handleTouchEnd as EventListener);
+    this.boundHandlers.set('touchcancel', handleTouchCancel as EventListener);
     
     // Add passive event listeners with cleanup functions
     if (this.config.passiveListeners) {
       this.boundHandlers.set('touchstart-cleanup', addPassiveEventListener(
-        this.container, 'touchstart', handleTouchStart, options
+        this.container, 'touchstart', handleTouchStart as EventListener, passiveOptions
       ));
       this.boundHandlers.set('touchmove-cleanup', addPassiveEventListener(
-        this.container, 'touchmove', handleTouchMove, options
+        this.container, 'touchmove', handleTouchMove as EventListener, passiveOptions
       ));
       this.boundHandlers.set('touchend-cleanup', addPassiveEventListener(
-        this.container, 'touchend', handleTouchEnd, options
+        this.container, 'touchend', handleTouchEnd as EventListener, passiveOptions
       ));
       this.boundHandlers.set('touchcancel-cleanup', addPassiveEventListener(
-        this.container, 'touchcancel', handleTouchCancel, options
+        this.container, 'touchcancel', handleTouchCancel as EventListener, passiveOptions
       ));
     } else {
       // Fallback to regular event listeners
-      this.container.addEventListener('touchstart', handleTouchStart, options);
-      this.container.addEventListener('touchmove', handleTouchMove, options);
-      this.container.addEventListener('touchend', handleTouchEnd, options);
-      this.container.addEventListener('touchcancel', handleTouchCancel, options);
+      this.container.addEventListener('touchstart', handleTouchStart as EventListener, regularOptions);
+      this.container.addEventListener('touchmove', handleTouchMove as EventListener, regularOptions);
+      this.container.addEventListener('touchend', handleTouchEnd as EventListener, regularOptions);
+      this.container.addEventListener('touchcancel', handleTouchCancel as EventListener, regularOptions);
     }
   }
 
@@ -439,7 +440,7 @@ export class TouchGestureManager {
     this.boundHandlers.forEach((handler, key) => {
       if (key.endsWith('-cleanup')) {
         // This is a cleanup function from addPassiveEventListener
-        handler();
+        (handler as () => void)();
       } else if (!key.endsWith('-cleanup')) {
         // This is a regular event listener
         this.container.removeEventListener(key, handler as EventListener);

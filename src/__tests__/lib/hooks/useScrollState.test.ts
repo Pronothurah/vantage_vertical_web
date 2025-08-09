@@ -27,7 +27,7 @@ jest.mock('@/lib/performanceUtils', () => ({
   })),
   addPassiveEventListener: jest.fn(() => jest.fn()),
   MobileMenuErrorBoundary: jest.fn().mockImplementation(() => ({
-    wrapFunction: jest.fn((fn, type, fallback) => (...args) => {
+    wrapFunction: jest.fn((fn, type, fallback) => (...args: any[]) => {
       try {
         return fn(...args);
       } catch (error) {

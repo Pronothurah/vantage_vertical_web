@@ -44,7 +44,10 @@ describe('useMobileMenuKeyboard', () => {
       right: 100,
       width: 100,
       height: 100,
-    }));
+      x: 0,
+      y: 0,
+      toJSON: () => ({})
+    } as DOMRect));
 
     mockElements.forEach(el => {
       el.getBoundingClientRect = jest.fn(() => ({
@@ -54,7 +57,10 @@ describe('useMobileMenuKeyboard', () => {
         right: 100,
         width: 100,
         height: 20,
-      }));
+        x: 0,
+        y: 10,
+        toJSON: () => ({})
+      } as DOMRect));
     });
 
     mockOnClose = jest.fn();
@@ -266,7 +272,10 @@ describe('useMobileMenuKeyboard', () => {
       right: 100,
       width: 100,
       height: 20,
-    }));
+      x: 0,
+      y: 150,
+      toJSON: () => ({})
+    } as DOMRect));
 
     const { result } = renderHook(() =>
       useMobileMenuKeyboard({

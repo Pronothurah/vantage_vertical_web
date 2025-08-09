@@ -231,19 +231,51 @@ export async function POST(request: NextRequest) {
     // Add to temporary storage
     subscriptions.add(email);
 
-    // Send confirmation email using shared EmailService
-    const emailResult = await sendNewsletterEmails(subscriptionData);
-    
-    if (!emailResult.success) {
-      console.error('Failed to send newsletter emails:', emailResult.error);
+    // Send newsletter emails asynchronously for better performance
+    let queueIds;
+    try {
+      // Generate confirmation URL
+      const confirmationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/newsletter/confirm?token=${confirmationToken}&email=${encodeURIComponent(email)}`;
       
-      // Remove from storage if email failed
+      // Use async email processing to avoid blocking user response
+      queueIds = await emailService.sendNewsletterEmailsAsync(
+        subscriptionData,
+        confirmationUrl,
+        (results) => {
+          // Log email results for monitoring (processed in background)
+          console.log('Newsletter email processing completed:', {
+            email,
+            welcomeEmailSuccess: results.welcomeResult.success,
+            adminEmailSuccess: results.adminResult?.success,
+            welcomeEmailError: results.welcomeResult.error?.message,
+            adminEmailError: results.adminResult?.error?.message,
+            timestamp: new Date().toISOString()
+          });
+          
+          // If welcome email failed, we might want to remove from subscriptions
+          if (!results.welcomeResult.success) {
+            console.warn('Newsletter welcome email failed, subscription may need manual follow-up:', email);
+          }
+        }
+      );
+      
+      console.log('Newsletter emails queued for processing:', {
+        email,
+        welcomeQueueId: queueIds.welcomeQueueId,
+        adminQueueId: queueIds.adminQueueId,
+        confirmationToken
+      });
+      
+    } catch (emailError) {
+      console.error('Failed to queue newsletter emails:', emailError);
+      
+      // Remove from storage if email queueing failed
       subscriptions.delete(email);
       
       return NextResponse.json(
         { 
-          error: emailResult.error || 'Failed to send confirmation email. Please try again.',
-          code: 'EMAIL_SEND_FAILED'
+          error: 'Failed to process newsletter subscription. Please try again.',
+          code: 'EMAIL_QUEUE_FAILED'
         },
         { status: 500 }
       );

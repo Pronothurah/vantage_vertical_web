@@ -176,7 +176,7 @@ describe('ContactForm', () => {
   });
 
   it('displays loading state during submission', async () => {
-    const mockOnSubmit = jest.fn(() => new Promise(resolve => setTimeout(resolve, 1000)));
+    const mockOnSubmit = jest.fn(() => new Promise<void>(resolve => setTimeout(resolve, 1000)));
     render(<ContactForm onSubmit={mockOnSubmit} />);
 
     // Fill out form
