@@ -175,7 +175,7 @@ function generateCustomerConfirmationEmail(
     </ul>
     
     ${TemplateUtils.createAlert(
-      '<strong>Need immediate assistance?</strong><br>For urgent matters, you can also reach us directly at vantagevarticalltd@gmail.com or call us during business hours.',
+      '<strong>Need immediate assistance?</strong><br>For urgent matters, you can also reach us directly at vantageverticalltd@gmail.com or call us during business hours.',
       'info'
     )}
     

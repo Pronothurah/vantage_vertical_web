@@ -157,7 +157,7 @@ async function sendContactEmails(formData: ContactFormData): Promise<{
 
     // Send admin notification email
     const adminResult = await emailService.sendEmail({
-      to: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
+      to: process.env.CONTACT_EMAIL || 'vantageverticalltd@gmail.com',
       subject: adminNotification.subject,
       html: adminNotification.html,
       text: adminNotification.text,

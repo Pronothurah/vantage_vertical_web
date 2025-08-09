@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This document outlines the requirements for completing and standardizing SMTP email integration across the Vantage Vertical website. While contact forms and newsletter subscriptions are already functional, drone inquiries and training enrollment forms need to be completed to ensure all client communications reach the designated email address (vantagevarticalltd@gmail.com). The system also needs consistent error handling, retry logic, and performance optimizations across all email endpoints.
+This document outlines the requirements for completing and standardizing SMTP email integration across the Vantage Vertical website. While contact forms and newsletter subscriptions are already functional, drone inquiries and training enrollment forms need to be completed to ensure all client communications reach the designated email address (vantageverticalltd@gmail.com). The system also needs consistent error handling, retry logic, and performance optimizations across all email endpoints.
 
 ## Requirements
 
@@ -24,7 +24,7 @@ This document outlines the requirements for completing and standardizing SMTP em
 
 #### Acceptance Criteria
 
-1. WHEN a contact form is submitted THEN the system SHALL send an email to vantagevarticalltd@gmail.com with the form data
+1. WHEN a contact form is submitted THEN the system SHALL send an email to vantageverticalltd@gmail.com with the form data
 2. WHEN the contact email is sent THEN it SHALL include all form fields: name, email, phone, service, message, and urgency level
 3. WHEN the contact email is formatted THEN it SHALL use a professional HTML template with company branding
 4. WHEN the contact form submission succeeds THEN the system SHALL send a confirmation email to the user
@@ -38,7 +38,7 @@ This document outlines the requirements for completing and standardizing SMTP em
 #### Acceptance Criteria
 
 1. WHEN a user subscribes to the newsletter THEN the system SHALL send a welcome email to the subscriber
-2. WHEN a newsletter subscription occurs THEN the system SHALL send a notification email to vantagevarticalltd@gmail.com
+2. WHEN a newsletter subscription occurs THEN the system SHALL send a notification email to vantageverticalltd@gmail.com
 3. WHEN the welcome email is sent THEN it SHALL include company information and subscription confirmation
 4. WHEN the subscription notification is sent THEN it SHALL include the subscriber's email and subscription timestamp
 5. WHEN newsletter emails are sent THEN they SHALL use consistent branding and professional formatting
@@ -49,7 +49,7 @@ This document outlines the requirements for completing and standardizing SMTP em
 
 #### Acceptance Criteria
 
-1. WHEN a drone inquiry form is submitted THEN the system SHALL send an email to vantagevarticalltd@gmail.com with inquiry details
+1. WHEN a drone inquiry form is submitted THEN the system SHALL send an email to vantageverticalltd@gmail.com with inquiry details
 2. WHEN the drone inquiry email is sent THEN it SHALL include product interest, customer contact information, and specific requirements
 3. WHEN the inquiry is processed THEN the system SHALL send an acknowledgment email to the customer
 4. WHEN drone inquiry emails are formatted THEN they SHALL highlight the specific drone models or services of interest
@@ -61,7 +61,7 @@ This document outlines the requirements for completing and standardizing SMTP em
 
 #### Acceptance Criteria
 
-1. WHEN a training enrollment form is submitted THEN the system SHALL send an email to vantagevarticalltd@gmail.com with enrollment details
+1. WHEN a training enrollment form is submitted THEN the system SHALL send an email to vantageverticalltd@gmail.com with enrollment details
 2. WHEN the enrollment email is sent THEN it SHALL include course selection, student information, and payment preferences
 3. WHEN enrollment is processed THEN the system SHALL send a confirmation email to the student with course details
 4. WHEN enrollment emails are formatted THEN they SHALL include course pricing and schedule information

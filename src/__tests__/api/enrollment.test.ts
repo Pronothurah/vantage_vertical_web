@@ -49,7 +49,7 @@ describe('/api/enrollment', () => {
         messageId: 'admin-message-id',
         retryCount: 0,
         timestamp: new Date(),
-        recipient: 'vantagevarticalltd@gmail.com',
+        recipient: 'vantageverticalltd@gmail.com',
         subject: 'New Training Enrollment: John Doe - Basic Drone Pilot Training',
       },
       studentResult: {
@@ -114,7 +114,7 @@ describe('/api/enrollment', () => {
         } as any,
         retryCount: 3,
         timestamp: new Date(),
-        recipient: 'vantagevarticalltd@gmail.com',
+        recipient: 'vantageverticalltd@gmail.com',
         subject: 'New Training Enrollment: John Doe - Basic Drone Pilot Training',
       },
       studentResult: {
@@ -159,7 +159,7 @@ describe('/api/enrollment', () => {
         } as any,
         retryCount: 3,
         timestamp: new Date(),
-        recipient: 'vantagevarticalltd@gmail.com',
+        recipient: 'vantageverticalltd@gmail.com',
         subject: 'New Training Enrollment: John Doe - Basic Drone Pilot Training',
       },
       studentResult: {
@@ -297,7 +297,7 @@ describe('/api/enrollment', () => {
         messageId: 'admin-message-id',
         retryCount: 0,
         timestamp: new Date(),
-        recipient: 'vantagevarticalltd@gmail.com',
+        recipient: 'vantageverticalltd@gmail.com',
         subject: 'New Training Enrollment: John Doe - Basic Drone Pilot Training',
       },
       studentResult: {
@@ -381,7 +381,7 @@ describe('/api/enrollment', () => {
         messageId: 'admin-message-id',
         retryCount: 0,
         timestamp: new Date(),
-        recipient: 'vantagevarticalltd@gmail.com',
+        recipient: 'vantageverticalltd@gmail.com',
         subject: 'New Training Enrollment: John Doe - Basic Drone Pilot Training',
       },
       studentResult: {

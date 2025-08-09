@@ -79,7 +79,7 @@ jest.mock('@/data', () => ({
   companyInfo: {
     name: 'Vantage Vertical',
     phone: '+254704277687',
-    email: 'vantagevarticalltd@gmail.com'
+    email: 'vantageverticalltd@gmail.com'
   }
 }));
 

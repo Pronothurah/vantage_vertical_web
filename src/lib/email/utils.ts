@@ -85,7 +85,7 @@ export function validateSMTPConfigDetailed(): ConfigValidationResult {
     errors.push('Invalid SMTP_FROM or SMTP_USER: must be a valid email address');
   }
 
-  const contactEmail = process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com';
+  const contactEmail = process.env.CONTACT_EMAIL || 'vantageverticalltd@gmail.com';
   if (contactEmail && !isValidEmail(contactEmail)) {
     warnings.push('Invalid CONTACT_EMAIL: should be a valid email address');
   }
@@ -96,7 +96,7 @@ export function validateSMTPConfigDetailed(): ConfigValidationResult {
   }
 
   if (!process.env.CONTACT_EMAIL) {
-    warnings.push('CONTACT_EMAIL not set, using default vantagevarticalltd@gmail.com');
+    warnings.push('CONTACT_EMAIL not set, using default vantageverticalltd@gmail.com');
   }
 
   // Validate common SMTP configurations

@@ -4,8 +4,7 @@ import Image from 'next/image';
 import { OptimizedImage } from '@/components/ui';
 import { imageSizes, imageQuality } from '@/lib/imageUtils';
 import { HeroSection } from '@/components/sections';
-import { ServiceGrid } from '@/components/sections/ServiceCard';
-import { ContactForm } from '@/components/forms';
+
 import { 
   trainingPrograms, 
   trainingInstructors, 

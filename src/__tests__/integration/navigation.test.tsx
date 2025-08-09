@@ -21,7 +21,7 @@ jest.mock('@/data', () => ({
   companyInfo: {
     name: 'Vantage Vertical',
     phone: '+254704277687',
-    email: 'vantagevarticalltd@gmail.com',
+    email: 'vantageverticalltd@gmail.com',
     address: 'Westlands Business Park, Nairobi',
     socialMedia: {
       linkedin: 'https://linkedin.com/company/vantage-vertical',
@@ -194,7 +194,7 @@ describe('Navigation Integration Tests', () => {
       // Check company information
       expect(screen.getByText(/vantage vertical/i)).toBeInTheDocument();
       expect(screen.getByText(/\+254704277687/)).toBeInTheDocument();
-      expect(screen.getByText(/vantagevarticalltd@gmail\.com/)).toBeInTheDocument();
+      expect(screen.getByText(/vantageverticalltd@gmail\.com/)).toBeInTheDocument();
 
       // Check footer link sections
       expect(screen.getByText(/services/i)).toBeInTheDocument();

@@ -55,7 +55,7 @@ const DEFAULT_COMPANY_DATA: Partial<BaseTemplateData> = {
   companyName: 'Vantage Vertical',
   logoUrl: 'https://vantagevartical.com/vantage-logo.png',
   websiteUrl: 'https://vantagevartical.com',
-  contactEmail: 'vantagevarticalltd@gmail.com',
+  contactEmail: 'vantageverticalltd@gmail.com',
   contactPhone: '+254 XXX XXX XXX', // Replace with actual phone number
 };
 

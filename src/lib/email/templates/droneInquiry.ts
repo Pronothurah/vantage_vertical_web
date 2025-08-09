@@ -276,7 +276,7 @@ export function generateDroneInquiryCustomerEmail(data: DroneInquiryData): Email
             <!-- Contact Information -->
             <div style="text-align: center; margin: 30px 0; padding: 20px; background: #f8f9fa; border-radius: 4px;">
               <p style="margin: 5px 0; font-size: 16px;"><strong>Phone:</strong> <a href="tel:+254704277687" style="color: #D72638; text-decoration: none;">+254 704 277 687</a></p>
-              <p style="margin: 5px 0; font-size: 16px;"><strong>Email:</strong> <a href="mailto:vantagevarticalltd@gmail.com" style="color: #D72638; text-decoration: none;">vantagevarticalltd@gmail.com</a></p>
+              <p style="margin: 5px 0; font-size: 16px;"><strong>Email:</strong> <a href="mailto:vantageverticalltd@gmail.com" style="color: #D72638; text-decoration: none;">vantageverticalltd@gmail.com</a></p>
               <p style="margin: 5px 0; font-size: 16px;"><strong>Website:</strong> <a href="https://vantagevertical.co.ke" style="color: #D72638; text-decoration: none;">www.vantagevertical.co.ke</a></p>
             </div>
 
@@ -294,7 +294,7 @@ export function generateDroneInquiryCustomerEmail(data: DroneInquiryData): Email
           <!-- Footer -->
           <div style="background: #f8f9fa; padding: 15px; text-align: center; border-top: 1px solid #dee2e6; margin-top: 20px; border-radius: 0 0 8px 8px;">
             <p style="margin: 0; font-size: 12px; color: #6c757d;">
-              This email was sent from Vantage Vertical. If you have any questions, please contact us at vantagevarticalltd@gmail.com<br>
+              This email was sent from Vantage Vertical. If you have any questions, please contact us at vantageverticalltd@gmail.com<br>
               You received this email because you submitted an inquiry on our website.
             </p>
           </div>
@@ -336,7 +336,7 @@ WHY CHOOSE VANTAGE VERTICAL?
 If you have any immediate questions, please don't hesitate to contact us:
 
 Phone: +254 704 277 687
-Email: vantagevarticalltd@gmail.com
+Email: vantageverticalltd@gmail.com
 Website: www.vantagevertical.co.ke
 
 Thank you for choosing Vantage Vertical for your drone needs.
@@ -346,7 +346,7 @@ Vantage Vertical Sales Team
 Professional Drone Services Kenya
 
 ---
-This email was sent from Vantage Vertical. If you have any questions, please contact us at vantagevarticalltd@gmail.com
+This email was sent from Vantage Vertical. If you have any questions, please contact us at vantageverticalltd@gmail.com
 You received this email because you submitted an inquiry on our website.
   `;
 

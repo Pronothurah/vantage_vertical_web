@@ -19,15 +19,15 @@ This document outlines the requirements for updating the contact information acr
 
 ### Requirement 2: Email Address Update
 
-**User Story:** As a website administrator, I want to update the email address from the current value to vantagevarticalltd@gmail.com across all application files, so that customer inquiries are directed to the correct email address.
+**User Story:** As a website administrator, I want to update the email address from the current value to vantageverticalltd@gmail.com across all application files, so that customer inquiries are directed to the correct email address.
 
 #### Acceptance Criteria
 
-1. WHEN the system displays contact information THEN it SHALL show the email as vantagevarticalltd@gmail.com
+1. WHEN the system displays contact information THEN it SHALL show the email as vantageverticalltd@gmail.com
 2. WHEN environment example files are referenced THEN the system SHALL display the updated email as a template
-3. WHEN contact forms are submitted THEN the system SHALL send notifications to vantagevarticalltd@gmail.com
+3. WHEN contact forms are submitted THEN the system SHALL send notifications to vantageverticalltd@gmail.com
 4. WHEN SMTP configuration is set up THEN the system SHALL use the updated email for sender information where appropriate
-5. WHEN the email appears in any component or configuration THEN it SHALL be consistently formatted as vantagevarticalltd@gmail.com
+5. WHEN the email appears in any component or configuration THEN it SHALL be consistently formatted as vantageverticalltd@gmail.com
 
 ### Requirement 3: Configuration File Updates
 
@@ -134,7 +134,7 @@ This document outlines the requirements for updating the contact information acr
 
 1. WHEN searching the codebase for old contact information THEN no instances of the previous phone number or email SHALL remain
 2. WHEN the phone number is displayed THEN it SHALL consistently use the format +254704277687
-3. WHEN the email is displayed THEN it SHALL consistently use vantagevarticalltd@gmail.com
+3. WHEN the email is displayed THEN it SHALL consistently use vantageverticalltd@gmail.com
 4. WHEN company founding date is referenced THEN it SHALL consistently show December 2022
 5. WHEN team member count is displayed THEN it SHALL consistently show 10+
 6. WHEN contact information is used in different contexts THEN it SHALL maintain consistent formatting and values

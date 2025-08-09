@@ -81,7 +81,7 @@ Create a `.env` file in the project root:
 # Application Configuration
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 NEXT_PUBLIC_SITE_NAME="Vantage Vertical"
-NEXT_PUBLIC_CONTACT_EMAIL=vantagevarticalltd@gmail.com
+NEXT_PUBLIC_CONTACT_EMAIL=vantageverticalltd@gmail.com
 NEXT_PUBLIC_PHONE_NUMBER=+254704277687
 
 # Email Configuration (Optional - for contact forms)

@@ -18,6 +18,12 @@ import {
   getEmailServiceStatus
 } from './utils';
 import { EmailErrorHandler, emailErrorHandler } from './errorHandler';
+import { EMAIL_CONFIG } from '../config/email';
+import { 
+  validateCompanyEmail, 
+  getStandardizedEmail, 
+  validateAndCorrectEmail 
+} from '../utils/emailValidation';
 
 export class EmailService {
   private transporter: Transporter | null = null;
@@ -235,7 +241,7 @@ export class EmailService {
         subject: options.subject,
         html: options.html,
         text: options.text,
-        from: options.from || process.env.SMTP_FROM || process.env.SMTP_USER || 'noreply@example.com',
+        from: options.from || EMAIL_CONFIG.SMTP_FROM,
       };
       
       devEmailLogger.logEmail(mockOptions);
@@ -297,13 +303,23 @@ export class EmailService {
       return result;
     }
 
+    // Validate and standardize sender email if it's a company email
+    let fromEmail = options.from || this.config.from;
+    if (fromEmail && (fromEmail.includes('vantage') || fromEmail.includes('vertical'))) {
+      const validationResult = validateAndCorrectEmail(fromEmail);
+      if (validationResult.wasTypo) {
+        console.warn(`Email typo detected in sender email: ${validationResult.originalEmail}, using corrected: ${validationResult.correctedEmail}`);
+        fromEmail = validationResult.correctedEmail;
+      }
+    }
+
     // Sanitize content
     const sanitizedOptions = {
       ...options,
       subject: sanitizeEmailContent(options.subject),
       html: options.html, // HTML content should be handled by template system
       text: options.text ? sanitizeEmailContent(options.text) : undefined,
-      from: options.from || this.config.from,
+      from: fromEmail,
     };
 
     // Attempt to send with retry logic
@@ -485,10 +501,17 @@ export class EmailService {
     const { generateEnrollmentEmails } = await import('./templates/enrollment');
     const { adminNotification, studentConfirmation } = generateEnrollmentEmails(enrollmentData);
 
+    // Validate and get standardized admin email
+    const adminEmail = EMAIL_CONFIG.CONTACT_EMAIL;
+    const validationResult = validateAndCorrectEmail(adminEmail);
+    if (validationResult.wasTypo) {
+      console.warn(`Email typo detected in admin email: ${validationResult.originalEmail}, using corrected: ${validationResult.correctedEmail}`);
+    }
+
     // Send both emails concurrently
     const [adminResult, studentResult] = await Promise.allSettled([
       this.sendEmail({
-        to: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
+        to: validationResult.correctedEmail,
         subject: adminNotification.subject,
         html: adminNotification.html,
         text: adminNotification.text,
@@ -507,7 +530,7 @@ export class EmailService {
         error: adminResult.reason,
         retryCount: 0,
         timestamp: new Date(),
-        recipient: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
+        recipient: validationResult.correctedEmail,
         subject: adminNotification.subject,
       },
       studentResult: studentResult.status === 'fulfilled' ? studentResult.value : {
@@ -624,10 +647,17 @@ export class EmailService {
       }
     };
 
+    // Validate and get standardized admin email
+    const adminEmail = EMAIL_CONFIG.CONTACT_EMAIL;
+    const validationResult = validateAndCorrectEmail(adminEmail);
+    if (validationResult.wasTypo) {
+      console.warn(`Email typo detected in contact admin email: ${validationResult.originalEmail}, using corrected: ${validationResult.correctedEmail}`);
+    }
+
     // Queue admin notification email (high priority)
     const adminQueueId = await this.sendEmailAsync(
       {
-        to: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
+        to: validationResult.correctedEmail,
         subject: adminNotification.subject,
         html: adminNotification.html,
         text: adminNotification.text,
@@ -688,10 +718,17 @@ export class EmailService {
       }
     };
 
+    // Validate and get standardized admin email
+    const adminEmail = EMAIL_CONFIG.CONTACT_EMAIL;
+    const validationResult = validateAndCorrectEmail(adminEmail);
+    if (validationResult.wasTypo) {
+      console.warn(`Email typo detected in drone inquiry admin email: ${validationResult.originalEmail}, using corrected: ${validationResult.correctedEmail}`);
+    }
+
     // Queue admin notification email (high priority)
     const adminQueueId = await this.sendEmailAsync(
       {
-        to: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
+        to: validationResult.correctedEmail,
         subject: adminEmailTemplate.subject,
         html: adminEmailTemplate.html,
         text: adminEmailTemplate.text,
@@ -747,10 +784,17 @@ export class EmailService {
       }
     };
 
+    // Validate and get standardized admin email
+    const adminEmail = EMAIL_CONFIG.CONTACT_EMAIL;
+    const validationResult = validateAndCorrectEmail(adminEmail);
+    if (validationResult.wasTypo) {
+      console.warn(`Email typo detected in enrollment admin email: ${validationResult.originalEmail}, using corrected: ${validationResult.correctedEmail}`);
+    }
+
     // Queue admin notification email (high priority)
     const adminQueueId = await this.sendEmailAsync(
       {
-        to: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
+        to: validationResult.correctedEmail,
         subject: adminNotification.subject,
         html: adminNotification.html,
         text: adminNotification.text,
@@ -827,10 +871,17 @@ export class EmailService {
       }
     );
 
+    // Validate and get standardized admin email
+    const adminEmail = EMAIL_CONFIG.CONTACT_EMAIL;
+    const validationResult = validateAndCorrectEmail(adminEmail);
+    if (validationResult.wasTypo) {
+      console.warn(`Email typo detected in newsletter admin email: ${validationResult.originalEmail}, using corrected: ${validationResult.correctedEmail}`);
+    }
+
     // Queue admin notification email (low priority)
     const adminQueueId = await this.sendEmailAsync(
       {
-        to: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
+        to: validationResult.correctedEmail,
         subject: adminNotification.subject,
         html: adminNotification.html,
         text: adminNotification.text,
