@@ -1,6 +1,6 @@
 import { EmailService } from '../emailService';
 import { emailErrorHandler } from '../errorHandler';
-import { EmailErrorType } from '../types';
+import { EmailErrorType, EmailError } from '../types';
 
 // Mock nodemailer
 const mockTransporter = {
@@ -207,7 +207,15 @@ describe('EmailService Integration with ErrorHandler', () => {
     it('should reset circuit breaker through service', () => {
       // Manually set circuit breaker to open state for testing
       for (let i = 0; i < 5; i++) {
-        const error = { success: false, error: { type: EmailErrorType.SMTP_CONNECTION_ERROR } };
+        const error = { 
+          success: false, 
+          error: { 
+            type: EmailErrorType.SMTP_CONNECTION_ERROR,
+            retryable: true,
+            name: 'SMTPConnectionError',
+            message: 'SMTP connection failed'
+          } as EmailError
+        };
         emailErrorHandler.logOperation('send', error, 1000);
       }
 

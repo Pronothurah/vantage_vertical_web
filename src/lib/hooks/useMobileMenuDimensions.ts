@@ -170,7 +170,11 @@ export function useMobileMenuDimensions({
       removeResizeListenerRef.current?.();
       removeOrientationListenerRef.current?.();
       memoryManagerRef.current?.removeCleanupTask(cleanupTask);
-      debouncedDimensionUpdate.current.cancel();
+      // Capture the current ref value to avoid stale closure issues
+      const currentDebouncedUpdate = debouncedDimensionUpdate.current;
+      if (currentDebouncedUpdate) {
+        currentDebouncedUpdate.cancel();
+      }
     };
   }, [enabled, handleResize]);
 

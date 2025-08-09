@@ -226,7 +226,7 @@ describe('Mobile Menu Scroll Integration', () => {
       await user.click(menuButton);
 
       const mobileMenu = screen.getByRole('navigation', { name: /mobile navigation/i });
-      expect(mobileMenu).toHaveStyle('--menu-max-height: 467px');
+      expect(mobileMenu).toHaveStyle({ '--menu-max-height': '467px' });
     });
 
     it('should enable scrolling when content exceeds mobile viewport', async () => {
@@ -377,7 +377,7 @@ describe('Mobile Menu Scroll Integration', () => {
       expect(mockCalculateMenuDimensions).toHaveBeenCalledWith(9, expect.any(Object));
       
       const mobileMenu = screen.getByRole('navigation', { name: /mobile navigation/i });
-      expect(mobileMenu).toHaveStyle('--menu-max-height: 614px');
+      expect(mobileMenu).toHaveStyle({ '--menu-max-height': '614px' });
     });
 
     it('should enable scrolling in landscape when needed', async () => {

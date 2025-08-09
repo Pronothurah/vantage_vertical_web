@@ -20,8 +20,25 @@ jest.mock('next/image', () => {
   };
 });
 
+// User persona type definitions
+interface BasePersona {
+  name: string;
+  device: { width: number; height: number };
+  expectations: string[];
+}
+
+interface PersonaWithAssistiveTech extends BasePersona {
+  assistiveTech: string;
+}
+
+interface PersonaWithPreferences extends BasePersona {
+  preferences: { reducedMotion?: boolean; largeText?: boolean };
+}
+
+type UserPersona = BasePersona | PersonaWithAssistiveTech | PersonaWithPreferences;
+
 // User personas for testing
-const USER_PERSONAS = {
+const USER_PERSONAS: Record<string, UserPersona> = {
   mobileUser: {
     name: 'Sarah - Mobile User',
     device: { width: 375, height: 667 },
@@ -52,7 +69,7 @@ const USER_PERSONAS = {
       'Can understand scroll position',
       'Focus management works correctly',
     ],
-  },
+  } as PersonaWithAssistiveTech,
   seniorUser: {
     name: 'Dorothy - Senior User',
     device: { width: 414, height: 896 },
@@ -63,7 +80,7 @@ const USER_PERSONAS = {
       'Touch targets are large enough',
       'No unexpected motion or changes',
     ],
-  },
+  } as PersonaWithPreferences,
 };
 
 // User scenarios
@@ -106,7 +123,7 @@ const USER_SCENARIOS = [
 ];
 
 // Utility function to simulate user persona
-const simulateUserPersona = (persona: typeof USER_PERSONAS[keyof typeof USER_PERSONAS]) => {
+const simulateUserPersona = (persona: UserPersona) => {
   // Set device dimensions
   Object.defineProperty(window, 'innerWidth', {
     writable: true,
@@ -121,7 +138,7 @@ const simulateUserPersona = (persona: typeof USER_PERSONAS[keyof typeof USER_PER
   });
 
   // Set user preferences
-  if (persona.preferences?.reducedMotion) {
+  if ('preferences' in persona && persona.preferences?.reducedMotion) {
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
       value: jest.fn().mockImplementation(query => ({
@@ -203,7 +220,7 @@ describe('Mobile Menu User Acceptance Testing', () => {
         });
 
         test('should handle touch interactions naturally', async () => {
-          if (persona.assistiveTech === 'screen-reader') return; // Skip for screen reader users
+          if ('assistiveTech' in persona && persona.assistiveTech === 'screen-reader') return; // Skip for screen reader users
           
           render(<Navbar />);
           
@@ -227,7 +244,7 @@ describe('Mobile Menu User Acceptance Testing', () => {
           expect(scrollableContainer).toBeVisible();
         });
 
-        if (persona.assistiveTech === 'screen-reader') {
+        if ('assistiveTech' in persona && persona.assistiveTech === 'screen-reader') {
           test('should provide excellent keyboard navigation experience', async () => {
             render(<Navbar />);
             

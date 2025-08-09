@@ -521,7 +521,7 @@ describe('Forms Integration Tests', () => {
       const newsletterButton = newsletterContainer.querySelector('button[type="submit"]');
 
       [contactButton, droneButton, enrollmentButton, newsletterButton].forEach(button => {
-        expect(button).toHaveClass(/btn-primary|bg-primary/);
+        expect(button).toHaveClass(expect.stringMatching(/btn-primary|bg-primary/));
       });
     });
 

@@ -397,6 +397,7 @@ describe('mobileMenuUtils', () => {
       const partialConfig = {
         heights: {
           mobile: { maxVh: 60, reservedVh: 25 },
+          tablet: { maxVh: 80, reservedVh: 15 },
         },
       };
       

@@ -412,7 +412,7 @@ describe('useStaticMobileMenuDimensions', () => {
   it('should use custom configuration', () => {
     const customConfig = {
       ...DEFAULT_MOBILE_MENU_CONFIG,
-      fallback: { maxHeight: 350, itemHeight: 50 },
+      fallback: { minHeight: 200, maxHeight: 350, itemHeight: 50 },
     };
 
     renderHook(() =>

@@ -172,7 +172,7 @@ describe('ServiceCard', () => {
       <ServiceCard {...defaultProps} style={customStyle} />
     );
 
-    expect(container.firstChild).toHaveStyle('background-color: red');
+    expect(container.firstChild).toHaveStyle('background-color: rgb(255, 0, 0)');
   });
 
   it('renders without features when empty array provided', () => {

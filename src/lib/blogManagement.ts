@@ -323,7 +323,7 @@ export function parseMarkdownFrontmatter(markdown: string): { frontmatter: Parti
   }
 
   const [, frontmatterStr, content] = match;
-  const frontmatter: Partial<BlogPost> = {};
+  const frontmatter: any = {};
 
   // Parse frontmatter (basic YAML parsing)
   frontmatterStr.split('\n').forEach(line => {

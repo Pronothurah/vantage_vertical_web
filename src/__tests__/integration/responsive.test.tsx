@@ -199,7 +199,7 @@ describe('Responsive Design Integration Tests', () => {
 
       // Grid should have mobile-appropriate classes
       const gridContainer = container.querySelector('.grid');
-      expect(gridContainer).toHaveClass(/grid-cols-1/);
+      expect(gridContainer).toHaveClass('grid-cols-1');
     });
 
     it('optimizes contact form for mobile input', () => {
@@ -255,7 +255,7 @@ describe('Responsive Design Integration Tests', () => {
 
       // Should show 2 columns on tablet
       const gridContainer = container.querySelector('.grid');
-      expect(gridContainer).toHaveClass(/md:grid-cols-2/);
+      expect(gridContainer).toHaveClass('md:grid-cols-2');
 
       expect(screen.getByText('Aerial Mapping')).toBeInTheDocument();
       expect(screen.getByText('Drone Surveillance')).toBeInTheDocument();
@@ -338,7 +338,7 @@ describe('Responsive Design Integration Tests', () => {
 
       // Should show full grid layout
       const gridContainer = container.querySelector('.grid');
-      expect(gridContainer).toHaveClass(/lg:grid-cols-2/);
+      expect(gridContainer).toHaveClass('lg:grid-cols-2');
 
       // All services should be visible
       expect(screen.getByText('Aerial Mapping')).toBeInTheDocument();

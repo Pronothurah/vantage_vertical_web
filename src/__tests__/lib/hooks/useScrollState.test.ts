@@ -637,6 +637,6 @@ describe('useScrollIndicators', () => {
     expect(updatedClasses).not.toContain('can-scroll-up');
     
     const updatedStyles = result.current.getScrollIndicatorStyles();
-    expect(updatedStyles['--scroll-percentage']).toBe('0%');
+    expect((updatedStyles as any)['--scroll-percentage']).toBe('0%');
   });
 });

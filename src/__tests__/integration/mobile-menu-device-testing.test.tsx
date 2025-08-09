@@ -278,7 +278,7 @@ describe('Mobile Menu Device and Browser Testing', () => {
           
           if (scrollHeight > containerHeight) {
             // Should have scroll indicators
-            expect(scrollableContainer).toHaveClass(/scroll/);
+            expect(scrollableContainer).toHaveClass(expect.stringMatching(/scroll/));
           }
         });
       });

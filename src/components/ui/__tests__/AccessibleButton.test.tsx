@@ -90,7 +90,11 @@ describe('AccessibleButton', () => {
     expect(button).toHaveAttribute('aria-busy', 'true');
     expect(button).toHaveClass('cursor-wait');
     expect(screen.getByText('Loading...')).toBeInTheDocument();
-    expect(screen.getByRole('img', { hidden: true })).toBeInTheDocument(); // Loading spinner
+    
+    // Check for loading spinner SVG
+    const spinner = button.querySelector('svg');
+    expect(spinner).toBeInTheDocument();
+    expect(spinner).toHaveAttribute('aria-hidden', 'true');
   });
 
   it('prevents clicks when loading', async () => {
@@ -117,7 +121,7 @@ describe('AccessibleButton', () => {
     
     const button = screen.getByRole('button');
     expect(button).toBeDisabled();
-    expect(button).toHaveClass('opacity-50', 'cursor-not-allowed');
+    expect(button).toHaveClass('disabled:opacity-50', 'disabled:cursor-not-allowed');
     
     await user.click(button);
     expect(handleClick).not.toHaveBeenCalled();

@@ -45,6 +45,7 @@ class VisualTester {
         opacity: computedStyle.opacity,
         transform: computedStyle.transform,
         transition: computedStyle.transition,
+        overflowY: computedStyle.overflowY,
       },
       classes: Array.from(element.classList),
       attributes: this.getRelevantAttributes(element),

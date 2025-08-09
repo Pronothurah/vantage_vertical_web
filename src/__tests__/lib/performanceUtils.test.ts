@@ -197,7 +197,7 @@ describe('MobileMenuErrorBoundary', () => {
 
   test('should wrap function with error handling', () => {
     const mockFn = jest.fn().mockReturnValue('success');
-    const wrappedFn = errorBoundary.wrapFunction(mockFn, 'test');
+    const wrappedFn = errorBoundary.wrapFunction(mockFn, 'unknown');
 
     const result = wrappedFn('arg1', 'arg2');
     expect(result).toBe('success');
@@ -208,7 +208,7 @@ describe('MobileMenuErrorBoundary', () => {
     const mockFn = jest.fn().mockImplementation(() => {
       throw new Error('Test error');
     });
-    const wrappedFn = errorBoundary.wrapFunction(mockFn, 'test', 'fallback');
+    const wrappedFn = errorBoundary.wrapFunction(mockFn, 'unknown', 'fallback');
 
     const result = wrappedFn();
     expect(result).toBe('fallback');
@@ -220,7 +220,7 @@ describe('MobileMenuErrorBoundary', () => {
       .mockImplementationOnce(() => { throw new Error('Test error'); })
       .mockImplementationOnce(() => 'success');
     
-    const wrappedFn = errorBoundary.wrapFunction(mockFn, 'test', 'fallback');
+    const wrappedFn = errorBoundary.wrapFunction(mockFn, 'unknown', 'fallback');
 
     // First call should error
     let result = wrappedFn();
@@ -237,7 +237,7 @@ describe('MobileMenuErrorBoundary', () => {
     const mockFn = jest.fn().mockImplementation(() => {
       throw new Error('Test error');
     });
-    const wrappedFn = errorBoundary.wrapFunction(mockFn, 'test', 'fallback');
+    const wrappedFn = errorBoundary.wrapFunction(mockFn, 'unknown', 'fallback');
 
     wrappedFn();
     expect(errorBoundary.getState().retryCount).toBe(1);
@@ -250,7 +250,7 @@ describe('MobileMenuErrorBoundary', () => {
     const mockFn = jest.fn().mockImplementation(() => {
       throw new Error('Test error');
     });
-    const wrappedFn = errorBoundary.wrapFunction(mockFn, 'test', 'fallback');
+    const wrappedFn = errorBoundary.wrapFunction(mockFn, 'unknown', 'fallback');
 
     wrappedFn();
     expect(errorBoundary.getState().hasError).toBe(true);
