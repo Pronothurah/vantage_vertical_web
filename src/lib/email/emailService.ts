@@ -10,21 +10,15 @@ import {
 import { 
   validateSMTPConfig, 
   getEmailConfig, 
-  createEmailError, 
-  calculateBackoffDelay, 
-  classifySmtpError,
   isValidEmail,
   sanitizeEmailContent
 } from './utils';
+import { EmailErrorHandler, emailErrorHandler } from './errorHandler';
 
 export class EmailService {
   private transporter: Transporter | null = null;
   private config: EmailServiceConfig | null = null;
   private isConfigured = false;
-  private consecutiveFailures = 0;
-  private circuitBreakerThreshold = 5;
-  private circuitBreakerResetTime = 300000; // 5 minutes
-  private lastFailureTime = 0;
 
   constructor() {
     this.initialize();
@@ -68,7 +62,20 @@ export class EmailService {
    * @returns Promise<boolean> - true if configuration is valid
    */
   async validateConfiguration(): Promise<boolean> {
+    const startTime = Date.now();
+    
     if (!this.isConfigured || !this.config) {
+      const error = EmailErrorHandler.handleError(
+        new Error('Email service not configured'),
+        { operation: 'validate_configuration' }
+      );
+      
+      emailErrorHandler.logOperation(
+        'validate',
+        { success: false, error },
+        Date.now() - startTime
+      );
+      
       return false;
     }
 
@@ -81,20 +88,56 @@ export class EmailService {
           : (this.config as any)[field];
         
         if (!value) {
-          console.error(`Missing required configuration field: ${field}`);
+          const error = EmailErrorHandler.handleError(
+            new Error(`Missing required configuration field: ${field}`),
+            { field, operation: 'validate_configuration' }
+          );
+          
+          emailErrorHandler.logOperation(
+            'validate',
+            { success: false, error },
+            Date.now() - startTime
+          );
+          
           return false;
         }
       }
 
       // Validate email format
       if (!isValidEmail(this.config.from)) {
-        console.error('Invalid from email address in configuration');
+        const error = EmailErrorHandler.handleError(
+          new Error('Invalid from email address in configuration'),
+          { fromEmail: this.config.from, operation: 'validate_configuration' }
+        );
+        
+        emailErrorHandler.logOperation(
+          'validate',
+          { success: false, error },
+          Date.now() - startTime
+        );
+        
         return false;
       }
 
+      emailErrorHandler.logOperation(
+        'validate',
+        { success: true },
+        Date.now() - startTime
+      );
+      
       return true;
     } catch (error) {
-      console.error('Configuration validation failed:', error);
+      const emailError = EmailErrorHandler.handleError(
+        error as Error,
+        { operation: 'validate_configuration' }
+      );
+      
+      emailErrorHandler.logOperation(
+        'validate',
+        { success: false, error: emailError },
+        Date.now() - startTime
+      );
+      
       return false;
     }
   }
@@ -104,19 +147,45 @@ export class EmailService {
    * @returns Promise<boolean> - true if connection is successful
    */
   async testConnection(): Promise<boolean> {
+    const startTime = Date.now();
+    
     if (!this.transporter || !this.isConfigured) {
-      console.error('Email service not configured');
+      const error = EmailErrorHandler.handleError(
+        new Error('Email service not configured'),
+        { operation: 'test_connection' }
+      );
+      
+      emailErrorHandler.logOperation(
+        'test_connection',
+        { success: false, error },
+        Date.now() - startTime
+      );
+      
       return false;
     }
 
     try {
       await this.transporter.verify();
-      console.log('SMTP connection test successful');
-      this.consecutiveFailures = 0; // Reset failure count on success
+      
+      emailErrorHandler.logOperation(
+        'test_connection',
+        { success: true },
+        Date.now() - startTime
+      );
+      
       return true;
     } catch (error) {
-      console.error('SMTP connection test failed:', error);
-      this.consecutiveFailures++;
+      const emailError = EmailErrorHandler.handleError(
+        error as Error,
+        { operation: 'test_connection' }
+      );
+      
+      emailErrorHandler.logOperation(
+        'test_connection',
+        { success: false, error: emailError },
+        Date.now() - startTime
+      );
+      
       return false;
     }
   }
@@ -126,18 +195,7 @@ export class EmailService {
    * @returns boolean - true if circuit breaker is open
    */
   private isCircuitBreakerOpen(): boolean {
-    if (this.consecutiveFailures < this.circuitBreakerThreshold) {
-      return false;
-    }
-
-    const timeSinceLastFailure = Date.now() - this.lastFailureTime;
-    if (timeSinceLastFailure > this.circuitBreakerResetTime) {
-      // Reset circuit breaker after timeout
-      this.consecutiveFailures = 0;
-      return false;
-    }
-
-    return true;
+    return emailErrorHandler.isCircuitBreakerOpen();
   }
 
   /**
@@ -150,31 +208,61 @@ export class EmailService {
     
     // Validate input
     if (!isValidEmail(options.to)) {
-      const error = createEmailError(
+      const error = EmailErrorHandler.handleError(
         new Error('Invalid recipient email address'),
-        EmailErrorType.VALIDATION_ERROR,
-        { recipient: options.to }
+        { recipient: options.to, operation: 'send_email' }
       );
-      return this.createFailureResult(options, error, 0);
+      const result = this.createFailureResult(options, error, 0);
+      
+      emailErrorHandler.logOperation(
+        'send',
+        result,
+        Date.now() - startTime,
+        { recipient: options.to, subject: options.subject }
+      );
+      
+      return result;
     }
 
     // Check circuit breaker
     if (this.isCircuitBreakerOpen()) {
-      const error = createEmailError(
+      const circuitStatus = emailErrorHandler.getCircuitBreakerStatus();
+      const error = EmailErrorHandler.handleError(
         new Error('Email service temporarily disabled due to consecutive failures'),
-        EmailErrorType.SMTP_CONNECTION_ERROR,
-        { consecutiveFailures: this.consecutiveFailures }
+        { 
+          consecutiveFailures: circuitStatus.consecutiveFailures,
+          operation: 'send_email',
+          circuitBreakerOpen: true
+        }
       );
-      return this.createFailureResult(options, error, 0);
+      const result = this.createFailureResult(options, error, 0);
+      
+      emailErrorHandler.logOperation(
+        'send',
+        result,
+        Date.now() - startTime,
+        { recipient: options.to, subject: options.subject }
+      );
+      
+      return result;
     }
 
     // Check if service is configured
     if (!this.isConfigured || !this.transporter || !this.config) {
-      const error = createEmailError(
+      const error = EmailErrorHandler.handleError(
         new Error('Email service not configured'),
-        EmailErrorType.CONFIGURATION_ERROR
+        { operation: 'send_email' }
       );
-      return this.createFailureResult(options, error, 0);
+      const result = this.createFailureResult(options, error, 0);
+      
+      emailErrorHandler.logOperation(
+        'send',
+        result,
+        Date.now() - startTime,
+        { recipient: options.to, subject: options.subject }
+      );
+      
+      return result;
     }
 
     // Sanitize content
@@ -187,10 +275,32 @@ export class EmailService {
     };
 
     // Attempt to send with retry logic
-    return await this.retryWithBackoff(
-      () => this.attemptSend(sanitizedOptions),
-      this.config.retryAttempts
-    );
+    try {
+      const result = await this.retryWithBackoff(
+        () => this.attemptSend(sanitizedOptions),
+        this.config.retryAttempts
+      );
+      
+      emailErrorHandler.logOperation(
+        'send',
+        result,
+        Date.now() - startTime,
+        { recipient: options.to, subject: options.subject }
+      );
+      
+      return result;
+    } catch (error) {
+      const result = this.createFailureResult(options, error as EmailError, 0);
+      
+      emailErrorHandler.logOperation(
+        'send',
+        result,
+        Date.now() - startTime,
+        { recipient: options.to, subject: options.subject }
+      );
+      
+      return result;
+    }
   }
 
   /**
@@ -202,9 +312,6 @@ export class EmailService {
     try {
       const info = await this.transporter!.sendMail(options);
       
-      // Reset consecutive failures on success
-      this.consecutiveFailures = 0;
-      
       return {
         success: true,
         messageId: info.messageId,
@@ -214,17 +321,14 @@ export class EmailService {
         subject: options.subject,
       };
     } catch (error: any) {
-      this.consecutiveFailures++;
-      this.lastFailureTime = Date.now();
-      
-      const emailError = createEmailError(
+      const emailError = EmailErrorHandler.handleError(
         error,
-        classifySmtpError(error),
         { 
           recipient: options.to, 
           subject: options.subject,
           smtpCode: error.code,
-          smtpResponse: error.response 
+          smtpResponse: error.response,
+          operation: 'attempt_send'
         }
       );
       
@@ -268,7 +372,7 @@ export class EmailService {
         }
         
         // Calculate delay and wait
-        const delay = calculateBackoffDelay(attempt, this.config!.retryDelay);
+        const delay = EmailErrorHandler.getRetryDelay(attempt, this.config!.retryDelay);
         console.log(`Email send attempt ${attempt + 1} failed, retrying in ${delay}ms:`, lastError.message);
         await this.sleep(delay);
       }
@@ -314,11 +418,21 @@ export class EmailService {
    * @returns Object with configuration status information
    */
   getStatus() {
+    const circuitStatus = emailErrorHandler.getCircuitBreakerStatus();
+    const metrics = emailErrorHandler.getMetrics();
+    
     return {
       isConfigured: this.isConfigured,
-      consecutiveFailures: this.consecutiveFailures,
-      circuitBreakerOpen: this.isCircuitBreakerOpen(),
-      lastFailureTime: this.lastFailureTime,
+      consecutiveFailures: circuitStatus.consecutiveFailures,
+      circuitBreakerOpen: circuitStatus.isOpen,
+      lastFailureTime: circuitStatus.lastFailureTime,
+      metrics: {
+        totalOperations: metrics.totalOperations,
+        successRate: metrics.successRate,
+        averageRetryCount: metrics.averageRetryCount,
+        averageDuration: metrics.averageDuration,
+        errorsByType: metrics.errorsByType,
+      },
       config: this.config ? {
         host: this.config.host,
         port: this.config.port,
@@ -379,9 +493,7 @@ export class EmailService {
    * Manually reset the circuit breaker
    */
   resetCircuitBreaker(): void {
-    this.consecutiveFailures = 0;
-    this.lastFailureTime = 0;
-    console.log('Email service circuit breaker reset');
+    emailErrorHandler.resetCircuitBreaker();
   }
 }
 

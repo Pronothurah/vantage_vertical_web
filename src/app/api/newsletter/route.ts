@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
+import { emailService } from '@/lib/email/emailService';
+import { generateNewsletterEmails, NewsletterSubscriptionData } from '@/lib/email/templates/newsletter';
+import { EmailErrorType } from '@/lib/email/types';
 
 // Rate limiting store for newsletter subscriptions
 const newsletterRateLimitStore = new Map<string, { count: number; resetTime: number }>();
@@ -94,115 +96,73 @@ function generateConfirmationToken(): string {
          Math.random().toString(36).substring(2, 15);
 }
 
-async function sendConfirmationEmail(email: string, confirmationToken: string): Promise<void> {
-  // Check if email credentials are configured
-  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-    console.log('Email credentials not configured. Skipping email send for:', email);
-    console.log('Confirmation token would be:', confirmationToken);
-    return; // Skip email sending if credentials are not configured
+/**
+ * Sends newsletter confirmation email using shared EmailService
+ * @param subscriptionData - Newsletter subscription data
+ * @returns Promise<{ success: boolean, error?: string }>
+ */
+async function sendNewsletterEmails(subscriptionData: NewsletterSubscriptionData): Promise<{ success: boolean, error?: string }> {
+  try {
+    // Check if email service is configured
+    const serviceStatus = emailService.getStatus();
+    if (!serviceStatus.isConfigured) {
+      console.log('Email service not configured. Skipping email send for:', subscriptionData.email);
+      console.log('Confirmation token would be:', subscriptionData.confirmationToken);
+      return { success: true }; // Return success to not block the subscription process
+    }
+
+    // Generate confirmation URL
+    const confirmationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/newsletter/confirm?token=${subscriptionData.confirmationToken}&email=${encodeURIComponent(subscriptionData.email)}`;
+
+    // Generate email templates
+    const { welcomeEmail, adminNotification } = generateNewsletterEmails(
+      subscriptionData,
+      confirmationUrl
+    );
+
+    // Send welcome email to subscriber
+    const welcomeResult = await emailService.sendEmail({
+      to: subscriptionData.email,
+      subject: welcomeEmail.subject,
+      html: welcomeEmail.html,
+      text: welcomeEmail.text,
+    });
+
+    if (!welcomeResult.success) {
+      console.error('Failed to send newsletter welcome email:', welcomeResult.error);
+      return { 
+        success: false, 
+        error: welcomeResult.error?.type === EmailErrorType.CONFIGURATION_ERROR 
+          ? 'Email service configuration error' 
+          : 'Failed to send confirmation email' 
+      };
+    }
+
+    // Send admin notification (don't fail if this fails)
+    try {
+      const adminResult = await emailService.sendEmail({
+        to: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
+        subject: adminNotification.subject,
+        html: adminNotification.html,
+        text: adminNotification.text,
+      });
+
+      if (!adminResult.success) {
+        console.warn('Failed to send newsletter admin notification:', adminResult.error);
+      }
+    } catch (adminError) {
+      console.warn('Admin notification failed, but continuing:', adminError);
+    }
+
+    return { success: true };
+
+  } catch (error) {
+    console.error('Newsletter email sending failed:', error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Unknown email error' 
+    };
   }
-
-  // Create transporter
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.gmail.com',
-    port: parseInt(process.env.SMTP_PORT || '587'),
-    secure: false,
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  });
-
-  const confirmationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/newsletter/confirm?token=${confirmationToken}&email=${encodeURIComponent(email)}`;
-
-  const htmlContent = `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-      <div style="background-color: #D72638; color: white; padding: 30px; text-align: center;">
-        <img src="https://vantagevertical.co.ke/vantage-logo-white.jpg" alt="Vantage Vertical Logo" style="height: 60px; margin-bottom: 15px;" />
-        <h1 style="margin: 0; font-size: 28px;">Welcome to Vantage Vertical!</h1>
-        <p style="margin: 10px 0 0 0; font-size: 16px;">Confirm your newsletter subscription</p>
-      </div>
-      
-      <div style="padding: 40px 30px; background-color: #f8f9fa;">
-        <div style="background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-          <h2 style="color: #333; margin-top: 0; font-size: 24px;">Almost there!</h2>
-          
-          <p style="color: #666; font-size: 16px; line-height: 1.6;">
-            Thank you for subscribing to the Vantage Vertical newsletter. You'll receive updates about:
-          </p>
-          
-          <ul style="color: #666; font-size: 16px; line-height: 1.8; padding-left: 20px;">
-            <li>Latest drone technology and innovations</li>
-            <li>Agricultural drone solutions and case studies</li>
-            <li>Aerial mapping and surveillance insights</li>
-            <li>Training program announcements</li>
-            <li>Industry news and best practices</li>
-          </ul>
-          
-          <p style="color: #666; font-size: 16px; line-height: 1.6;">
-            To complete your subscription, please click the button below to confirm your email address:
-          </p>
-          
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${confirmationUrl}" 
-               style="background-color: #D72638; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; display: inline-block;">
-              Confirm Subscription
-            </a>
-          </div>
-          
-          <p style="color: #999; font-size: 14px; line-height: 1.5;">
-            If the button doesn't work, copy and paste this link into your browser:<br>
-            <a href="${confirmationUrl}" style="color: #D72638; word-break: break-all;">${confirmationUrl}</a>
-          </p>
-          
-          <div style="margin-top: 30px; padding: 20px; background-color: #e7f3ff; border-radius: 5px; border-left: 4px solid #D72638;">
-            <p style="margin: 0; font-size: 14px; color: #666;">
-              <strong>Note:</strong> This confirmation link will expire in 24 hours. 
-              If you didn't subscribe to our newsletter, you can safely ignore this email.
-            </p>
-          </div>
-        </div>
-      </div>
-      
-      <div style="background-color: #343a40; color: white; padding: 20px; text-align: center; font-size: 14px;">
-        <p style="margin: 0;">
-          © ${new Date().getFullYear()} Vantage Vertical. All rights reserved.
-        </p>
-        <p style="margin: 10px 0 0 0;">
-          Professional drone services for aerial mapping, surveillance, and agriculture.
-        </p>
-      </div>
-    </div>
-  `;
-
-  const textContent = `
-Welcome to Vantage Vertical Newsletter!
-
-Thank you for subscribing to our newsletter. You'll receive updates about:
-- Latest drone technology and innovations
-- Agricultural drone solutions and case studies
-- Aerial mapping and surveillance insights
-- Training program announcements
-- Industry news and best practices
-
-To complete your subscription, please visit this link to confirm your email address:
-${confirmationUrl}
-
-This confirmation link will expire in 24 hours.
-
-If you didn't subscribe to our newsletter, you can safely ignore this email.
-
-© ${new Date().getFullYear()} Vantage Vertical. All rights reserved.
-Professional drone services for aerial mapping, surveillance, and agriculture.
-  `;
-
-  await transporter.sendMail({
-    from: `"Vantage Vertical" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
-    to: email,
-    subject: 'Confirm your Vantage Vertical newsletter subscription',
-    text: textContent,
-    html: htmlContent,
-  });
 }
 
 export async function POST(request: NextRequest) {
@@ -261,7 +221,7 @@ export async function POST(request: NextRequest) {
     const confirmationToken = generateConfirmationToken();
 
     // Store subscription (in production, save to database)
-    const subscription: NewsletterSubscription = {
+    const subscriptionData: NewsletterSubscriptionData = {
       email,
       subscribedAt: new Date(),
       confirmed: false,
@@ -271,18 +231,18 @@ export async function POST(request: NextRequest) {
     // Add to temporary storage
     subscriptions.add(email);
 
-    // Send confirmation email
-    try {
-      await sendConfirmationEmail(email, confirmationToken);
-    } catch (emailError) {
-      console.error('Failed to send confirmation email:', emailError);
+    // Send confirmation email using shared EmailService
+    const emailResult = await sendNewsletterEmails(subscriptionData);
+    
+    if (!emailResult.success) {
+      console.error('Failed to send newsletter emails:', emailResult.error);
       
       // Remove from storage if email failed
       subscriptions.delete(email);
       
       return NextResponse.json(
         { 
-          error: 'Failed to send confirmation email. Please try again.',
+          error: emailResult.error || 'Failed to send confirmation email. Please try again.',
           code: 'EMAIL_SEND_FAILED'
         },
         { status: 500 }
@@ -325,13 +285,59 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // In production, verify token against database
+    // Validate email format
+    const validation = validateEmail(email);
+    if (!validation.isValid) {
+      return NextResponse.json(
+        { error: 'Invalid email address', code: 'INVALID_EMAIL' },
+        { status: 400 }
+      );
+    }
+
+    const normalizedEmail = email.trim().toLowerCase();
+
+    // In production, verify token against database and update confirmation status
     // For now, just confirm the subscription
-    console.log('Newsletter subscription confirmed:', email);
+    console.log('Newsletter subscription confirmed:', normalizedEmail);
+
+    // Send confirmation email using shared EmailService
+    try {
+      const serviceStatus = emailService.getStatus();
+      if (serviceStatus.isConfigured) {
+        const subscriptionData: NewsletterSubscriptionData = {
+          email: normalizedEmail,
+          subscribedAt: new Date(),
+          confirmed: true,
+          confirmationToken: token
+        };
+
+        const { confirmationEmail } = generateNewsletterEmails(
+          subscriptionData,
+          '' // No confirmation URL needed for this email
+        );
+
+        const confirmationResult = await emailService.sendEmail({
+          to: normalizedEmail,
+          subject: confirmationEmail.subject,
+          html: confirmationEmail.html,
+          text: confirmationEmail.text,
+        });
+
+        if (!confirmationResult.success) {
+          console.warn('Failed to send newsletter confirmation email:', confirmationResult.error);
+          // Don't fail the confirmation process if email fails
+        }
+      } else {
+        console.log('Email service not configured. Skipping confirmation email for:', normalizedEmail);
+      }
+    } catch (emailError) {
+      console.warn('Newsletter confirmation email failed, but continuing:', emailError);
+      // Don't fail the confirmation process if email fails
+    }
 
     return NextResponse.json(
       { 
-        message: 'Your newsletter subscription has been confirmed!',
+        message: 'Your newsletter subscription has been confirmed! Welcome to Vantage Vertical.',
         success: true
       },
       { status: 200 }
