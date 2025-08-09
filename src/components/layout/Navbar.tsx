@@ -4,7 +4,12 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
-import { ariaAttributes, keyboardHandlers, trapFocus, announceToScreenReader } from '@/lib/accessibility';
+import { 
+  ariaAttributes, 
+  keyboardHandlers, 
+  trapFocus, 
+  announceToScreenReader
+} from '@/lib/accessibility';
 
 interface NavLink {
   href: string;
@@ -38,26 +43,18 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Handle focus trapping in mobile menu
+  // Handle focus trapping and accessibility setup in mobile menu
   useEffect(() => {
     if (isMobileMenuOpen && mobileMenuRef.current) {
       const cleanup = trapFocus(mobileMenuRef.current);
-      return cleanup;
+      
+      return () => {
+        cleanup();
+      };
     }
   }, [isMobileMenuOpen]);
 
-  // Handle escape key to close mobile menu
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isMobileMenuOpen) {
-        closeMobileMenu();
-        menuButtonRef.current?.focus();
-      }
-    };
 
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [isMobileMenuOpen]);
 
   const isActiveLink = (href: string) => {
     if (href === '/') {
@@ -180,40 +177,50 @@ export default function Navbar() {
         {/* Mobile Menu */}
         <div
           id="mobile-menu"
-          ref={mobileMenuRef}
-          className={`lg:hidden overflow-hidden transition-all duration-300 ${
-            isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+          className={`lg:hidden overflow-hidden transition-all duration-300 gpu-accelerated ${
+            isMobileMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
           }`}
           aria-hidden={!isMobileMenuOpen}
           role="navigation"
           aria-label="Mobile navigation"
         >
-          <div className="py-4 space-y-2 bg-white/95 backdrop-blur-md rounded-lg mt-2 shadow-large">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={closeMobileMenu}
-                className={`block px-6 py-3 text-base font-medium transition-colors duration-200 ${
-                  isActiveLink(link.href)
-                    ? 'text-primary bg-primary/5 border-r-4 border-primary'
-                    : 'text-gray-700 hover:text-deepBlue hover:bg-deepBlue/5'
-                }`}
-                {...ariaAttributes.link(isActiveLink(link.href))}
-                tabIndex={isMobileMenuOpen ? 0 : -1}
-              >
-                {link.label}
-              </Link>
-            ))}
-            <div className="px-6 py-3">
-              <Link
-                href="/contact"
-                onClick={closeMobileMenu}
-                className="btn-primary w-full text-center block"
-                tabIndex={isMobileMenuOpen ? 0 : -1}
-              >
-                Get Quote
-              </Link>
+          {/* Outer container - handles positioning and backdrop effects */}
+          <div className="mobile-menu-container">
+            {/* Inner container - show all items without scrolling */}
+            <div 
+              ref={mobileMenuRef}
+              className="mobile-menu-scrollable"
+              role="menu"
+              aria-orientation="vertical"
+              aria-label="Mobile navigation menu"
+            >
+              {/* Content wrapper - maintains padding and spacing */}
+              <div className="mobile-menu-content">
+                {navLinks.map((link, index) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={closeMobileMenu}
+                    className={`mobile-menu-item no-select ${
+                      isActiveLink(link.href) ? 'active' : ''
+                    }`}
+                    {...ariaAttributes.link(isActiveLink(link.href))}
+                    tabIndex={isMobileMenuOpen ? 0 : -1}
+                    role="menuitem"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+                <Link
+                  href="/contact"
+                  onClick={closeMobileMenu}
+                  className="mobile-menu-cta no-select"
+                  tabIndex={isMobileMenuOpen ? 0 : -1}
+                  role="menuitem"
+                >
+                  Get Quote
+                </Link>
+              </div>
             </div>
           </div>
         </div>

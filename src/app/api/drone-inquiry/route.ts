@@ -66,65 +66,43 @@ export async function POST(request: NextRequest) {
       source: 'website'
     });
 
-    // Generate email templates
-    const adminEmailTemplate = generateDroneInquiryAdminEmail(data);
-    const customerEmailTemplate = generateDroneInquiryCustomerEmail(data);
-
-    // Send emails asynchronously (don't block the response)
-    const emailPromises = [];
-
-    // Send admin notification email
-    const adminEmailPromise = emailService.sendEmail({
-      to: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
-      subject: adminEmailTemplate.subject,
-      html: adminEmailTemplate.html,
-      text: adminEmailTemplate.text
-    }).then(result => {
-      if (result.success) {
-        console.log('Admin drone inquiry notification sent successfully:', result.messageId);
-      } else {
-        console.error('Failed to send admin drone inquiry notification:', result.error?.message);
-      }
-      return result;
-    }).catch(error => {
-      console.error('Error sending admin drone inquiry notification:', error);
-      return { success: false, error, retryCount: 0, timestamp: new Date(), recipient: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com', subject: adminEmailTemplate.subject };
-    });
-
-    emailPromises.push(adminEmailPromise);
-
-    // Send customer acknowledgment email
-    const customerEmailPromise = emailService.sendEmail({
-      to: data.email,
-      subject: customerEmailTemplate.subject,
-      html: customerEmailTemplate.html,
-      text: customerEmailTemplate.text
-    }).then(result => {
-      if (result.success) {
-        console.log('Customer drone inquiry acknowledgment sent successfully:', result.messageId);
-      } else {
-        console.error('Failed to send customer drone inquiry acknowledgment:', result.error?.message);
-      }
-      return result;
-    }).catch(error => {
-      console.error('Error sending customer drone inquiry acknowledgment:', error);
-      return { success: false, error, retryCount: 0, timestamp: new Date(), recipient: data.email, subject: customerEmailTemplate.subject };
-    });
-
-    emailPromises.push(customerEmailPromise);
-
-    // Process emails in background without blocking response
-    Promise.all(emailPromises).then(results => {
-      const adminResult = results[0];
-      const customerResult = results[1];
+    // Send drone inquiry emails asynchronously for better performance
+    let queueIds;
+    try {
+      // Use async email processing to avoid blocking user response
+      queueIds = await emailService.sendDroneInquiryEmailsAsync(
+        data,
+        (results) => {
+          // Log email results for monitoring (processed in background)
+          console.log('Drone inquiry email processing completed:', {
+            adminEmailSuccess: results.adminResult.success,
+            customerEmailSuccess: results.customerResult.success,
+            adminEmailError: results.adminResult.error?.message,
+            customerEmailError: results.customerResult.error?.message,
+            inquiryId: `INQ-${Date.now()}`,
+            timestamp: new Date().toISOString()
+          });
+        }
+      );
       
-      console.log('Drone inquiry email processing completed:', {
-        adminEmailSent: adminResult.success,
-        customerEmailSent: customerResult.success,
-        inquiryId: `INQ-${Date.now()}`,
-        timestamp: new Date().toISOString()
+      console.log('Drone inquiry emails queued for processing:', {
+        adminQueueId: queueIds.adminQueueId,
+        customerQueueId: queueIds.customerQueueId,
+        inquiryData: {
+          name: data.name,
+          email: data.email,
+          droneId: data.droneId,
+          inquiryType: data.inquiryType
+        }
       });
-    });
+      
+    } catch (emailError) {
+      console.error('Failed to queue drone inquiry emails:', emailError);
+      
+      // Continue with success response even if email queueing fails
+      // This ensures user experience is not blocked by email issues
+      queueIds = null;
+    }
 
     // Return immediate response to user
     return NextResponse.json(

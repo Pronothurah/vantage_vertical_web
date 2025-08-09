@@ -80,7 +80,7 @@ describe('HeroSection', () => {
     const { container } = render(<HeroSection {...defaultProps} />);
 
     const heroSection = container.firstChild;
-    expect(heroSection).toHaveClass('relative', 'min-h-screen', 'flex', 'items-center');
+    expect(heroSection).toHaveClass('relative', 'h-screen', 'flex', 'flex-col', 'justify-center', 'overflow-hidden');
   });
 
   it('has proper accessibility attributes', () => {
@@ -126,6 +126,6 @@ describe('HeroSection', () => {
 
     // Check for responsive text classes on the span inside the h1
     const titleSpan = container.querySelector('h1 span');
-    expect(titleSpan).toHaveClass('text-4xl', 'sm:text-5xl', 'lg:text-6xl', 'xl:text-7xl');
+    expect(titleSpan).toHaveClass('text-2xl', 'sm:text-2xl', 'md:text-3xl', 'lg:text-3xl', 'xl:text-4xl');
   });
 });

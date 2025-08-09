@@ -1,5 +1,4 @@
 import { EmailError, EmailErrorType } from '../types';
-import { createEmailError } from '../utils';
 
 /**
  * Base template data interface for consistent company branding
@@ -59,6 +58,17 @@ const DEFAULT_COMPANY_DATA: Partial<BaseTemplateData> = {
   contactEmail: 'vantagevarticalltd@gmail.com',
   contactPhone: '+254 XXX XXX XXX', // Replace with actual phone number
 };
+
+/**
+ * Creates an email error with proper typing
+ */
+function createEmailError(error: Error, type: EmailErrorType, context?: Record<string, any>): EmailError {
+  const emailError = error as EmailError;
+  emailError.type = type;
+  emailError.retryable = false;
+  emailError.context = context;
+  return emailError;
+}
 
 /**
  * Validates that required template data is present

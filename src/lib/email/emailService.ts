@@ -10,21 +10,19 @@ import {
 import { 
   validateSMTPConfig, 
   getEmailConfig, 
-  createEmailError, 
-  calculateBackoffDelay, 
-  classifySmtpError,
   isValidEmail,
-  sanitizeEmailContent
+  sanitizeEmailContent,
+  isEmailTestMode,
+  devEmailLogger,
+  createMockEmailResult,
+  getEmailServiceStatus
 } from './utils';
+import { EmailErrorHandler, emailErrorHandler } from './errorHandler';
 
 export class EmailService {
   private transporter: Transporter | null = null;
   private config: EmailServiceConfig | null = null;
   private isConfigured = false;
-  private consecutiveFailures = 0;
-  private circuitBreakerThreshold = 5;
-  private circuitBreakerResetTime = 300000; // 5 minutes
-  private lastFailureTime = 0;
 
   constructor() {
     this.initialize();
@@ -68,7 +66,20 @@ export class EmailService {
    * @returns Promise<boolean> - true if configuration is valid
    */
   async validateConfiguration(): Promise<boolean> {
+    const startTime = Date.now();
+    
     if (!this.isConfigured || !this.config) {
+      const error = EmailErrorHandler.handleError(
+        new Error('Email service not configured'),
+        { operation: 'validate_configuration' }
+      );
+      
+      emailErrorHandler.logOperation(
+        'validate',
+        { success: false, error },
+        Date.now() - startTime
+      );
+      
       return false;
     }
 
@@ -81,20 +92,56 @@ export class EmailService {
           : (this.config as any)[field];
         
         if (!value) {
-          console.error(`Missing required configuration field: ${field}`);
+          const error = EmailErrorHandler.handleError(
+            new Error(`Missing required configuration field: ${field}`),
+            { field, operation: 'validate_configuration' }
+          );
+          
+          emailErrorHandler.logOperation(
+            'validate',
+            { success: false, error },
+            Date.now() - startTime
+          );
+          
           return false;
         }
       }
 
       // Validate email format
       if (!isValidEmail(this.config.from)) {
-        console.error('Invalid from email address in configuration');
+        const error = EmailErrorHandler.handleError(
+          new Error('Invalid from email address in configuration'),
+          { fromEmail: this.config.from, operation: 'validate_configuration' }
+        );
+        
+        emailErrorHandler.logOperation(
+          'validate',
+          { success: false, error },
+          Date.now() - startTime
+        );
+        
         return false;
       }
 
+      emailErrorHandler.logOperation(
+        'validate',
+        { success: true },
+        Date.now() - startTime
+      );
+      
       return true;
     } catch (error) {
-      console.error('Configuration validation failed:', error);
+      const emailError = EmailErrorHandler.handleError(
+        error as Error,
+        { operation: 'validate_configuration' }
+      );
+      
+      emailErrorHandler.logOperation(
+        'validate',
+        { success: false, error: emailError },
+        Date.now() - startTime
+      );
+      
       return false;
     }
   }
@@ -104,19 +151,45 @@ export class EmailService {
    * @returns Promise<boolean> - true if connection is successful
    */
   async testConnection(): Promise<boolean> {
+    const startTime = Date.now();
+    
     if (!this.transporter || !this.isConfigured) {
-      console.error('Email service not configured');
+      const error = EmailErrorHandler.handleError(
+        new Error('Email service not configured'),
+        { operation: 'test_connection' }
+      );
+      
+      emailErrorHandler.logOperation(
+        'test_connection',
+        { success: false, error },
+        Date.now() - startTime
+      );
+      
       return false;
     }
 
     try {
       await this.transporter.verify();
-      console.log('SMTP connection test successful');
-      this.consecutiveFailures = 0; // Reset failure count on success
+      
+      emailErrorHandler.logOperation(
+        'test_connection',
+        { success: true },
+        Date.now() - startTime
+      );
+      
       return true;
     } catch (error) {
-      console.error('SMTP connection test failed:', error);
-      this.consecutiveFailures++;
+      const emailError = EmailErrorHandler.handleError(
+        error as Error,
+        { operation: 'test_connection' }
+      );
+      
+      emailErrorHandler.logOperation(
+        'test_connection',
+        { success: false, error: emailError },
+        Date.now() - startTime
+      );
+      
       return false;
     }
   }
@@ -126,18 +199,7 @@ export class EmailService {
    * @returns boolean - true if circuit breaker is open
    */
   private isCircuitBreakerOpen(): boolean {
-    if (this.consecutiveFailures < this.circuitBreakerThreshold) {
-      return false;
-    }
-
-    const timeSinceLastFailure = Date.now() - this.lastFailureTime;
-    if (timeSinceLastFailure > this.circuitBreakerResetTime) {
-      // Reset circuit breaker after timeout
-      this.consecutiveFailures = 0;
-      return false;
-    }
-
-    return true;
+    return emailErrorHandler.isCircuitBreakerOpen();
   }
 
   /**
@@ -150,31 +212,89 @@ export class EmailService {
     
     // Validate input
     if (!isValidEmail(options.to)) {
-      const error = createEmailError(
+      const error = EmailErrorHandler.handleError(
         new Error('Invalid recipient email address'),
-        EmailErrorType.VALIDATION_ERROR,
-        { recipient: options.to }
+        { recipient: options.to, operation: 'send_email' }
       );
-      return this.createFailureResult(options, error, 0);
+      const result = this.createFailureResult(options, error, 0);
+      
+      emailErrorHandler.logOperation(
+        'send',
+        result,
+        Date.now() - startTime,
+        { recipient: options.to, subject: options.subject }
+      );
+      
+      return result;
+    }
+
+    // Handle test mode - log email instead of sending
+    if (isEmailTestMode()) {
+      const mockOptions = {
+        to: options.to,
+        subject: options.subject,
+        html: options.html,
+        text: options.text,
+        from: options.from || process.env.SMTP_FROM || process.env.SMTP_USER || 'noreply@example.com',
+      };
+      
+      devEmailLogger.logEmail(mockOptions);
+      
+      const result = createMockEmailResult({
+        to: options.to,
+        subject: options.subject,
+        success: true,
+      });
+      
+      emailErrorHandler.logOperation(
+        'send',
+        result,
+        Date.now() - startTime,
+        { recipient: options.to, subject: options.subject, testMode: true }
+      );
+      
+      return result;
     }
 
     // Check circuit breaker
     if (this.isCircuitBreakerOpen()) {
-      const error = createEmailError(
+      const circuitStatus = emailErrorHandler.getCircuitBreakerStatus();
+      const error = EmailErrorHandler.handleError(
         new Error('Email service temporarily disabled due to consecutive failures'),
-        EmailErrorType.SMTP_CONNECTION_ERROR,
-        { consecutiveFailures: this.consecutiveFailures }
+        { 
+          consecutiveFailures: circuitStatus.consecutiveFailures,
+          operation: 'send_email',
+          circuitBreakerOpen: true
+        }
       );
-      return this.createFailureResult(options, error, 0);
+      const result = this.createFailureResult(options, error, 0);
+      
+      emailErrorHandler.logOperation(
+        'send',
+        result,
+        Date.now() - startTime,
+        { recipient: options.to, subject: options.subject }
+      );
+      
+      return result;
     }
 
     // Check if service is configured
     if (!this.isConfigured || !this.transporter || !this.config) {
-      const error = createEmailError(
+      const error = EmailErrorHandler.handleError(
         new Error('Email service not configured'),
-        EmailErrorType.CONFIGURATION_ERROR
+        { operation: 'send_email' }
       );
-      return this.createFailureResult(options, error, 0);
+      const result = this.createFailureResult(options, error, 0);
+      
+      emailErrorHandler.logOperation(
+        'send',
+        result,
+        Date.now() - startTime,
+        { recipient: options.to, subject: options.subject }
+      );
+      
+      return result;
     }
 
     // Sanitize content
@@ -187,10 +307,32 @@ export class EmailService {
     };
 
     // Attempt to send with retry logic
-    return await this.retryWithBackoff(
-      () => this.attemptSend(sanitizedOptions),
-      this.config.retryAttempts
-    );
+    try {
+      const result = await this.retryWithBackoff(
+        () => this.attemptSend(sanitizedOptions),
+        this.config.retryAttempts
+      );
+      
+      emailErrorHandler.logOperation(
+        'send',
+        result,
+        Date.now() - startTime,
+        { recipient: options.to, subject: options.subject }
+      );
+      
+      return result;
+    } catch (error) {
+      const result = this.createFailureResult(options, error as EmailError, 0);
+      
+      emailErrorHandler.logOperation(
+        'send',
+        result,
+        Date.now() - startTime,
+        { recipient: options.to, subject: options.subject }
+      );
+      
+      return result;
+    }
   }
 
   /**
@@ -202,9 +344,6 @@ export class EmailService {
     try {
       const info = await this.transporter!.sendMail(options);
       
-      // Reset consecutive failures on success
-      this.consecutiveFailures = 0;
-      
       return {
         success: true,
         messageId: info.messageId,
@@ -214,17 +353,14 @@ export class EmailService {
         subject: options.subject,
       };
     } catch (error: any) {
-      this.consecutiveFailures++;
-      this.lastFailureTime = Date.now();
-      
-      const emailError = createEmailError(
+      const emailError = EmailErrorHandler.handleError(
         error,
-        classifySmtpError(error),
         { 
           recipient: options.to, 
           subject: options.subject,
           smtpCode: error.code,
-          smtpResponse: error.response 
+          smtpResponse: error.response,
+          operation: 'attempt_send'
         }
       );
       
@@ -268,7 +404,7 @@ export class EmailService {
         }
         
         // Calculate delay and wait
-        const delay = calculateBackoffDelay(attempt, this.config!.retryDelay);
+        const delay = EmailErrorHandler.getRetryDelay(attempt, this.config!.retryDelay);
         console.log(`Email send attempt ${attempt + 1} failed, retrying in ${delay}ms:`, lastError.message);
         await this.sleep(delay);
       }
@@ -314,11 +450,21 @@ export class EmailService {
    * @returns Object with configuration status information
    */
   getStatus() {
+    const circuitStatus = emailErrorHandler.getCircuitBreakerStatus();
+    const metrics = emailErrorHandler.getMetrics();
+    
     return {
       isConfigured: this.isConfigured,
-      consecutiveFailures: this.consecutiveFailures,
-      circuitBreakerOpen: this.isCircuitBreakerOpen(),
-      lastFailureTime: this.lastFailureTime,
+      consecutiveFailures: circuitStatus.consecutiveFailures,
+      circuitBreakerOpen: circuitStatus.isOpen,
+      lastFailureTime: circuitStatus.lastFailureTime,
+      metrics: {
+        totalOperations: metrics.totalOperations,
+        successRate: metrics.successRate,
+        averageRetryCount: metrics.averageRetryCount,
+        averageDuration: metrics.averageDuration,
+        errorsByType: metrics.errorsByType,
+      },
       config: this.config ? {
         host: this.config.host,
         port: this.config.port,
@@ -379,9 +525,342 @@ export class EmailService {
    * Manually reset the circuit breaker
    */
   resetCircuitBreaker(): void {
-    this.consecutiveFailures = 0;
-    this.lastFailureTime = 0;
-    console.log('Email service circuit breaker reset');
+    emailErrorHandler.resetCircuitBreaker();
+  }
+
+  /**
+   * Gets comprehensive email service status including configuration validation
+   * @returns Object with detailed service status
+   */
+  getServiceStatus() {
+    const baseStatus = this.getStatus();
+    const serviceStatus = getEmailServiceStatus();
+    
+    return {
+      ...baseStatus,
+      ...serviceStatus,
+      developmentLogs: isEmailTestMode() ? {
+        totalLogs: devEmailLogger.getLogs().length,
+        recentLogs: devEmailLogger.getRecentLogs(5),
+      } : null,
+    };
+  }
+
+  /**
+   * Gets development mode email logs
+   * @param count - Number of recent logs to return (default: 10)
+   * @returns Array of recent email logs
+   */
+  getDevLogs(count: number = 10) {
+    if (!isEmailTestMode()) {
+      return null;
+    }
+    return devEmailLogger.getRecentLogs(count);
+  }
+
+  /**
+   * Clears development mode email logs
+   */
+  clearDevLogs(): void {
+    if (isEmailTestMode()) {
+      devEmailLogger.clearLogs();
+    }
+  }
+
+  /**
+   * Gets logs for a specific recipient in development mode
+   * @param recipient - Email address to filter by
+   * @returns Array of logs for the recipient
+   */
+  getDevLogsForRecipient(recipient: string) {
+    if (!isEmailTestMode()) {
+      return null;
+    }
+    return devEmailLogger.getLogsForRecipient(recipient);
+  }
+
+  /**
+   * Sends an email asynchronously using the queue system
+   * @param options - Email options
+   * @param priority - Email priority (high, normal, low)
+   * @param callback - Optional callback for when email is processed
+   * @returns Promise<string> - Queue ID for tracking
+   */
+  async sendEmailAsync(
+    options: EmailOptions,
+    priority: 'high' | 'normal' | 'low' = 'normal',
+    callback?: (result: EmailResult) => void
+  ): Promise<string> {
+    // Import here to avoid circular dependency
+    const { getAsyncEmailQueue } = await import('./asyncEmailQueue');
+    const queue = getAsyncEmailQueue();
+    
+    return queue.queueEmail(options, priority, callback);
+  }
+
+  /**
+   * Sends contact form emails asynchronously
+   * @param formData - Contact form data
+   * @param callback - Optional callback for results
+   * @returns Promise<{ adminQueueId: string, customerQueueId: string }>
+   */
+  async sendContactEmailsAsync(
+    formData: any,
+    callback?: (results: { adminResult: EmailResult, customerResult: EmailResult }) => void
+  ): Promise<{ adminQueueId: string, customerQueueId: string }> {
+    const { generateContactEmails } = await import('./templates/contact');
+    const { adminNotification, customerConfirmation } = generateContactEmails(formData);
+
+    const results = { adminResult: null as EmailResult | null, customerResult: null as EmailResult | null };
+    let completedCount = 0;
+
+    const checkCompletion = () => {
+      completedCount++;
+      if (completedCount === 2 && callback && results.adminResult && results.customerResult) {
+        callback({
+          adminResult: results.adminResult,
+          customerResult: results.customerResult
+        });
+      }
+    };
+
+    // Queue admin notification email (high priority)
+    const adminQueueId = await this.sendEmailAsync(
+      {
+        to: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
+        subject: adminNotification.subject,
+        html: adminNotification.html,
+        text: adminNotification.text,
+      },
+      'high',
+      (result) => {
+        results.adminResult = result;
+        checkCompletion();
+      }
+    );
+
+    // Queue customer confirmation email (normal priority)
+    const customerQueueId = await this.sendEmailAsync(
+      {
+        to: formData.email,
+        subject: customerConfirmation.subject,
+        html: customerConfirmation.html,
+        text: customerConfirmation.text,
+      },
+      'normal',
+      (result) => {
+        results.customerResult = result;
+        checkCompletion();
+      }
+    );
+
+    return { adminQueueId, customerQueueId };
+  }
+
+  /**
+   * Sends drone inquiry emails asynchronously
+   * @param inquiryData - Drone inquiry data
+   * @param callback - Optional callback for results
+   * @returns Promise<{ adminQueueId: string, customerQueueId: string }>
+   */
+  async sendDroneInquiryEmailsAsync(
+    inquiryData: any,
+    callback?: (results: { adminResult: EmailResult, customerResult: EmailResult }) => void
+  ): Promise<{ adminQueueId: string, customerQueueId: string }> {
+    const { 
+      generateDroneInquiryAdminEmail, 
+      generateDroneInquiryCustomerEmail 
+    } = await import('./templates/droneInquiry');
+    
+    const adminEmailTemplate = generateDroneInquiryAdminEmail(inquiryData);
+    const customerEmailTemplate = generateDroneInquiryCustomerEmail(inquiryData);
+
+    const results = { adminResult: null as EmailResult | null, customerResult: null as EmailResult | null };
+    let completedCount = 0;
+
+    const checkCompletion = () => {
+      completedCount++;
+      if (completedCount === 2 && callback && results.adminResult && results.customerResult) {
+        callback({
+          adminResult: results.adminResult,
+          customerResult: results.customerResult
+        });
+      }
+    };
+
+    // Queue admin notification email (high priority)
+    const adminQueueId = await this.sendEmailAsync(
+      {
+        to: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
+        subject: adminEmailTemplate.subject,
+        html: adminEmailTemplate.html,
+        text: adminEmailTemplate.text,
+      },
+      'high',
+      (result) => {
+        results.adminResult = result;
+        checkCompletion();
+      }
+    );
+
+    // Queue customer acknowledgment email (normal priority)
+    const customerQueueId = await this.sendEmailAsync(
+      {
+        to: inquiryData.email,
+        subject: customerEmailTemplate.subject,
+        html: customerEmailTemplate.html,
+        text: customerEmailTemplate.text,
+      },
+      'normal',
+      (result) => {
+        results.customerResult = result;
+        checkCompletion();
+      }
+    );
+
+    return { adminQueueId, customerQueueId };
+  }
+
+  /**
+   * Sends enrollment emails asynchronously
+   * @param enrollmentData - Training enrollment data
+   * @param callback - Optional callback for results
+   * @returns Promise<{ adminQueueId: string, studentQueueId: string }>
+   */
+  async sendEnrollmentEmailsAsync(
+    enrollmentData: any,
+    callback?: (results: { adminResult: EmailResult, studentResult: EmailResult }) => void
+  ): Promise<{ adminQueueId: string, studentQueueId: string }> {
+    const { generateEnrollmentEmails } = await import('./templates/enrollment');
+    const { adminNotification, studentConfirmation } = generateEnrollmentEmails(enrollmentData);
+
+    const results = { adminResult: null as EmailResult | null, studentResult: null as EmailResult | null };
+    let completedCount = 0;
+
+    const checkCompletion = () => {
+      completedCount++;
+      if (completedCount === 2 && callback && results.adminResult && results.studentResult) {
+        callback({
+          adminResult: results.adminResult,
+          studentResult: results.studentResult
+        });
+      }
+    };
+
+    // Queue admin notification email (high priority)
+    const adminQueueId = await this.sendEmailAsync(
+      {
+        to: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
+        subject: adminNotification.subject,
+        html: adminNotification.html,
+        text: adminNotification.text,
+      },
+      'high',
+      (result) => {
+        results.adminResult = result;
+        checkCompletion();
+      }
+    );
+
+    // Queue student confirmation email (normal priority)
+    const studentQueueId = await this.sendEmailAsync(
+      {
+        to: enrollmentData.email,
+        subject: studentConfirmation.subject,
+        html: studentConfirmation.html,
+        text: studentConfirmation.text,
+      },
+      'normal',
+      (result) => {
+        results.studentResult = result;
+        checkCompletion();
+      }
+    );
+
+    return { adminQueueId, studentQueueId };
+  }
+
+  /**
+   * Sends newsletter emails asynchronously
+   * @param subscriptionData - Newsletter subscription data
+   * @param confirmationUrl - Confirmation URL
+   * @param callback - Optional callback for results
+   * @returns Promise<{ welcomeQueueId: string, adminQueueId?: string }>
+   */
+  async sendNewsletterEmailsAsync(
+    subscriptionData: any,
+    confirmationUrl: string,
+    callback?: (results: { welcomeResult: EmailResult, adminResult?: EmailResult }) => void
+  ): Promise<{ welcomeQueueId: string, adminQueueId?: string }> {
+    const { generateNewsletterEmails } = await import('./templates/newsletter');
+    const { welcomeEmail, adminNotification } = generateNewsletterEmails(
+      subscriptionData,
+      confirmationUrl
+    );
+
+    const results = { welcomeResult: null as EmailResult | null, adminResult: null as EmailResult | null };
+    let completedCount = 0;
+    const expectedCount = 2;
+
+    const checkCompletion = () => {
+      completedCount++;
+      if (completedCount === expectedCount && callback && results.welcomeResult) {
+        callback({
+          welcomeResult: results.welcomeResult,
+          adminResult: results.adminResult || undefined
+        });
+      }
+    };
+
+    // Queue welcome email to subscriber (high priority)
+    const welcomeQueueId = await this.sendEmailAsync(
+      {
+        to: subscriptionData.email,
+        subject: welcomeEmail.subject,
+        html: welcomeEmail.html,
+        text: welcomeEmail.text,
+      },
+      'high',
+      (result) => {
+        results.welcomeResult = result;
+        checkCompletion();
+      }
+    );
+
+    // Queue admin notification email (low priority)
+    const adminQueueId = await this.sendEmailAsync(
+      {
+        to: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
+        subject: adminNotification.subject,
+        html: adminNotification.html,
+        text: adminNotification.text,
+      },
+      'low',
+      (result) => {
+        results.adminResult = result;
+        checkCompletion();
+      }
+    );
+
+    return { welcomeQueueId, adminQueueId };
+  }
+
+  /**
+   * Gets async email queue metrics
+   */
+  async getAsyncQueueMetrics() {
+    const { getAsyncEmailQueue } = await import('./asyncEmailQueue');
+    const queue = getAsyncEmailQueue();
+    return queue.getMetrics();
+  }
+
+  /**
+   * Gets async email queue status
+   */
+  async getAsyncQueueStatus() {
+    const { getAsyncEmailQueue } = await import('./asyncEmailQueue');
+    const queue = getAsyncEmailQueue();
+    return queue.getQueueStatus();
   }
 }
 

@@ -1,5 +1,6 @@
 // Main exports
 export { EmailService, emailService } from './emailService';
+export { EmailErrorHandler, emailErrorHandler } from './errorHandler';
 export * from './types';
 export * from './utils';
 
@@ -14,7 +15,6 @@ export {
 export { 
   validateSMTPConfig, 
   getEmailConfig, 
-  createEmailError, 
   isValidEmail,
   sanitizeEmailContent 
 } from './utils';

@@ -1,12 +1,10 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import HomePage from '@/app/page';
 import ContactPage from '@/app/contact/page';
-import { useSearchParams } from 'next/navigation';
 
 // Mock Next.js modules
 jest.mock('next/navigation', () => ({
-  useSearchParams: jest.fn(() => new URLSearchParams()),
   useRouter: () => ({
     push: jest.fn(),
     replace: jest.fn(),

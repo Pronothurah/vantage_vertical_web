@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Navbar } from '@/components/layout';
 import { Footer } from '@/components/layout';
@@ -122,7 +122,7 @@ describe('Navigation Integration Tests', () => {
 
       const ctaButton = screen.getByRole('link', { name: /get quote|book service|contact us/i });
       expect(ctaButton).toBeInTheDocument();
-      expect(ctaButton).toHaveClass(/btn-primary|bg-primary/);
+      expect(ctaButton).toHaveClass(expect.stringMatching(/btn-primary|bg-primary/));
     });
 
     it('handles mobile menu toggle', async () => {
@@ -155,7 +155,7 @@ describe('Navigation Integration Tests', () => {
       rerender(<Navbar />);
 
       const aboutLink = screen.getByRole('link', { name: /about/i });
-      expect(aboutLink).toHaveClass(/active|current/);
+      expect(aboutLink).toHaveClass(expect.stringMatching(/active|current/));
     });
 
     it('has proper accessibility attributes', () => {

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Menu Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --font-urbanist: 'Urbanist', sans-serif;
+            
+            /* Mobile Menu Scrolling Custom Properties */
+            --menu-max-height-mobile: 70vh;
+            --menu-max-height-tablet: 80vh;
+            --menu-reserved-space-mobile: 20vh;
+            --menu-reserved-space-tablet: 15vh;
+            --menu-item-height: 56px;
+            --menu-padding: 1rem;
+        }
+
+        /* Mobile Menu Scrolling Components */
+        .mobile-menu-container {
+            /* Outer container - handles positioning and backdrop effects */
+            position: relative;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 0.5rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            margin-top: 0.5rem;
+        }
+        
+        .mobile-menu-scrollable {
+            /* Inner scrollable container with responsive height management */
+            overflow-y: auto;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(59, 130, 246, 0.5) transparent;
+            
+            /* Dynamic height based on device type */
+            max-height: var(--menu-max-height-mobile);
+        }
+        
+        /* Tablet-specific height adjustments */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .mobile-menu-scrollable {
+                max-height: var(--menu-max-height-tablet);
+            }
+        }
+        
+        /* Custom scrollbar styling for webkit browsers */
+        .mobile-menu-scrollable::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .mobile-menu-scrollable::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .mobile-menu-scrollable::-webkit-scrollbar-thumb {
+            background-color: rgba(59, 130, 246, 0.5);
+            border-radius: 3px;
+            transition: background-color 0.2s ease;
+        }
+        
+        .mobile-menu-scrollable::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(59, 130, 246, 0.7);
+        }
+        
+        .mobile-menu-content {
+            /* Content wrapper - maintains padding and spacing */
+            padding: var(--menu-padding) 0;
+        }
+        
+        /* Respect reduced motion preferences for smooth scrolling */
+        @media (prefers-reduced-motion: reduce) {
+            .mobile-menu-scrollable {
+                scroll-behavior: auto;
+            }
+        }
+
+        /* Test styles */
+        .test-container {
+            max-width: 400px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+        
+        .menu-item {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #374151;
+            text-decoration: none;
+            transition: colors 0.2s;
+        }
+        
+        .menu-item:hover {
+            color: #1e40af;
+            background-color: rgba(30, 64, 175, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4">
+    <div class="test-container">
+        <h1 class="text-2xl font-bold mb-4">Mobile Menu Scrolling Test</h1>
+        
+        <div class="mobile-menu-container">
+            <div class="mobile-menu-scrollable" role="menu" aria-orientation="vertical">
+                <div class="mobile-menu-content space-y-2">
+                    <a href="#" class="menu-item" role="menuitem">Home</a>
+                    <a href="#" class="menu-item" role="menuitem">About</a>
+                    <a href="#" class="menu-item" role="menuitem">Drones</a>
+                    <a href="#" class="menu-item" role="menuitem">Portfolio</a>
+                    <a href="#" class="menu-item" role="menuitem">Technology</a>
+                    <a href="#" class="menu-item" role="menuitem">Training</a>
+                    <a href="#" class="menu-item" role="menuitem">Blog</a>
+                    <a href="#" class="menu-item" role="menuitem">Contact</a>
+                    <a href="#" class="menu-item" role="menuitem">Services</a>
+                    <a href="#" class="menu-item" role="menuitem">Gallery</a>
+                    <a href="#" class="menu-item" role="menuitem">Testimonials</a>
+                    <a href="#" class="menu-item" role="menuitem">FAQ</a>
+                    <a href="#" class="menu-item" role="menuitem">Support</a>
+                    <a href="#" class="menu-item" role="menuitem">Careers</a>
+                    <a href="#" class="menu-item" role="menuitem">News</a>
+                    <a href="#" class="menu-item" role="menuitem">Events</a>
+                    <a href="#" class="menu-item" role="menuitem">Partners</a>
+                    <a href="#" class="menu-item" role="menuitem">Resources</a>
+                    <div class="px-6 py-3">
+                        <a href="#" class="bg-red-600 text-white px-6 py-3 rounded-lg font-semibold w-full text-center block hover:bg-red-700 transition-colors" role="menuitem">
+                            Get Quote
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4 text-sm text-gray-600">
+            <p><strong>Test Instructions:</strong></p>
+            <ul class="list-disc list-inside space-y-1">
+                <li>The menu should be scrollable if content exceeds 70vh on mobile</li>
+                <li>On tablet (769px-1024px), max height should be 80vh</li>
+                <li>Custom scrollbar should appear when scrolling</li>
+                <li>Backdrop blur and visual effects should be preserved</li>
+                <li>Smooth scrolling should work (unless reduced motion is preferred)</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
 import { ContactFormData } from '@/types/forms';
 import { serviceOptions, urgencyLevels } from '@/data';
+import { emailService } from '@/lib/email/emailService';
+import { generateContactEmails } from '@/lib/email/templates/contact';
+import { EmailErrorType } from '@/lib/email/types';
 
 // Rate limiting store (in production, use Redis or database)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
@@ -140,112 +142,52 @@ function validateContactData(data: any): { isValid: boolean; errors: string[] } 
   };
 }
 
-async function sendNotificationEmail(formData: ContactFormData): Promise<void> {
-  // Create transporter (configure with your email service)
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.gmail.com',
-    port: parseInt(process.env.SMTP_PORT || '587'),
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  });
+/**
+ * Sends contact form emails using the shared EmailService
+ * @param formData - Contact form submission data
+ * @returns Promise with email results
+ */
+async function sendContactEmails(formData: ContactFormData): Promise<{
+  adminResult: { success: boolean; error?: any };
+  customerResult: { success: boolean; error?: any };
+}> {
+  try {
+    // Generate email templates using the shared template system
+    const { adminNotification, customerConfirmation } = generateContactEmails(formData);
 
-  // Get service label
-  const serviceLabel = serviceOptions.find(s => s.value === formData.service)?.label || formData.service;
-  const urgencyLabel = urgencyLevels.find(u => u.value === formData.urgency)?.label || formData.urgency;
+    // Send admin notification email
+    const adminResult = await emailService.sendEmail({
+      to: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
+      subject: adminNotification.subject,
+      html: adminNotification.html,
+      text: adminNotification.text,
+    });
 
-  // Email content
-  const htmlContent = `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-      <div style="background-color: #D72638; color: white; padding: 20px; text-align: center;">
-        <img src="https://vantagevertical.co.ke/vantage-logo-white.jpg" alt="Vantage Vertical Logo" style="height: 60px; margin-bottom: 10px;" />
-        <h1 style="margin: 0;">New Contact Form Submission</h1>
-        <p style="margin: 5px 0 0 0;">Vantage Vertical Website</p>
-      </div>
-      
-      <div style="padding: 30px; background-color: #f8f9fa;">
-        <div style="background-color: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-          <h2 style="color: #D72638; margin-top: 0;">Contact Details</h2>
-          
-          <table style="width: 100%; border-collapse: collapse;">
-            <tr>
-              <td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold; width: 30%;">Name:</td>
-              <td style="padding: 10px 0; border-bottom: 1px solid #eee;">${formData.name}</td>
-            </tr>
-            <tr>
-              <td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold;">Email:</td>
-              <td style="padding: 10px 0; border-bottom: 1px solid #eee;">
-                <a href="mailto:${formData.email}" style="color: #D72638;">${formData.email}</a>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold;">Phone:</td>
-              <td style="padding: 10px 0; border-bottom: 1px solid #eee;">
-                <a href="tel:${formData.phone}" style="color: #D72638;">${formData.phone}</a>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold;">Service:</td>
-              <td style="padding: 10px 0; border-bottom: 1px solid #eee;">${serviceLabel}</td>
-            </tr>
-            <tr>
-              <td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold;">Urgency:</td>
-              <td style="padding: 10px 0; border-bottom: 1px solid #eee;">
-                <span style="color: ${formData.urgency === 'high' ? '#dc3545' : formData.urgency === 'medium' ? '#ffc107' : '#28a745'};">
-                  ${urgencyLabel}
-                </span>
-              </td>
-            </tr>
-          </table>
-          
-          <h3 style="color: #D72638; margin-top: 25px;">Message</h3>
-          <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #D72638;">
-            ${formData.message.replace(/\n/g, '<br>')}
-          </div>
-          
-          <div style="margin-top: 25px; padding: 15px; background-color: #e7f3ff; border-radius: 5px;">
-            <p style="margin: 0; font-size: 14px; color: #666;">
-              <strong>Submitted:</strong> ${new Date().toLocaleString()}<br>
-              <strong>Response Time:</strong> ${formData.urgency === 'high' ? '24-48 hours' : formData.urgency === 'medium' ? '3-5 days' : '1-2 weeks'}
-            </p>
-          </div>
-        </div>
-      </div>
-      
-      <div style="background-color: #343a40; color: white; padding: 20px; text-align: center; font-size: 14px;">
-        <p style="margin: 0;">This email was sent from the Vantage Vertical contact form.</p>
-        <p style="margin: 5px 0 0 0;">Please respond promptly based on the urgency level indicated.</p>
-      </div>
-    </div>
-  `;
+    // Send customer confirmation email
+    const customerResult = await emailService.sendEmail({
+      to: formData.email,
+      subject: customerConfirmation.subject,
+      html: customerConfirmation.html,
+      text: customerConfirmation.text,
+    });
 
-  const textContent = `
-New Contact Form Submission - Vantage Vertical
-
-Contact Details:
-Name: ${formData.name}
-Email: ${formData.email}
-Phone: ${formData.phone}
-Service: ${serviceLabel}
-Urgency: ${urgencyLabel}
-
-Message:
-${formData.message}
-
-Submitted: ${new Date().toLocaleString()}
-Response Time: ${formData.urgency === 'high' ? '24-48 hours' : formData.urgency === 'medium' ? '3-5 days' : '1-2 weeks'}
-  `;
-
-  // Send email
-  await transporter.sendMail({
-    from: `"Vantage Vertical Website" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
-    to: process.env.CONTACT_EMAIL || 'vantagevarticalltd@gmail.com',
-    subject: `New ${urgencyLabel} Contact Form Submission - ${serviceLabel}`,
-    text: textContent,
-    html: htmlContent,
-  });
+    return {
+      adminResult: {
+        success: adminResult.success,
+        error: adminResult.error
+      },
+      customerResult: {
+        success: customerResult.success,
+        error: customerResult.error
+      }
+    };
+  } catch (error) {
+    console.error('Error generating or sending contact emails:', error);
+    return {
+      adminResult: { success: false, error },
+      customerResult: { success: false, error }
+    };
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -307,14 +249,52 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Send notification email
+    // Send contact form emails asynchronously for better performance
+    let queueIds;
     try {
-      await sendNotificationEmail(formData);
-    } catch (emailError) {
-      console.error('Failed to send notification email:', emailError);
+      // Use async email processing to avoid blocking user response
+      queueIds = await emailService.sendContactEmailsAsync(
+        formData,
+        (results) => {
+          // Log email results for monitoring (processed in background)
+          console.log('Contact form email processing completed:', {
+            adminEmailSuccess: results.adminResult.success,
+            customerEmailSuccess: results.customerResult.success,
+            adminEmailError: results.adminResult.error?.message,
+            customerEmailError: results.customerResult.error?.message,
+            timestamp: new Date().toISOString()
+          });
+          
+          // Check if both emails failed due to configuration issues
+          if (!results.adminResult.success && !results.customerResult.success) {
+            const adminError = results.adminResult.error;
+            const customerError = results.customerResult.error;
+            
+            if (adminError?.type === EmailErrorType.CONFIGURATION_ERROR || 
+                customerError?.type === EmailErrorType.CONFIGURATION_ERROR) {
+              console.warn('Email service not configured properly for contact form');
+            }
+          }
+        }
+      );
       
-      // Don't fail the request if email fails, but log it
-      // In production, you might want to queue this for retry
+      console.log('Contact form emails queued for processing:', {
+        adminQueueId: queueIds.adminQueueId,
+        customerQueueId: queueIds.customerQueueId,
+        formData: {
+          name: formData.name,
+          email: formData.email,
+          service: formData.service,
+          urgency: formData.urgency
+        }
+      });
+      
+    } catch (emailError) {
+      console.error('Failed to queue contact form emails:', emailError);
+      
+      // Continue with success response even if email queueing fails
+      // This ensures user experience is not blocked by email issues
+      queueIds = null;
     }
 
     // Return success response
