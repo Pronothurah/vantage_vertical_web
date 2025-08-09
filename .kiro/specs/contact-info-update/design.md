@@ -145,7 +145,7 @@ interface CompanyInfo {
   tagline: string;
   description: string;
   phone: string; // +254704277687
-  email: string; // vantagevarticalltd@gmail.com
+  email: string; // vantageverticalltd@gmail.com
   founded: string; // December 2022
   teamSize: string; // 10+
   projectsCompleted: string;

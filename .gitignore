@@ -67,3 +67,4 @@ temp/
 *.tgz
 .yarn-integrity
 package-lock.json.bak
+vantage_vertical_web.zip

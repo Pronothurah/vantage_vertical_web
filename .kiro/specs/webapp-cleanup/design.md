@@ -101,7 +101,7 @@ This design outlines the systematic cleanup and modernization of the Vantage Ver
 ```env
 # Site Configuration
 NEXT_PUBLIC_SITE_URL=https://vantagevertical.co.ke
-NEXT_PUBLIC_CONTACT_EMAIL=vantagevarticalltd@gmail.com
+NEXT_PUBLIC_CONTACT_EMAIL=vantageverticalltd@gmail.com
 NEXT_PUBLIC_PHONE_NUMBER=+254704277687
 
 # Analytics (Optional)

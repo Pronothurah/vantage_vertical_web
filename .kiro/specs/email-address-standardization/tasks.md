@@ -1,6 +1,6 @@
 # Implementation Plan
 
-- [-] 1. Fix typos in spec files
+- [x] 1. Fix typos in spec files
   - Replace all instances of "vantagevarticalltd@gmail.com" with "vantageverticalltd@gmail.com" in spec files
   - Update `.kiro/specs/webapp-cleanup/design.md` to use correct email address
   - Update `.kiro/specs/email-smtp-integration/requirements.md` to use correct email address
@@ -9,20 +9,20 @@
   - Update `.kiro/specs/contact-info-update/design.md` to use correct email address
   - _Requirements: 1.1, 1.4_
 
-- [ ] 2. Create centralized email configuration
+- [x] 2. Create centralized email configuration
   - Create `src/lib/config/email.ts` with standardized email configuration constants
   - Export EMAIL_CONFIG object with CONTACT_EMAIL, SMTP_FROM, and COMPANY_EMAIL properties
   - Implement environment variable fallbacks with correct default email address
   - _Requirements: 2.1, 2.2_
 
-- [ ] 3. Implement email validation utilities
+- [x] 3. Implement email validation utilities
   - Create `src/lib/utils/emailValidation.ts` with email validation functions
   - Implement `validateCompanyEmail()` function to check for correct company email format
   - Implement `getStandardizedEmail()` function to return the correct company email
   - Add typo detection logic for common email address mistakes
   - _Requirements: 3.1, 3.3_
 
-- [ ] 4. Update email service to use centralized configuration
+- [-] 4. Update email service to use centralized configuration
   - Modify `src/lib/email/emailService.ts` to import and use EMAIL_CONFIG
   - Replace hardcoded email fallbacks with centralized configuration
   - Add email validation before sending emails
