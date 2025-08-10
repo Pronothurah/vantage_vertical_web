@@ -3,7 +3,7 @@ import { EmailError, EmailErrorType, EmailResult } from './types';
 export interface EmailOperationLog {
   id: string;
   timestamp: Date;
-  operation: 'send' | 'validate' | 'test_connection';
+  operation: 'send' | 'validate' | 'test_connection' | 'email_correction' | 'email_standardization' | 'recipient_typo_detected';
   recipient?: string;
   subject?: string;
   success: boolean;
@@ -159,8 +159,8 @@ export class EmailErrorHandler {
    * @param context - Additional context
    */
   logOperation(
-    operation: 'send' | 'validate' | 'test_connection',
-    result: EmailResult | { success: boolean; error?: EmailError },
+    operation: 'send' | 'validate' | 'test_connection' | 'email_correction' | 'email_standardization' | 'recipient_typo_detected',
+    result: EmailResult | { success: boolean; error?: EmailError; [key: string]: any },
     duration: number,
     context: Record<string, any> = {}
   ): void {
@@ -310,7 +310,7 @@ export class EmailErrorHandler {
    */
   getFilteredLogs(filters: {
     success?: boolean;
-    operation?: 'send' | 'validate' | 'test_connection';
+    operation?: 'send' | 'validate' | 'test_connection' | 'email_correction' | 'email_standardization' | 'recipient_typo_detected';
     errorType?: EmailErrorType;
     recipient?: string;
     since?: Date;

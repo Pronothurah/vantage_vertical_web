@@ -1,5 +1,7 @@
 import { EmailError, EmailErrorType, SMTPConfig, EmailServiceConfig } from './types';
 import * as nodemailer from 'nodemailer';
+import { validateCompanyEmail, getStandardizedEmail, detectEmailTypos, validateAndCorrectEmail } from '../utils/emailValidation';
+import { EMAIL_CONFIG } from '../config/email';
 
 /**
  * Configuration validation result interface
@@ -79,15 +81,36 @@ export function validateSMTPConfigDetailed(): ConfigValidationResult {
     errors.push('Invalid SMTP_HOST: must be a valid hostname or IP address');
   }
 
-  // Validate email addresses
+  // Validate email addresses using centralized validation
   const fromEmail = process.env.SMTP_FROM || requiredVars.user!;
   if (fromEmail && !isValidEmail(fromEmail)) {
     errors.push('Invalid SMTP_FROM or SMTP_USER: must be a valid email address');
   }
 
-  const contactEmail = process.env.CONTACT_EMAIL || 'vantageverticalltd@gmail.com';
+  // Validate and check for company email typos in SMTP_FROM
+  if (fromEmail) {
+    const typoResult = detectEmailTypos(fromEmail);
+    if (typoResult.hasTypo) {
+      warnings.push(`SMTP_FROM email "${fromEmail}" appears to contain a typo. Did you mean "${typoResult.suggestedCorrection}"?`);
+    }
+  }
+
+  const contactEmail = process.env.CONTACT_EMAIL || EMAIL_CONFIG.COMPANY_EMAIL;
   if (contactEmail && !isValidEmail(contactEmail)) {
     warnings.push('Invalid CONTACT_EMAIL: should be a valid email address');
+  }
+
+  // Validate and check for company email typos in CONTACT_EMAIL
+  if (contactEmail) {
+    const typoResult = detectEmailTypos(contactEmail);
+    if (typoResult.hasTypo) {
+      warnings.push(`CONTACT_EMAIL "${contactEmail}" appears to contain a typo. Did you mean "${typoResult.suggestedCorrection}"?`);
+    }
+    
+    // Check if using correct company email
+    if (!validateCompanyEmail(contactEmail)) {
+      warnings.push(`CONTACT_EMAIL should use the standardized company email: ${getStandardizedEmail()}`);
+    }
   }
 
   // Check for optional but recommended variables
@@ -96,7 +119,7 @@ export function validateSMTPConfigDetailed(): ConfigValidationResult {
   }
 
   if (!process.env.CONTACT_EMAIL) {
-    warnings.push('CONTACT_EMAIL not set, using default vantageverticalltd@gmail.com');
+    warnings.push(`CONTACT_EMAIL not set, using default ${EMAIL_CONFIG.COMPANY_EMAIL}`);
   }
 
   // Validate common SMTP configurations
@@ -181,6 +204,73 @@ export function isValidHostname(hostname: string): boolean {
 export function isValidEmail(email: string): boolean {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
+}
+
+/**
+ * Validates and corrects email configuration with detailed warnings
+ * @param email - Email address to validate and potentially correct
+ * @param configName - Name of the configuration (for warning messages)
+ * @returns Object with validation results and warnings
+ */
+export function validateEmailConfiguration(email: string, configName: string = 'email'): {
+  isValid: boolean;
+  correctedEmail: string;
+  warnings: string[];
+  originalEmail: string;
+} {
+  const warnings: string[] = [];
+  const originalEmail = email;
+
+  if (!email || typeof email !== 'string') {
+    warnings.push(`${configName} is empty or invalid`);
+    return {
+      isValid: false,
+      correctedEmail: getStandardizedEmail(),
+      warnings,
+      originalEmail: originalEmail || ''
+    };
+  }
+
+  // Basic email format validation
+  if (!isValidEmail(email)) {
+    warnings.push(`${configName} "${email}" is not a valid email format`);
+    return {
+      isValid: false,
+      correctedEmail: getStandardizedEmail(),
+      warnings,
+      originalEmail
+    };
+  }
+
+  // Check for company email typos
+  const typoResult = detectEmailTypos(email);
+  if (typoResult.hasTypo) {
+    warnings.push(`${configName} "${email}" appears to contain a typo. Suggested correction: "${typoResult.suggestedCorrection}"`);
+    return {
+      isValid: false,
+      correctedEmail: typoResult.suggestedCorrection || getStandardizedEmail(),
+      warnings,
+      originalEmail
+    };
+  }
+
+  // Check if using standardized company email
+  if (!validateCompanyEmail(email)) {
+    warnings.push(`${configName} "${email}" should use the standardized company email: ${getStandardizedEmail()}`);
+    return {
+      isValid: true, // Valid format but not standardized
+      correctedEmail: email,
+      warnings,
+      originalEmail
+    };
+  }
+
+  return {
+    isValid: true,
+    correctedEmail: email,
+    warnings,
+    originalEmail
+  };
 }
 
 /**
@@ -435,6 +525,29 @@ function getConfigurationRecommendations(validation: ConfigValidationResult): st
 
   if (validation.warnings.length > 0) {
     recommendations.push('Review configuration warnings for optimal setup');
+    
+    // Add specific recommendations for email typos
+    if (validation.warnings.some(w => w.includes('typo'))) {
+      recommendations.push(`Use the standardized company email: ${getStandardizedEmail()}`);
+    }
+  }
+
+  // Validate current email configurations and provide specific recommendations
+  const smtpFrom = process.env.SMTP_FROM;
+  const contactEmail = process.env.CONTACT_EMAIL;
+  
+  if (smtpFrom) {
+    const smtpValidation = validateEmailConfiguration(smtpFrom, 'SMTP_FROM');
+    if (smtpValidation.warnings.length > 0) {
+      recommendations.push(`SMTP_FROM: ${smtpValidation.warnings[0]}`);
+    }
+  }
+  
+  if (contactEmail) {
+    const contactValidation = validateEmailConfiguration(contactEmail, 'CONTACT_EMAIL');
+    if (contactValidation.warnings.length > 0) {
+      recommendations.push(`CONTACT_EMAIL: ${contactValidation.warnings[0]}`);
+    }
   }
 
   if (isDevelopmentMode() && validation.isValid) {

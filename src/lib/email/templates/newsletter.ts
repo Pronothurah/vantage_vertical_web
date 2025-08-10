@@ -75,7 +75,7 @@ export function generateNewsletterWelcomeEmail(
   `;
 
   const template = generateBaseTemplate(content, {
-    unsubscribeUrl: `${process.env.FRONTEND_URL || 'https://vantagevartical.com'}/newsletter/unsubscribe?email=${encodeURIComponent(data.email)}`,
+    unsubscribeUrl: `https://vantagevertical.co.ke/newsletter/unsubscribe?email=${encodeURIComponent(data.email)}`,
     ...baseData
   });
 
@@ -123,8 +123,8 @@ export function generateNewsletterConfirmationEmail(
     <p>While you wait for your first newsletter, explore what Vantage Vertical has to offer:</p>
     
     <div class="text-center">
-      ${TemplateUtils.createButton('View Our Services', `${process.env.FRONTEND_URL || 'https://vantagevartical.com'}/services`, 'primary')}
-      ${TemplateUtils.createButton('Training Programs', `${process.env.FRONTEND_URL || 'https://vantagevartical.com'}/training`, 'secondary')}
+      ${TemplateUtils.createButton('View Our Services', 'https://vantagevertical.co.ke/services', 'primary')}
+      ${TemplateUtils.createButton('Training Programs', 'https://vantagevertical.co.ke/training', 'secondary')}
     </div>
     
     ${TemplateUtils.createDivider()}
@@ -132,7 +132,7 @@ export function generateNewsletterConfirmationEmail(
     <h3>Connect With Us</h3>
     <p>Stay connected and get the latest updates:</p>
     <ul>
-      <li>Visit our website: <a href="${process.env.FRONTEND_URL || 'https://vantagevartical.com'}">${process.env.FRONTEND_URL || 'vantagevartical.com'}</a></li>
+      <li>Visit our website: <a href="https://vantagevertical.co.ke">vantagevertical.co.ke</a></li>
       <li>Follow us on social media for daily updates</li>
       <li>Contact us directly for personalized consultations</li>
     </ul>
@@ -141,7 +141,7 @@ export function generateNewsletterConfirmationEmail(
   `;
 
   const template = generateBaseTemplate(content, {
-    unsubscribeUrl: `${process.env.FRONTEND_URL || 'https://vantagevartical.com'}/newsletter/unsubscribe?email=${encodeURIComponent(data.email)}`,
+    unsubscribeUrl: `https://vantagevertical.co.ke/newsletter/unsubscribe?email=${encodeURIComponent(data.email)}`,
     ...baseData
   });
 
@@ -194,7 +194,7 @@ export function generateNewsletterAdminNotification(
     </ul>
     
     <div class="text-center">
-      ${TemplateUtils.createButton('View All Subscribers', `${process.env.FRONTEND_URL || 'https://vantagevartical.com'}/admin/newsletter`, 'primary')}
+      ${TemplateUtils.createButton('View All Subscribers', 'https://vantagevertical.co.ke/admin/newsletter', 'primary')}
     </div>
   `;
 
@@ -237,7 +237,7 @@ export function generateNewsletterUnsubscribeEmail(
     <p>If you have a moment, we'd appreciate knowing why you unsubscribed. Your feedback helps us improve our content and services.</p>
     
     <div class="text-center">
-      ${TemplateUtils.createButton('Provide Feedback', `${process.env.FRONTEND_URL || 'https://vantagevartical.com'}/feedback?type=unsubscribe`, 'secondary')}
+      ${TemplateUtils.createButton('Provide Feedback', 'https://vantagevertical.co.ke/feedback?type=unsubscribe', 'secondary')}
     </div>
     
     ${TemplateUtils.createDivider()}
@@ -252,7 +252,7 @@ export function generateNewsletterUnsubscribeEmail(
     </ul>
     
     <div class="text-center">
-      ${TemplateUtils.createButton('Visit Our Website', `${process.env.FRONTEND_URL || 'https://vantagevartical.com'}`, 'outline')}
+      ${TemplateUtils.createButton('Visit Our Website', 'https://vantagevertical.co.ke', 'outline')}
     </div>
     
     <p>Thank you for being part of the Vantage Vertical community. We hope to serve you again in the future!</p>

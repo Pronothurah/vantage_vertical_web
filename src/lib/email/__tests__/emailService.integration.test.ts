@@ -28,7 +28,7 @@ describe('EmailService Integration with ErrorHandler', () => {
     process.env.SMTP_USER = 'test@example.com';
     process.env.SMTP_PASS = 'testpass';
     process.env.SMTP_FROM = 'test@example.com';
-    process.env.CONTACT_EMAIL = 'contact@example.com';
+    process.env.CONTACT_EMAIL = 'vantageverticalltd@gmail.com';
     
     emailService = new EmailService();
   });
@@ -189,6 +189,216 @@ describe('EmailService Integration with ErrorHandler', () => {
       expect(validateLogs).toHaveLength(1);
       expect(failureLogs).toHaveLength(1); // Only the send operation should fail
       expect(failureLogs[0].operation).toBe('send');
+    });
+  });
+
+  describe('template branding integration', () => {
+    it('should generate contact form emails with correct logo and contact information', async () => {
+      const mockContactData = {
+        name: 'John Doe',
+        email: 'john@example.com',
+        phone: '+254700000000',
+        service: 'aerial-mapping',
+        message: 'I need aerial mapping services.',
+        urgency: 'medium' as const
+      };
+
+      // Mock the contact template generation
+      const { generateContactEmails } = require('../templates/contact');
+      const emails = generateContactEmails(mockContactData);
+
+      // Verify admin notification uses correct branding
+      expect(emails.adminNotification.html).toContain('vantagevertical.co.ke/vantage-logo.png');
+      expect(emails.adminNotification.html).toContain('+254704277687');
+      expect(emails.adminNotification.html).toContain('vantageverticalltd@gmail.com');
+      expect(emails.adminNotification.html).not.toContain('vantagevartical.com');
+      expect(emails.adminNotification.html).not.toContain('+254 XXX XXX XXX');
+
+      // Verify customer confirmation uses correct branding
+      expect(emails.customerConfirmation.html).toContain('vantagevertical.co.ke/vantage-logo.png');
+      expect(emails.customerConfirmation.html).toContain('+254704277687');
+      expect(emails.customerConfirmation.html).toContain('vantageverticalltd@gmail.com');
+      expect(emails.customerConfirmation.html).not.toContain('vantagevartical.com');
+      expect(emails.customerConfirmation.html).not.toContain('+254 XXX XXX XXX');
+    });
+
+    it('should generate enrollment emails with correct logo and contact information', async () => {
+      const mockEnrollmentData = {
+        name: 'Jane Smith',
+        email: 'jane@example.com',
+        phone: '+254712345678',
+        program: 'basic-pilot',
+        session: 'January 2024',
+        experience: 'beginner' as const,
+        accommodation: true,
+        motivation: 'I want to start a drone business',
+        emergencyContact: {
+          name: 'John Smith',
+          relationship: 'spouse',
+          phone: '+254787654321'
+        }
+      };
+
+      // Mock the enrollment template generation
+      const { generateEnrollmentEmails } = require('../templates/enrollment');
+      const emails = generateEnrollmentEmails(mockEnrollmentData);
+
+      // Verify admin notification uses correct branding
+      expect(emails.adminNotification.html).toContain('vantagevertical.co.ke/vantage-logo.png');
+      expect(emails.adminNotification.html).toContain('+254704277687');
+      expect(emails.adminNotification.html).toContain('vantageverticalltd@gmail.com');
+      expect(emails.adminNotification.html).not.toContain('vantagevartical.com');
+      expect(emails.adminNotification.html).not.toContain('+254 XXX XXX XXX');
+
+      // Verify student confirmation uses correct branding
+      expect(emails.studentConfirmation.html).toContain('vantagevertical.co.ke/vantage-logo.png');
+      expect(emails.studentConfirmation.html).toContain('+254704277687');
+      expect(emails.studentConfirmation.html).toContain('vantageverticalltd@gmail.com');
+      expect(emails.studentConfirmation.html).not.toContain('vantagevartical.com');
+      expect(emails.studentConfirmation.html).not.toContain('+254 XXX XXX XXX');
+    });
+
+    it('should generate drone inquiry emails with correct logo and contact information', async () => {
+      const mockDroneInquiryData = {
+        name: 'Bob Johnson',
+        email: 'bob@example.com',
+        phone: '+254723456789',
+        company: 'Test Company',
+        droneId: 'DJI-Mavic-3',
+        quantity: 2,
+        inquiryType: 'quote' as const,
+        budget: '200k-500k',
+        timeline: 'short',
+        experience: 'intermediate' as const,
+        intendedUse: 'Agricultural monitoring',
+        message: 'Need drones for crop monitoring',
+        trainingNeeded: true,
+        financingInterest: false
+      };
+
+      // Mock the drone inquiry template generation
+      const { generateDroneInquiryAdminEmail, generateDroneInquiryCustomerEmail } = require('../templates/droneInquiry');
+      const adminEmail = generateDroneInquiryAdminEmail(mockDroneInquiryData);
+      const customerEmail = generateDroneInquiryCustomerEmail(mockDroneInquiryData);
+
+      // Verify admin email uses correct branding
+      expect(adminEmail.html).toContain('vantagevertical.co.ke/vantage-logo.png');
+      expect(adminEmail.html).toContain('+254704277687');
+      expect(adminEmail.html).toContain('vantageverticalltd@gmail.com');
+      expect(adminEmail.html).not.toContain('vantagevartical.com');
+      expect(adminEmail.html).not.toContain('+254 XXX XXX XXX');
+
+      // Verify customer email uses correct branding
+      expect(customerEmail.html).toContain('vantagevertical.co.ke/vantage-logo.png');
+      expect(customerEmail.html).toContain('+254704277687');
+      expect(customerEmail.html).toContain('vantageverticalltd@gmail.com');
+      expect(customerEmail.html).not.toContain('vantagevartical.com');
+      expect(customerEmail.html).not.toContain('+254 XXX XXX XXX');
+    });
+
+    it('should generate newsletter emails with correct logo and contact information', async () => {
+      const mockNewsletterData = {
+        email: 'subscriber@example.com',
+        confirmationToken: 'test-token-123',
+        subscribedAt: new Date(),
+        confirmed: true
+      };
+
+      const confirmationUrl = 'https://vantagevertical.co.ke/newsletter/confirm?token=test-token-123';
+
+      // Mock the newsletter template generation
+      const { generateNewsletterEmails } = require('../templates/newsletter');
+      const emails = generateNewsletterEmails(mockNewsletterData, confirmationUrl);
+
+      // Verify welcome email uses correct branding
+      expect(emails.welcomeEmail.html).toContain('vantagevertical.co.ke/vantage-logo.png');
+      expect(emails.welcomeEmail.html).toContain('+254704277687');
+      expect(emails.welcomeEmail.html).toContain('vantageverticalltd@gmail.com');
+      expect(emails.welcomeEmail.html).not.toContain('vantagevartical.com');
+      expect(emails.welcomeEmail.html).not.toContain('+254 XXX XXX XXX');
+
+      // Verify confirmation email uses correct branding
+      expect(emails.confirmationEmail.html).toContain('vantagevertical.co.ke/vantage-logo.png');
+      expect(emails.confirmationEmail.html).toContain('+254704277687');
+      expect(emails.confirmationEmail.html).toContain('vantageverticalltd@gmail.com');
+      expect(emails.confirmationEmail.html).not.toContain('vantagevartical.com');
+      expect(emails.confirmationEmail.html).not.toContain('+254 XXX XXX XXX');
+
+      // Verify admin notification uses correct branding
+      expect(emails.adminNotification.html).toContain('vantagevertical.co.ke/vantage-logo.png');
+      expect(emails.adminNotification.html).toContain('+254704277687');
+      expect(emails.adminNotification.html).toContain('vantageverticalltd@gmail.com');
+      expect(emails.adminNotification.html).not.toContain('vantagevartical.com');
+      expect(emails.adminNotification.html).not.toContain('+254 XXX XXX XXX');
+    });
+
+    it('should verify all email types render correctly with new branding', async () => {
+      // Test that base template configuration is consistent across all email types
+      const { generateBaseTemplate, getLogoUrl, validateLogoUrl } = require('../templates/base');
+      
+      // Test logo URL validation
+      const correctLogoUrl = getLogoUrl('light');
+      const darkLogoUrl = getLogoUrl('dark');
+      
+      expect(validateLogoUrl(correctLogoUrl)).toBe(true);
+      expect(validateLogoUrl(darkLogoUrl)).toBe(true);
+      expect(validateLogoUrl('https://vantagevartical.com/logo.png')).toBe(false); // Wrong domain
+      
+      // Test base template generation
+      const testContent = '<h1>Test Email</h1><p>This is a test email content.</p>';
+      const template = generateBaseTemplate(testContent);
+      
+      // Verify base template uses correct branding
+      expect(template.html).toContain('vantagevertical.co.ke/vantage-logo.png');
+      expect(template.html).toContain('+254704277687');
+      expect(template.html).toContain('vantageverticalltd@gmail.com');
+      expect(template.html).toContain('https://vantagevertical.co.ke');
+      expect(template.html).not.toContain('vantagevartical.com');
+      expect(template.html).not.toContain('+254 XXX XXX XXX');
+      
+      // Verify text version also contains correct information
+      expect(template.text).toContain('Vantage Vertical');
+      expect(template.text).toContain('+254704277687');
+      expect(template.text).toContain('vantageverticalltd@gmail.com');
+    });
+
+    it('should validate contact information consistency across templates', async () => {
+      const { validateContactInfo, validateCompanyStandards } = require('../templates/base');
+      
+      const correctData = {
+        companyName: 'Vantage Vertical',
+        logoUrl: 'https://vantagevertical.co.ke/vantage-logo.png',
+        websiteUrl: 'https://vantagevertical.co.ke',
+        contactEmail: 'vantageverticalltd@gmail.com',
+        contactPhone: '+254704277687'
+      };
+      
+      const incorrectData = {
+        companyName: 'Vantage Vertical',
+        logoUrl: 'https://vantagevartical.com/logo.png', // Wrong domain
+        websiteUrl: 'https://vantagevartical.com', // Wrong domain
+        contactEmail: 'contact@vantagevartical.com', // Wrong email
+        contactPhone: '+254 XXX XXX XXX' // Placeholder
+      };
+      
+      // Test correct data validation
+      const correctErrors = validateContactInfo(correctData);
+      const correctWarnings = validateCompanyStandards(correctData);
+      
+      expect(correctErrors).toHaveLength(0);
+      expect(correctWarnings).toHaveLength(0);
+      
+      // Test incorrect data validation
+      const incorrectErrors = validateContactInfo(incorrectData);
+      const incorrectWarnings = validateCompanyStandards(incorrectData);
+      
+      expect(incorrectErrors.length).toBeGreaterThan(0);
+      expect(incorrectWarnings.length).toBeGreaterThan(0);
+      
+      // Verify specific error messages
+      expect(incorrectErrors.some(error => error.includes('phone number format'))).toBe(true);
+      expect(incorrectErrors.some(error => error.includes('correct domain'))).toBe(true);
+      expect(incorrectWarnings.some(warning => warning.includes('standardized company email'))).toBe(true);
     });
   });
 

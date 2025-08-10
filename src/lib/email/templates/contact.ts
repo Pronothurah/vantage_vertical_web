@@ -1,6 +1,7 @@
 import { ContactFormData } from '@/types/forms';
 import { generateBaseTemplate, TemplateUtils, BaseTemplateData, EmailTemplate } from './base';
 import { serviceOptions, urgencyLevels } from '@/data';
+import { EMAIL_CONFIG } from '../../config/email';
 
 /**
  * Generates contact form email templates for both admin notification and customer confirmation
@@ -168,14 +169,14 @@ function generateCustomerConfirmationEmail(
     <h2>In the Meantime</h2>
     <p>While you wait for our response, feel free to:</p>
     <ul>
-      <li>Explore our <a href="https://vantagevartical.com/portfolio" style="color: #dc2626;">portfolio</a> to see examples of our work</li>
-      <li>Learn more about our <a href="https://vantagevartical.com/technology" style="color: #dc2626;">drone technology</a></li>
-      <li>Check out our <a href="https://vantagevartical.com/training" style="color: #dc2626;">training programs</a></li>
+      <li>Explore our <a href="https://vantagevertical.co.ke/portfolio" style="color: #dc2626;">portfolio</a> to see examples of our work</li>
+      <li>Learn more about our <a href="https://vantagevertical.co.ke/technology" style="color: #dc2626;">drone technology</a></li>
+      <li>Check out our <a href="https://vantagevertical.co.ke/training" style="color: #dc2626;">training programs</a></li>
       <li>Follow us on social media for updates and industry insights</li>
     </ul>
     
     ${TemplateUtils.createAlert(
-      '<strong>Need immediate assistance?</strong><br>For urgent matters, you can also reach us directly at vantageverticalltd@gmail.com or call us during business hours.',
+      `<strong>Need immediate assistance?</strong><br>For urgent matters, you can also reach us directly at ${EMAIL_CONFIG.CONTACT_EMAIL} or call us during business hours.`,
       'info'
     )}
     
