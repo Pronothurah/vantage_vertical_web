@@ -1,6 +1,7 @@
 import { ContactFormData } from '@/types/forms';
 import { generateBaseTemplate, TemplateUtils, BaseTemplateData, EmailTemplate } from './base';
 import { serviceOptions, urgencyLevels } from '@/data';
+import { EMAIL_CONFIG } from '../../config/email';
 
 /**
  * Generates contact form email templates for both admin notification and customer confirmation
@@ -175,7 +176,7 @@ function generateCustomerConfirmationEmail(
     </ul>
     
     ${TemplateUtils.createAlert(
-      '<strong>Need immediate assistance?</strong><br>For urgent matters, you can also reach us directly at vantageverticalltd@gmail.com or call us during business hours.',
+      `<strong>Need immediate assistance?</strong><br>For urgent matters, you can also reach us directly at ${EMAIL_CONFIG.CONTACT_EMAIL} or call us during business hours.`,
       'info'
     )}
     

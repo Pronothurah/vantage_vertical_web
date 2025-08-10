@@ -1,4 +1,5 @@
 import { EmailError, EmailErrorType } from '../types';
+import { EMAIL_CONFIG } from '../../config/email';
 
 /**
  * Base template data interface for consistent company branding
@@ -55,7 +56,7 @@ const DEFAULT_COMPANY_DATA: Partial<BaseTemplateData> = {
   companyName: 'Vantage Vertical',
   logoUrl: 'https://vantagevartical.com/vantage-logo.png',
   websiteUrl: 'https://vantagevartical.com',
-  contactEmail: 'vantageverticalltd@gmail.com',
+  contactEmail: EMAIL_CONFIG.CONTACT_EMAIL,
   contactPhone: '+254 XXX XXX XXX', // Replace with actual phone number
 };
 

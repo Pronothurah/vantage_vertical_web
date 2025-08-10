@@ -216,8 +216,9 @@ export class EmailService {
   async sendEmail(options: EmailOptions): Promise<EmailResult> {
     const startTime = Date.now();
     
-    // Validate input
+    // Validate recipient email
     if (!isValidEmail(options.to)) {
+      console.error(`[EMAIL VALIDATION] Invalid recipient email address: ${options.to}`);
       const error = EmailErrorHandler.handleError(
         new Error('Invalid recipient email address'),
         { recipient: options.to, operation: 'send_email' }
@@ -232,6 +233,68 @@ export class EmailService {
       );
       
       return result;
+    }
+
+    // Validate and correct sender email with enhanced logging
+    let fromEmail = options.from || this.config?.from || EMAIL_CONFIG.SMTP_FROM;
+    const originalFromEmail = fromEmail;
+    
+    if (fromEmail && (fromEmail.includes('vantage') || fromEmail.includes('vertical'))) {
+      const validationResult = validateAndCorrectEmail(fromEmail);
+      if (validationResult.wasTypo) {
+        console.warn(`[EMAIL VALIDATION] Typo detected in sender email: "${validationResult.originalEmail}" -> corrected to: "${validationResult.correctedEmail}"`);
+        fromEmail = validationResult.correctedEmail;
+        
+        // Log the correction for monitoring
+        emailErrorHandler.logOperation(
+          'email_correction',
+          {
+            success: true,
+            originalEmail: validationResult.originalEmail,
+            correctedEmail: validationResult.correctedEmail,
+            wasTypo: true
+          },
+          0,
+          { operation: 'sender_email_correction', subject: options.subject }
+        );
+      } else if (!validationResult.isValid) {
+        console.warn(`[EMAIL VALIDATION] Invalid sender email format: "${validationResult.originalEmail}" -> using standardized: "${validationResult.correctedEmail}"`);
+        fromEmail = validationResult.correctedEmail;
+        
+        // Log the standardization
+        emailErrorHandler.logOperation(
+          'email_standardization',
+          {
+            success: true,
+            originalEmail: validationResult.originalEmail,
+            correctedEmail: validationResult.correctedEmail,
+            wasTypo: false
+          },
+          0,
+          { operation: 'sender_email_standardization', subject: options.subject }
+        );
+      }
+    }
+
+    // Validate recipient email for company email typos (in case someone tries to send to the company)
+    if (options.to && (options.to.includes('vantage') || options.to.includes('vertical'))) {
+      const recipientValidation = validateAndCorrectEmail(options.to);
+      if (recipientValidation.wasTypo) {
+        console.warn(`[EMAIL VALIDATION] Typo detected in recipient email: "${recipientValidation.originalEmail}" -> should be: "${recipientValidation.correctedEmail}"`);
+        
+        // Log the detection but don't auto-correct recipient (could be intentional)
+        emailErrorHandler.logOperation(
+          'recipient_typo_detected',
+          {
+            success: false,
+            originalEmail: recipientValidation.originalEmail,
+            suggestedCorrection: recipientValidation.correctedEmail,
+            wasTypo: true
+          },
+          0,
+          { operation: 'recipient_typo_detection', subject: options.subject }
+        );
+      }
     }
 
     // Handle test mode - log email instead of sending
@@ -287,6 +350,7 @@ export class EmailService {
 
     // Check if service is configured
     if (!this.isConfigured || !this.transporter || !this.config) {
+      console.error(`[EMAIL VALIDATION] Email service not configured`);
       const error = EmailErrorHandler.handleError(
         new Error('Email service not configured'),
         { operation: 'send_email' }
@@ -301,16 +365,6 @@ export class EmailService {
       );
       
       return result;
-    }
-
-    // Validate and standardize sender email if it's a company email
-    let fromEmail = options.from || this.config.from;
-    if (fromEmail && (fromEmail.includes('vantage') || fromEmail.includes('vertical'))) {
-      const validationResult = validateAndCorrectEmail(fromEmail);
-      if (validationResult.wasTypo) {
-        console.warn(`Email typo detected in sender email: ${validationResult.originalEmail}, using corrected: ${validationResult.correctedEmail}`);
-        fromEmail = validationResult.correctedEmail;
-      }
     }
 
     // Sanitize content
@@ -501,11 +555,52 @@ export class EmailService {
     const { generateEnrollmentEmails } = await import('./templates/enrollment');
     const { adminNotification, studentConfirmation } = generateEnrollmentEmails(enrollmentData);
 
-    // Validate and get standardized admin email
+    // Validate and get standardized admin email with enhanced logging
     const adminEmail = EMAIL_CONFIG.CONTACT_EMAIL;
     const validationResult = validateAndCorrectEmail(adminEmail);
     if (validationResult.wasTypo) {
-      console.warn(`Email typo detected in admin email: ${validationResult.originalEmail}, using corrected: ${validationResult.correctedEmail}`);
+      console.warn(`[EMAIL VALIDATION] Typo detected in enrollment admin email: "${validationResult.originalEmail}" -> corrected to: "${validationResult.correctedEmail}"`);
+      
+      // Log the correction for monitoring
+      emailErrorHandler.logOperation(
+        'email_correction',
+        {
+          success: true,
+          originalEmail: validationResult.originalEmail,
+          correctedEmail: validationResult.correctedEmail,
+          wasTypo: true
+        },
+        0,
+        { operation: 'enrollment_admin_email_correction', context: 'sendEnrollmentEmails' }
+      );
+    }
+
+    // Validate student email format
+    if (!isValidEmail(enrollmentData.email)) {
+      console.error(`[EMAIL VALIDATION] Invalid student email in enrollment: ${enrollmentData.email}`);
+      
+      // Return failure result for student email
+      const studentError = EmailErrorHandler.handleError(
+        new Error('Invalid student email address'),
+        { recipient: enrollmentData.email, operation: 'send_enrollment_emails' }
+      );
+      
+      return {
+        adminResult: await this.sendEmail({
+          to: validationResult.correctedEmail,
+          subject: adminNotification.subject,
+          html: adminNotification.html,
+          text: adminNotification.text,
+        }),
+        studentResult: {
+          success: false,
+          error: studentError,
+          retryCount: 0,
+          timestamp: new Date(),
+          recipient: enrollmentData.email,
+          subject: studentConfirmation.subject,
+        }
+      };
     }
 
     // Send both emails concurrently
@@ -647,11 +742,42 @@ export class EmailService {
       }
     };
 
-    // Validate and get standardized admin email
+    // Validate and get standardized admin email with enhanced logging
     const adminEmail = EMAIL_CONFIG.CONTACT_EMAIL;
     const validationResult = validateAndCorrectEmail(adminEmail);
     if (validationResult.wasTypo) {
-      console.warn(`Email typo detected in contact admin email: ${validationResult.originalEmail}, using corrected: ${validationResult.correctedEmail}`);
+      console.warn(`[EMAIL VALIDATION] Typo detected in contact admin email: "${validationResult.originalEmail}" -> corrected to: "${validationResult.correctedEmail}"`);
+      
+      // Log the correction for monitoring
+      emailErrorHandler.logOperation(
+        'email_correction',
+        {
+          success: true,
+          originalEmail: validationResult.originalEmail,
+          correctedEmail: validationResult.correctedEmail,
+          wasTypo: true
+        },
+        0,
+        { operation: 'contact_admin_email_correction', context: 'sendContactEmailsAsync' }
+      );
+    }
+
+    // Validate customer email format
+    if (!isValidEmail(formData.email)) {
+      console.error(`[EMAIL VALIDATION] Invalid customer email in contact form: ${formData.email}`);
+      
+      // Still queue admin email but return error for customer
+      const adminQueueId = await this.sendEmailAsync(
+        {
+          to: validationResult.correctedEmail,
+          subject: adminNotification.subject,
+          html: adminNotification.html,
+          text: adminNotification.text,
+        },
+        'high'
+      );
+
+      return { adminQueueId, customerQueueId: 'invalid-email-error' };
     }
 
     // Queue admin notification email (high priority)
@@ -718,11 +844,42 @@ export class EmailService {
       }
     };
 
-    // Validate and get standardized admin email
+    // Validate and get standardized admin email with enhanced logging
     const adminEmail = EMAIL_CONFIG.CONTACT_EMAIL;
     const validationResult = validateAndCorrectEmail(adminEmail);
     if (validationResult.wasTypo) {
-      console.warn(`Email typo detected in drone inquiry admin email: ${validationResult.originalEmail}, using corrected: ${validationResult.correctedEmail}`);
+      console.warn(`[EMAIL VALIDATION] Typo detected in drone inquiry admin email: "${validationResult.originalEmail}" -> corrected to: "${validationResult.correctedEmail}"`);
+      
+      // Log the correction for monitoring
+      emailErrorHandler.logOperation(
+        'email_correction',
+        {
+          success: true,
+          originalEmail: validationResult.originalEmail,
+          correctedEmail: validationResult.correctedEmail,
+          wasTypo: true
+        },
+        0,
+        { operation: 'drone_inquiry_admin_email_correction', context: 'sendDroneInquiryEmailsAsync' }
+      );
+    }
+
+    // Validate customer email format
+    if (!isValidEmail(inquiryData.email)) {
+      console.error(`[EMAIL VALIDATION] Invalid customer email in drone inquiry: ${inquiryData.email}`);
+      
+      // Still queue admin email but return error for customer
+      const adminQueueId = await this.sendEmailAsync(
+        {
+          to: validationResult.correctedEmail,
+          subject: adminEmailTemplate.subject,
+          html: adminEmailTemplate.html,
+          text: adminEmailTemplate.text,
+        },
+        'high'
+      );
+
+      return { adminQueueId, customerQueueId: 'invalid-email-error' };
     }
 
     // Queue admin notification email (high priority)
@@ -784,11 +941,42 @@ export class EmailService {
       }
     };
 
-    // Validate and get standardized admin email
+    // Validate and get standardized admin email with enhanced logging
     const adminEmail = EMAIL_CONFIG.CONTACT_EMAIL;
     const validationResult = validateAndCorrectEmail(adminEmail);
     if (validationResult.wasTypo) {
-      console.warn(`Email typo detected in enrollment admin email: ${validationResult.originalEmail}, using corrected: ${validationResult.correctedEmail}`);
+      console.warn(`[EMAIL VALIDATION] Typo detected in enrollment admin email: "${validationResult.originalEmail}" -> corrected to: "${validationResult.correctedEmail}"`);
+      
+      // Log the correction for monitoring
+      emailErrorHandler.logOperation(
+        'email_correction',
+        {
+          success: true,
+          originalEmail: validationResult.originalEmail,
+          correctedEmail: validationResult.correctedEmail,
+          wasTypo: true
+        },
+        0,
+        { operation: 'enrollment_admin_email_correction', context: 'sendEnrollmentEmailsAsync' }
+      );
+    }
+
+    // Validate student email format
+    if (!isValidEmail(enrollmentData.email)) {
+      console.error(`[EMAIL VALIDATION] Invalid student email in enrollment async: ${enrollmentData.email}`);
+      
+      // Still queue admin email but return error for student
+      const adminQueueId = await this.sendEmailAsync(
+        {
+          to: validationResult.correctedEmail,
+          subject: adminNotification.subject,
+          html: adminNotification.html,
+          text: adminNotification.text,
+        },
+        'high'
+      );
+
+      return { adminQueueId, studentQueueId: 'invalid-email-error' };
     }
 
     // Queue admin notification email (high priority)
@@ -856,6 +1044,14 @@ export class EmailService {
       }
     };
 
+    // Validate subscriber email format
+    if (!isValidEmail(subscriptionData.email)) {
+      console.error(`[EMAIL VALIDATION] Invalid subscriber email in newsletter: ${subscriptionData.email}`);
+      
+      // Return error for invalid subscriber email
+      return { welcomeQueueId: 'invalid-email-error' };
+    }
+
     // Queue welcome email to subscriber (high priority)
     const welcomeQueueId = await this.sendEmailAsync(
       {
@@ -871,11 +1067,24 @@ export class EmailService {
       }
     );
 
-    // Validate and get standardized admin email
+    // Validate and get standardized admin email with enhanced logging
     const adminEmail = EMAIL_CONFIG.CONTACT_EMAIL;
     const validationResult = validateAndCorrectEmail(adminEmail);
     if (validationResult.wasTypo) {
-      console.warn(`Email typo detected in newsletter admin email: ${validationResult.originalEmail}, using corrected: ${validationResult.correctedEmail}`);
+      console.warn(`[EMAIL VALIDATION] Typo detected in newsletter admin email: "${validationResult.originalEmail}" -> corrected to: "${validationResult.correctedEmail}"`);
+      
+      // Log the correction for monitoring
+      emailErrorHandler.logOperation(
+        'email_correction',
+        {
+          success: true,
+          originalEmail: validationResult.originalEmail,
+          correctedEmail: validationResult.correctedEmail,
+          wasTypo: true
+        },
+        0,
+        { operation: 'newsletter_admin_email_correction', context: 'sendNewsletterEmailsAsync' }
+      );
     }
 
     // Queue admin notification email (low priority)
