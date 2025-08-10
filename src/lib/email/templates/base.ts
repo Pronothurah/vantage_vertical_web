@@ -100,6 +100,49 @@ export function validateLogoUrl(logoUrl: string): boolean {
 }
 
 /**
+ * Template validation result interface
+ */
+export interface TemplateValidationResult {
+  isValid: boolean;
+  errors: string[];
+  warnings: string[];
+  logoAccessible: boolean;
+  contactInfoValid: boolean;
+}
+
+/**
+ * Checks logo URL accessibility for testing purposes
+ * @param logoUrl - Logo URL to check
+ * @returns Promise that resolves to true if logo is accessible
+ */
+export async function checkLogoAccessibility(logoUrl: string): Promise<boolean> {
+  try {
+    // First validate the URL format and domain
+    if (!validateLogoUrl(logoUrl)) {
+      return false;
+    }
+
+    // In a browser environment, we can't make arbitrary HTTP requests due to CORS
+    // This function is primarily for testing environments
+    if (typeof window !== 'undefined') {
+      // Browser environment - return true if URL is valid (actual accessibility check would need server-side proxy)
+      return true;
+    }
+
+    // Node.js environment - can make actual HTTP request
+    if (typeof fetch !== 'undefined') {
+      const response = await fetch(logoUrl, { method: 'HEAD' });
+      return response.ok;
+    }
+
+    // Fallback - assume accessible if URL is valid
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+/**
  * Default company data for Vantage Vertical
  */
 const DEFAULT_COMPANY_DATA: Partial<BaseTemplateData> = {
@@ -130,12 +173,12 @@ export function validateContactInfo(data: BaseTemplateData): string[] {
   const errors: string[] = [];
   
   // Validate phone number format (should be +254 followed by 9 digits)
-  if (!data.contactPhone.match(/^\+254\d{9}$/)) {
+  if (data.contactPhone && !data.contactPhone.match(/^\+254\d{9}$/)) {
     errors.push('Invalid phone number format - should be +254 followed by 9 digits');
   }
   
   // Validate website URL (should use correct domain)
-  if (!data.websiteUrl.includes('vantagevertical.co.ke')) {
+  if (data.websiteUrl && !data.websiteUrl.includes('vantagevertical.co.ke')) {
     errors.push('Website URL should use the correct domain (vantagevertical.co.ke)');
   }
   
@@ -151,11 +194,103 @@ export function validateCompanyStandards(data: BaseTemplateData): string[] {
   const warnings: string[] = [];
   
   // Warn if not using the standardized company email
-  if (!data.contactEmail.includes('vantageverticalltd@gmail.com')) {
+  if (data.contactEmail && !data.contactEmail.includes('vantageverticalltd@gmail.com')) {
     warnings.push('Contact email should use the standardized company email address for consistency');
   }
   
   return warnings;
+}
+
+/**
+ * Comprehensive template validation that returns detailed results
+ * @param data - Template data to validate
+ * @returns Detailed validation result with errors, warnings, and accessibility status
+ */
+export async function validateTemplateDataComprehensive(data: BaseTemplateData): Promise<TemplateValidationResult> {
+  const result: TemplateValidationResult = {
+    isValid: true,
+    errors: [],
+    warnings: [],
+    logoAccessible: false,
+    contactInfoValid: true
+  };
+
+  // Check required fields
+  const requiredFields: (keyof BaseTemplateData)[] = [
+    'companyName',
+    'logoUrl',
+    'websiteUrl',
+    'contactEmail',
+    'contactPhone'
+  ];
+
+  const missingFields = requiredFields.filter(field => !data[field]);
+  if (missingFields.length > 0) {
+    result.errors.push(`Missing required template data: ${missingFields.join(', ')}`);
+    result.isValid = false;
+  }
+
+  // Validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (data.contactEmail && !emailRegex.test(data.contactEmail)) {
+    result.errors.push('Invalid contact email format in template data');
+    result.isValid = false;
+    result.contactInfoValid = false;
+  }
+
+  // Validate URLs
+  try {
+    if (data.logoUrl) new URL(data.logoUrl);
+    if (data.websiteUrl) new URL(data.websiteUrl);
+    if (data.unsubscribeUrl) new URL(data.unsubscribeUrl);
+  } catch (error) {
+    result.errors.push('Invalid URL format in template data');
+    result.isValid = false;
+  }
+
+  // Validate logo URL uses correct domain
+  if (data.logoUrl && !validateLogoUrl(data.logoUrl)) {
+    result.errors.push('Logo URL must use the correct domain (vantagevertical.co.ke)');
+    result.isValid = false;
+  }
+
+  // Check logo accessibility
+  if (data.logoUrl) {
+    try {
+      result.logoAccessible = await checkLogoAccessibility(data.logoUrl);
+      if (!result.logoAccessible) {
+        result.warnings.push('Logo URL may not be accessible - please verify the image loads correctly');
+      }
+    } catch (error) {
+      result.warnings.push('Could not verify logo accessibility');
+    }
+  }
+
+  // Validate contact information format
+  const contactErrors = validateContactInfo(data);
+  if (contactErrors.length > 0) {
+    result.errors.push(...contactErrors);
+    result.isValid = false;
+    result.contactInfoValid = false;
+  }
+
+  // Check company standards (warnings only)
+  const companyWarnings = validateCompanyStandards(data);
+  if (companyWarnings.length > 0) {
+    result.warnings.push(...companyWarnings);
+  }
+
+  // Additional domain validation warnings
+  if (data.websiteUrl && data.websiteUrl.includes('vantagevartical.com')) {
+    result.warnings.push('Website URL contains typo in domain - should be "vantagevertical.co.ke"');
+  }
+
+  if (data.logoUrl && data.logoUrl.includes('vantagevartical.com')) {
+    result.errors.push('Logo URL contains typo in domain - should be "vantagevertical.co.ke"');
+    result.isValid = false;
+  }
+
+  return result;
 }
 
 /**
