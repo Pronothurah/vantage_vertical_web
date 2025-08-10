@@ -10,10 +10,10 @@ import { EmailErrorType } from '../../types';
 describe('Base Email Template System', () => {
   const validTemplateData: BaseTemplateData = {
     companyName: 'Test Company',
-    logoUrl: 'https://example.com/logo.png',
-    websiteUrl: 'https://example.com',
-    contactEmail: 'test@example.com',
-    contactPhone: '+1234567890',
+    logoUrl: 'https://vantagevertical.co.ke/logo.png',
+    websiteUrl: 'https://vantagevertical.co.ke',
+    contactEmail: 'vantageverticalltd@gmail.com',
+    contactPhone: '+254123456789',
     recipientName: 'John Doe',
   };
 

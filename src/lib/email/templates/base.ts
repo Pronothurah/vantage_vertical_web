@@ -50,14 +50,64 @@ const DEFAULT_TEMPLATE_OPTIONS: Required<TemplateOptions> = {
 };
 
 /**
+ * Logo configuration for different background contexts
+ */
+export interface LogoConfig {
+  default: string;
+  white: string;
+  dark: string;
+}
+
+/**
+ * Logo configuration with correct domain and paths
+ */
+const LOGO_CONFIG: LogoConfig = {
+  default: 'https://vantagevertical.co.ke/vantage-logo.png',
+  white: 'https://vantagevertical.co.ke/vantage-logo-white.jpg',
+  dark: 'https://vantagevertical.co.ke/vantage-logo.png'
+};
+
+/**
+ * Logo selection options
+ */
+export interface LogoOptions {
+  background?: 'light' | 'dark';
+  size?: 'small' | 'medium' | 'large';
+  alignment?: 'left' | 'center' | 'right';
+}
+
+/**
+ * Gets the appropriate logo URL based on background context
+ * @param background - Background type ('light' or 'dark')
+ * @returns Logo URL for the specified background
+ */
+export function getLogoUrl(background: 'light' | 'dark' = 'light'): string {
+  return background === 'dark' ? LOGO_CONFIG.white : LOGO_CONFIG.default;
+}
+
+/**
+ * Validates that a logo URL uses the correct domain
+ * @param logoUrl - Logo URL to validate
+ * @returns True if the URL uses the correct domain
+ */
+export function validateLogoUrl(logoUrl: string): boolean {
+  try {
+    const url = new URL(logoUrl);
+    return url.hostname === 'vantagevertical.co.ke';
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Default company data for Vantage Vertical
  */
 const DEFAULT_COMPANY_DATA: Partial<BaseTemplateData> = {
   companyName: 'Vantage Vertical',
-  logoUrl: 'https://vantagevartical.com/vantage-logo.png',
-  websiteUrl: 'https://vantagevartical.com',
+  logoUrl: getLogoUrl('light'),
+  websiteUrl: 'https://vantagevertical.co.ke',
   contactEmail: EMAIL_CONFIG.CONTACT_EMAIL,
-  contactPhone: '+254 XXX XXX XXX', // Replace with actual phone number
+  contactPhone: '+254704277687',
 };
 
 /**
@@ -69,6 +119,43 @@ function createEmailError(error: Error, type: EmailErrorType, context?: Record<s
   emailError.retryable = false;
   emailError.context = context;
   return emailError;
+}
+
+/**
+ * Validates contact information format
+ * @param data - Template data to validate
+ * @returns Array of validation errors
+ */
+export function validateContactInfo(data: BaseTemplateData): string[] {
+  const errors: string[] = [];
+  
+  // Validate phone number format (should be +254 followed by 9 digits)
+  if (!data.contactPhone.match(/^\+254\d{9}$/)) {
+    errors.push('Invalid phone number format - should be +254 followed by 9 digits');
+  }
+  
+  // Validate website URL (should use correct domain)
+  if (!data.websiteUrl.includes('vantagevertical.co.ke')) {
+    errors.push('Website URL should use the correct domain (vantagevertical.co.ke)');
+  }
+  
+  return errors;
+}
+
+/**
+ * Validates contact information format with strict company standards
+ * @param data - Template data to validate
+ * @returns Array of validation warnings for non-standard values
+ */
+export function validateCompanyStandards(data: BaseTemplateData): string[] {
+  const warnings: string[] = [];
+  
+  // Warn if not using the standardized company email
+  if (!data.contactEmail.includes('vantageverticalltd@gmail.com')) {
+    warnings.push('Contact email should use the standardized company email address for consistency');
+  }
+  
+  return warnings;
 }
 
 /**
@@ -118,6 +205,35 @@ export function validateTemplateData(data: BaseTemplateData): void {
       EmailErrorType.TEMPLATE_ERROR,
       { error: (error as Error).message }
     );
+  }
+
+  // Validate logo URL uses correct domain
+  if (!validateLogoUrl(data.logoUrl)) {
+    throw createEmailError(
+      new Error('Logo URL must use the correct domain (vantagevertical.co.ke)'),
+      EmailErrorType.TEMPLATE_ERROR,
+      { logoUrl: data.logoUrl }
+    );
+  }
+
+  // Validate contact information (only for critical errors, not company standards)
+  const contactErrors = validateContactInfo(data);
+  if (contactErrors.length > 0) {
+    throw createEmailError(
+      new Error(`Contact information validation failed: ${contactErrors.join(', ')}`),
+      EmailErrorType.TEMPLATE_ERROR,
+      { contactErrors, contactData: { 
+        contactEmail: data.contactEmail, 
+        contactPhone: data.contactPhone, 
+        websiteUrl: data.websiteUrl 
+      }}
+    );
+  }
+
+  // Log warnings for company standards (but don't throw errors)
+  const companyWarnings = validateCompanyStandards(data);
+  if (companyWarnings.length > 0 && process.env.NODE_ENV !== 'test') {
+    console.warn('Email template company standards warnings:', companyWarnings);
   }
 }
 

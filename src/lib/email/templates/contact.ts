@@ -169,9 +169,9 @@ function generateCustomerConfirmationEmail(
     <h2>In the Meantime</h2>
     <p>While you wait for our response, feel free to:</p>
     <ul>
-      <li>Explore our <a href="https://vantagevartical.com/portfolio" style="color: #dc2626;">portfolio</a> to see examples of our work</li>
-      <li>Learn more about our <a href="https://vantagevartical.com/technology" style="color: #dc2626;">drone technology</a></li>
-      <li>Check out our <a href="https://vantagevartical.com/training" style="color: #dc2626;">training programs</a></li>
+      <li>Explore our <a href="https://vantagevertical.co.ke/portfolio" style="color: #dc2626;">portfolio</a> to see examples of our work</li>
+      <li>Learn more about our <a href="https://vantagevertical.co.ke/technology" style="color: #dc2626;">drone technology</a></li>
+      <li>Check out our <a href="https://vantagevertical.co.ke/training" style="color: #dc2626;">training programs</a></li>
       <li>Follow us on social media for updates and industry insights</li>
     </ul>
     

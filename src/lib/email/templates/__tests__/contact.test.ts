@@ -91,5 +91,73 @@ describe('Contact Email Templates', () => {
       expect(result.customerConfirmation.html).toContain(`Dear ${mockContactFormData.name}`);
       expect(result.customerConfirmation.html).toContain('Aerial Mapping');
     });
+
+    it('should use correct logo URL from base configuration', () => {
+      const result = generateContactEmails(mockContactFormData);
+
+      // Both emails should use the correct domain for logo
+      expect(result.adminNotification.html).toContain('vantagevertical.co.ke/vantage-logo.png');
+      expect(result.customerConfirmation.html).toContain('vantagevertical.co.ke/vantage-logo.png');
+      
+      // Should not contain the incorrect domain
+      expect(result.adminNotification.html).not.toContain('vantagevartical.com');
+      expect(result.customerConfirmation.html).not.toContain('vantagevartical.com');
+    });
+
+    it('should use correct contact information from base configuration', () => {
+      const result = generateContactEmails(mockContactFormData);
+
+      // Both emails should use the correct phone number
+      expect(result.adminNotification.html).toContain('+254704277687');
+      expect(result.customerConfirmation.html).toContain('+254704277687');
+      
+      // Both emails should use the correct email address
+      expect(result.adminNotification.html).toContain('vantageverticalltd@gmail.com');
+      expect(result.customerConfirmation.html).toContain('vantageverticalltd@gmail.com');
+      
+      // Both emails should use the correct website URL
+      expect(result.adminNotification.html).toContain('vantagevertical.co.ke');
+      expect(result.customerConfirmation.html).toContain('vantagevertical.co.ke');
+    });
+
+    it('should use correct website URLs in customer confirmation links', () => {
+      const result = generateContactEmails(mockContactFormData);
+
+      // Customer confirmation should use correct domain in all links
+      expect(result.customerConfirmation.html).toContain('https://vantagevertical.co.ke/portfolio');
+      expect(result.customerConfirmation.html).toContain('https://vantagevertical.co.ke/technology');
+      expect(result.customerConfirmation.html).toContain('https://vantagevertical.co.ke/training');
+      
+      // Should not contain the incorrect domain in any links
+      expect(result.customerConfirmation.html).not.toContain('vantagevartical.com');
+    });
+
+    it('should generate valid HTML and text versions', () => {
+      const result = generateContactEmails(mockContactFormData);
+
+      // Both emails should have HTML and text versions
+      expect(result.adminNotification.html).toBeTruthy();
+      expect(result.adminNotification.text).toBeTruthy();
+      expect(result.customerConfirmation.html).toBeTruthy();
+      expect(result.customerConfirmation.text).toBeTruthy();
+
+      // HTML should contain proper structure
+      expect(result.adminNotification.html).toContain('<!DOCTYPE html>');
+      expect(result.adminNotification.html).toContain('<html');
+      expect(result.adminNotification.html).toContain('</html>');
+      
+      expect(result.customerConfirmation.html).toContain('<!DOCTYPE html>');
+      expect(result.customerConfirmation.html).toContain('<html');
+      expect(result.customerConfirmation.html).toContain('</html>');
+
+      // Text versions should contain key information without HTML tags
+      expect(result.adminNotification.text).toContain('Vantage Vertical');
+      expect(result.adminNotification.text).toContain(mockContactFormData.name);
+      expect(result.adminNotification.text).not.toContain('<html>');
+      
+      expect(result.customerConfirmation.text).toContain('Vantage Vertical');
+      expect(result.customerConfirmation.text).toContain(mockContactFormData.name);
+      expect(result.customerConfirmation.text).not.toContain('<html>');
+    });
   });
 });
