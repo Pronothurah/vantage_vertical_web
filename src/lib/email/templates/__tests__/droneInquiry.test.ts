@@ -223,7 +223,7 @@ describe('Drone Inquiry Email Templates', () => {
         expect(template.text).toBeTruthy();
 
         // HTML should contain proper structure
-        expect(template.html).toContain('<!DOCTYPE html>');
+        expect(template.html).toContain('<!DOCTYPE html PUBLIC');
         expect(template.html).toContain('<html');
         expect(template.html).toContain('</html>');
 

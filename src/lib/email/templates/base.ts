@@ -462,13 +462,13 @@ function generateHTMLTemplate(
                     background-color: #ffffff;
                     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
                 ">
-                    ${header}
+                    ${options.includeHeader ? header : ''}
                     <tr>
                         <td class="content" style="padding: 30px;">
                             ${content}
                         </td>
                     </tr>
-                    ${footer}
+                    ${options.includeFooter ? footer : ''}
                 </table>
             </td>
         </tr>

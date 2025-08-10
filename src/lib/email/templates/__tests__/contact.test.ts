@@ -142,11 +142,11 @@ describe('Contact Email Templates', () => {
       expect(result.customerConfirmation.text).toBeTruthy();
 
       // HTML should contain proper structure
-      expect(result.adminNotification.html).toContain('<!DOCTYPE html>');
+      expect(result.adminNotification.html).toContain('<!DOCTYPE html PUBLIC');
       expect(result.adminNotification.html).toContain('<html');
       expect(result.adminNotification.html).toContain('</html>');
       
-      expect(result.customerConfirmation.html).toContain('<!DOCTYPE html>');
+      expect(result.customerConfirmation.html).toContain('<!DOCTYPE html PUBLIC');
       expect(result.customerConfirmation.html).toContain('<html');
       expect(result.customerConfirmation.html).toContain('</html>');
 

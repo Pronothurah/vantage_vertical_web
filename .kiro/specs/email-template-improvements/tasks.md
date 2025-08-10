@@ -65,7 +65,7 @@
   - Verify that all email types render correctly with new branding
   - _Requirements: 5.1, 5.2, 5.4, 5.5_
 
-- [-] 10. Optimize email template HTML for email clients
+- [x] 10. Optimize email template HTML for email clients
   - Update logo HTML generation in `src/lib/email/templates/base.ts` with email-optimized attributes
   - Add proper width/height attributes for better email client compatibility
   - Implement fallback text for when images are blocked

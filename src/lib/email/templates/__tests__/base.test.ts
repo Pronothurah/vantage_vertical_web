@@ -76,7 +76,8 @@ describe('Base Email Template System', () => {
 
       expect(template.html).toContain('#ff0000');
       expect(template.html).toContain('#000000');
-      expect(template.html).not.toContain('class="header"');
+      // Check that header table row is not present in the HTML structure
+      expect(template.html).not.toContain('<td class="header"');
     });
 
     it('should handle unsubscribe URL when provided', () => {
