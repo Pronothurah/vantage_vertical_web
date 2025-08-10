@@ -42,14 +42,14 @@
   - Test newsletter email generation with updated configuration
   - _Requirements: 2.1, 2.2, 2.4, 4.4_
 
-- [-] 7. Add email template validation functions
+- [x] 7. Add email template validation functions
   - Create `validateTemplateData()` enhancement in `src/lib/email/templates/base.ts` to check logo URL domain
   - Add `validateContactInfo()` function to verify phone number and email format
   - Implement logo URL accessibility check for testing purposes
   - Add validation to prevent future use of incorrect domains or contact information
   - _Requirements: 3.5, 5.2, 6.1, 6.2_
 
-- [ ] 8. Create comprehensive email template tests
+- [x] 8. Create comprehensive email template tests
   - Create test file `src/lib/email/templates/__tests__/base-config.test.ts` to verify base configuration
   - Test that logo URLs use correct domain (vantagevertical.co.ke)
   - Test that contact information uses correct phone number and email
@@ -57,7 +57,7 @@
   - Verify template inheritance works correctly across all email types
   - _Requirements: 5.1, 5.2, 5.3_
 
-- [ ] 9. Update email template integration tests
+- [x] 9. Update email template integration tests
   - Update existing email service tests to verify correct logo and contact information
   - Test contact form email generation with updated configuration
   - Test enrollment email generation with updated configuration
@@ -65,7 +65,7 @@
   - Verify that all email types render correctly with new branding
   - _Requirements: 5.1, 5.2, 5.4, 5.5_
 
-- [ ] 10. Optimize email template HTML for email clients
+- [-] 10. Optimize email template HTML for email clients
   - Update logo HTML generation in `src/lib/email/templates/base.ts` with email-optimized attributes
   - Add proper width/height attributes for better email client compatibility
   - Implement fallback text for when images are blocked

@@ -405,11 +405,11 @@ export function generateBaseTemplate(
 }
 
 /**
- * Generates the HTML version of the email template
+ * Generates the HTML version of the email template optimized for email clients
  * @param content - Main content HTML
  * @param data - Template data
  * @param options - Template options
- * @returns Complete HTML email
+ * @returns Complete HTML email optimized for various email clients
  */
 function generateHTMLTemplate(
   content: string,
@@ -420,25 +420,64 @@ function generateHTMLTemplate(
   const footer = options.includeFooter ? generateFooter(data, options) : '';
 
   return `
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="date=no" />
+    <meta name="format-detection" content="address=no" />
+    <meta name="format-detection" content="email=no" />
+    <meta name="x-apple-disable-message-reformatting" />
     <title>${data.companyName}</title>
-    <style>
+    <!--[if mso]>
+    <noscript>
+        <xml>
+            <o:OfficeDocumentSettings>
+                <o:AllowPNG/>
+                <o:PixelsPerInch>96</o:PixelsPerInch>
+            </o:OfficeDocumentSettings>
+        </xml>
+    </noscript>
+    <![endif]-->
+    <style type="text/css">
         ${generateCSS(options)}
     </style>
 </head>
-<body>
-    <div class="email-container">
-        ${header}
-        <div class="content">
-            ${content}
-        </div>
-        ${footer}
-    </div>
+<body style="margin: 0; padding: 0; background-color: ${options.backgroundColor}; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;">
+    <!--[if mso | IE]>
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td>
+    <![endif]-->
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin: 0; padding: 0; background-color: ${options.backgroundColor};">
+        <tr>
+            <td align="center" style="padding: 0;">
+                <table class="email-container" role="presentation" cellpadding="0" cellspacing="0" border="0" style="
+                    max-width: 600px;
+                    width: 100%;
+                    margin: 0 auto;
+                    background-color: #ffffff;
+                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                ">
+                    ${header}
+                    <tr>
+                        <td class="content" style="padding: 30px;">
+                            ${content}
+                        </td>
+                    </tr>
+                    ${footer}
+                </table>
+            </td>
+        </tr>
+    </table>
+    <!--[if mso | IE]>
+            </td>
+        </tr>
+    </table>
+    <![endif]-->
 </body>
 </html>`.trim();
 }
@@ -479,292 +518,411 @@ ${data.unsubscribeUrl ? `To unsubscribe, visit: ${data.unsubscribeUrl}` : ''}
 }
 
 /**
- * Generates the email header with logo and branding
+ * Generates optimized logo HTML for email clients
+ * @param data - Template data
+ * @param options - Logo display options
+ * @returns Optimized logo HTML
+ */
+function generateOptimizedLogo(data: BaseTemplateData, options: { 
+  width?: number; 
+  height?: number; 
+  alignment?: 'left' | 'center' | 'right';
+  includeTextFallback?: boolean;
+} = {}): string {
+  const {
+    width = 200,
+    height = 60,
+    alignment = 'center',
+    includeTextFallback = true
+  } = options;
+
+  const alignmentStyle = alignment === 'center' ? 'margin: 0 auto; display: block;' :
+                        alignment === 'right' ? 'margin-left: auto; display: block;' :
+                        'margin-right: auto; display: block;';
+
+  // Email-optimized logo HTML with proper attributes and fallbacks
+  const logoHtml = `
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
+      <tr>
+        <td align="${alignment}" style="padding: 0;">
+          <!--[if mso]>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+              <td>
+          <![endif]-->
+          <img 
+            src="${data.logoUrl}" 
+            alt="${data.companyName} - Professional Drone Services" 
+            title="${data.companyName}"
+            width="${width}" 
+            height="${height}"
+            style="
+              ${alignmentStyle}
+              max-width: ${width}px;
+              height: ${height}px;
+              width: auto;
+              border: 0;
+              outline: none;
+              text-decoration: none;
+              -ms-interpolation-mode: bicubic;
+              vertical-align: middle;
+            "
+            border="0"
+          />
+          <!--[if mso]>
+              </td>
+            </tr>
+          </table>
+          <![endif]-->
+          ${includeTextFallback ? `
+          <!--[if !mso]><!-->
+          <div style="
+            display: none; 
+            font-size: 0; 
+            line-height: 0; 
+            max-height: 0; 
+            overflow: hidden;
+            mso-hide: all;
+          ">
+            ${data.companyName}
+          </div>
+          <!--<![endif]-->
+          ` : ''}
+        </td>
+      </tr>
+    </table>
+  `;
+
+  return logoHtml;
+}
+
+/**
+ * Generates the email header with logo and branding optimized for email clients
  * @param data - Template data
  * @param options - Template options
- * @returns HTML header
+ * @returns HTML header with optimized logo
  */
 function generateHeader(data: BaseTemplateData, options: Required<TemplateOptions>): string {
+  const optimizedLogo = generateOptimizedLogo(data, {
+    width: 200,
+    height: 60,
+    alignment: 'center',
+    includeTextFallback: true
+  });
+
   return `
-    <div class="header">
-        <div class="header-content">
-            <img src="${data.logoUrl}" alt="${data.companyName}" class="logo" />
-            <h1 class="company-name">${data.companyName}</h1>
-        </div>
-    </div>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
+      <tr>
+        <td class="header" style="
+          background-color: ${options.primaryColor};
+          color: white;
+          padding: 20px;
+          text-align: center;
+        ">
+          <div class="header-content" style="
+            display: block;
+            text-align: center;
+          ">
+            ${optimizedLogo}
+            <h1 class="company-name" style="
+              font-size: 24px;
+              font-weight: bold;
+              margin: 15px 0 0 0;
+              padding: 0;
+              color: white;
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+              line-height: 1.2;
+            ">${data.companyName}</h1>
+          </div>
+        </td>
+      </tr>
+    </table>
   `;
 }
 
 /**
- * Generates the email footer with contact information
+ * Generates the email footer with contact information optimized for email clients
  * @param data - Template data
  * @param options - Template options
- * @returns HTML footer
+ * @returns HTML footer with table-based layout
  */
 function generateFooter(data: BaseTemplateData, options: Required<TemplateOptions>): string {
-  const unsubscribeLink = data.unsubscribeUrl 
-    ? `<p class="unsubscribe"><a href="${data.unsubscribeUrl}">Unsubscribe</a></p>`
-    : '';
+  const unsubscribeRow = data.unsubscribeUrl 
+    ? `
+    <tr>
+      <td align="center" style="padding: 15px 20px 0 20px;">
+        <p style="
+          font-size: 12px;
+          color: #6c757d;
+          margin: 0;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        ">
+          <a href="${data.unsubscribeUrl}" style="color: #6c757d; text-decoration: underline;">Unsubscribe</a>
+        </p>
+      </td>
+    </tr>
+    ` : '';
 
   return `
-    <div class="footer">
-        <div class="footer-content">
-            <div class="contact-info">
-                <p><strong>${data.companyName}</strong></p>
-                <p>Email: <a href="mailto:${data.contactEmail}">${data.contactEmail}</a></p>
-                <p>Phone: ${data.contactPhone}</p>
-                <p>Website: <a href="${data.websiteUrl}">${data.websiteUrl}</a></p>
-            </div>
-            ${unsubscribeLink}
-        </div>
-    </div>
+    <tr>
+      <td class="footer" style="
+        background-color: #f8f9fa;
+        padding: 0;
+        border-top: 1px solid #e9ecef;
+      ">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
+          <tr>
+            <td align="center" style="padding: 20px;">
+              <div class="contact-info" style="text-align: center;">
+                <p style="
+                  margin: 0 0 5px 0;
+                  font-size: 14px;
+                  color: #374151;
+                  font-weight: bold;
+                  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                ">${data.companyName}</p>
+                <p style="
+                  margin: 0 0 5px 0;
+                  font-size: 14px;
+                  color: #6c757d;
+                  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                ">Email: <a href="mailto:${data.contactEmail}" style="color: ${options.linkColor}; text-decoration: none;">${data.contactEmail}</a></p>
+                <p style="
+                  margin: 0 0 5px 0;
+                  font-size: 14px;
+                  color: #6c757d;
+                  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                ">Phone: <a href="tel:${data.contactPhone}" style="color: #6c757d; text-decoration: none;">${data.contactPhone}</a></p>
+                <p style="
+                  margin: 0;
+                  font-size: 14px;
+                  color: #6c757d;
+                  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                ">Website: <a href="${data.websiteUrl}" style="color: ${options.linkColor}; text-decoration: none;">${data.websiteUrl}</a></p>
+              </div>
+            </td>
+          </tr>
+          ${unsubscribeRow}
+        </table>
+      </td>
+    </tr>
   `;
 }
 
 /**
- * Generates CSS styles for the email template
+ * Generates CSS styles optimized for email clients
  * @param options - Template options
- * @returns CSS string
+ * @returns CSS string optimized for various email clients
  */
 function generateCSS(options: Required<TemplateOptions>): string {
   return `
-    /* Reset and base styles */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+    /* Email client reset and base styles */
+    body, table, td, p, a, li, blockquote {
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
     }
 
+    table, td {
+        mso-table-lspace: 0pt;
+        mso-table-rspace: 0pt;
+    }
+
+    img {
+        -ms-interpolation-mode: bicubic;
+        border: 0;
+        outline: none;
+        text-decoration: none;
+    }
+
+    /* Reset styles for email clients */
     body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        margin: 0 !important;
+        padding: 0 !important;
+        background-color: ${options.backgroundColor} !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif !important;
+        font-size: 16px;
         line-height: 1.6;
         color: ${options.textColor};
-        background-color: ${options.backgroundColor};
-        margin: 0;
+        width: 100% !important;
+        min-width: 100% !important;
+    }
+
+    /* Prevent Outlook from adding extra spacing */
+    table {
+        border-collapse: collapse !important;
+        border-spacing: 0 !important;
+    }
+
+    /* Force Outlook to provide a "view in browser" menu link */
+    #outlook a {
         padding: 0;
     }
 
+    /* Force Hotmail to display emails at full width */
+    .ReadMsgBody {
+        width: 100%;
+    }
+
+    .ExternalClass {
+        width: 100%;
+    }
+
+    /* Force Hotmail to display normal line spacing */
+    .ExternalClass,
+    .ExternalClass p,
+    .ExternalClass span,
+    .ExternalClass font,
+    .ExternalClass td,
+    .ExternalClass div {
+        line-height: 100%;
+    }
+
+    /* Prevent WebKit and Windows mobile changing default text sizes */
+    body, table, td, p, a, li, blockquote {
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+    }
+
+    /* Remove spacing between tables in Outlook 2007 and up */
+    table, td {
+        mso-table-lspace: 0pt;
+        mso-table-rspace: 0pt;
+    }
+
+    /* Allow smoother rendering of resized image in Internet Explorer */
+    img {
+        -ms-interpolation-mode: bicubic;
+    }
+
+    /* Email container styles */
     .email-container {
-        max-width: 600px;
-        margin: 0 auto;
-        background-color: #ffffff;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        max-width: 600px !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+        background-color: #ffffff !important;
     }
 
-    /* Header styles */
-    .header {
-        background-color: ${options.primaryColor};
-        color: white;
-        padding: 20px;
-        text-align: center;
-    }
-
-    .header-content {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-    }
-
-    .logo {
-        max-height: 60px;
-        width: auto;
-        margin-bottom: 10px;
-    }
-
-    .company-name {
-        font-size: 24px;
-        font-weight: bold;
-        margin: 0;
-    }
-
-    /* Content styles */
+    /* Content styles with email client compatibility */
     .content {
-        padding: 30px;
+        padding: 30px !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif !important;
     }
 
     .content h1 {
-        color: ${options.primaryColor};
-        font-size: 28px;
-        margin-bottom: 20px;
-        font-weight: 600;
+        color: ${options.primaryColor} !important;
+        font-size: 28px !important;
+        margin: 0 0 20px 0 !important;
+        padding: 0 !important;
+        font-weight: 600 !important;
+        line-height: 1.2 !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif !important;
     }
 
     .content h2 {
-        color: ${options.primaryColor};
-        font-size: 22px;
-        margin-bottom: 15px;
-        margin-top: 25px;
-        font-weight: 600;
+        color: ${options.primaryColor} !important;
+        font-size: 22px !important;
+        margin: 25px 0 15px 0 !important;
+        padding: 0 !important;
+        font-weight: 600 !important;
+        line-height: 1.2 !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif !important;
     }
 
     .content h3 {
-        color: ${options.textColor};
-        font-size: 18px;
-        margin-bottom: 10px;
-        margin-top: 20px;
-        font-weight: 600;
+        color: ${options.textColor} !important;
+        font-size: 18px !important;
+        margin: 20px 0 10px 0 !important;
+        padding: 0 !important;
+        font-weight: 600 !important;
+        line-height: 1.2 !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif !important;
     }
 
     .content p {
-        margin-bottom: 15px;
-        font-size: 16px;
-        line-height: 1.6;
+        margin: 0 0 15px 0 !important;
+        padding: 0 !important;
+        font-size: 16px !important;
+        line-height: 1.6 !important;
+        color: ${options.textColor} !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif !important;
     }
 
     .content ul, .content ol {
-        margin-bottom: 15px;
-        padding-left: 20px;
+        margin: 0 0 15px 0 !important;
+        padding: 0 0 0 20px !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif !important;
     }
 
     .content li {
-        margin-bottom: 5px;
+        margin: 0 0 5px 0 !important;
+        padding: 0 !important;
+        font-size: 16px !important;
+        line-height: 1.6 !important;
+        color: ${options.textColor} !important;
     }
 
-    /* Link styles */
+    /* Link styles with email client compatibility */
     a {
-        color: ${options.linkColor};
-        text-decoration: none;
+        color: ${options.linkColor} !important;
+        text-decoration: underline !important;
+        font-weight: normal !important;
     }
 
     a:hover {
-        text-decoration: underline;
+        text-decoration: underline !important;
     }
 
-    /* Button styles */
+    /* Button styles optimized for email clients */
     .btn {
-        display: inline-block;
-        padding: 12px 24px;
-        margin: 10px 0;
-        border-radius: 6px;
-        text-decoration: none;
-        font-weight: 600;
-        text-align: center;
-        transition: all 0.3s ease;
+        display: inline-block !important;
+        padding: 12px 24px !important;
+        margin: 10px 0 !important;
+        background-color: ${options.primaryColor} !important;
+        color: #ffffff !important;
+        text-decoration: none !important;
+        font-weight: 600 !important;
+        text-align: center !important;
+        border-radius: 6px !important;
+        border: 2px solid ${options.primaryColor} !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif !important;
+        font-size: 16px !important;
+        line-height: 1.2 !important;
+        mso-padding-alt: 0;
+        mso-text-raise: 0;
     }
 
     .btn-primary {
-        background-color: ${options.primaryColor};
-        color: white;
-        border: 2px solid ${options.primaryColor};
-    }
-
-    .btn-primary:hover {
-        background-color: transparent;
-        color: ${options.primaryColor};
-        text-decoration: none;
+        background-color: ${options.primaryColor} !important;
+        color: #ffffff !important;
+        border: 2px solid ${options.primaryColor} !important;
     }
 
     .btn-secondary {
-        background-color: transparent;
-        color: ${options.primaryColor};
-        border: 2px solid ${options.primaryColor};
-    }
-
-    .btn-secondary:hover {
-        background-color: ${options.primaryColor};
-        color: white;
-        text-decoration: none;
+        background-color: transparent !important;
+        color: ${options.primaryColor} !important;
+        border: 2px solid ${options.primaryColor} !important;
     }
 
     .btn-outline {
-        background-color: transparent;
-        color: ${options.textColor};
-        border: 2px solid ${options.textColor};
-    }
-
-    .btn-outline:hover {
-        background-color: ${options.textColor};
-        color: white;
-        text-decoration: none;
-    }
-
-    /* Footer styles */
-    .footer {
-        background-color: #f8f9fa;
-        padding: 20px;
-        border-top: 1px solid #e9ecef;
-    }
-
-    .footer-content {
-        text-align: center;
-    }
-
-    .contact-info {
-        margin-bottom: 15px;
-    }
-
-    .contact-info p {
-        margin-bottom: 5px;
-        font-size: 14px;
-        color: #6c757d;
-    }
-
-    .contact-info a {
-        color: ${options.linkColor};
-    }
-
-    .unsubscribe {
-        font-size: 12px;
-        color: #6c757d;
-        margin-top: 15px;
-    }
-
-    .unsubscribe a {
-        color: #6c757d;
-    }
-
-    /* Responsive styles */
-    @media only screen and (max-width: 600px) {
-        .email-container {
-            width: 100% !important;
-            margin: 0 !important;
-        }
-
-        .content {
-            padding: 20px !important;
-        }
-
-        .header {
-            padding: 15px !important;
-        }
-
-        .footer {
-            padding: 15px !important;
-        }
-
-        .company-name {
-            font-size: 20px !important;
-        }
-
-        .content h1 {
-            font-size: 24px !important;
-        }
-
-        .content h2 {
-            font-size: 20px !important;
-        }
-
-        .btn {
-            display: block !important;
-            width: 100% !important;
-            margin: 10px 0 !important;
-        }
+        background-color: transparent !important;
+        color: ${options.textColor} !important;
+        border: 2px solid ${options.textColor} !important;
     }
 
     /* Utility classes */
     .text-center {
-        text-align: center;
+        text-align: center !important;
     }
 
     .text-left {
-        text-align: left;
+        text-align: left !important;
     }
 
     .text-right {
-        text-align: right;
+        text-align: right !important;
     }
 
+    /* Spacing utilities */
     .mb-0 { margin-bottom: 0 !important; }
     .mb-1 { margin-bottom: 10px !important; }
     .mb-2 { margin-bottom: 20px !important; }
@@ -775,58 +933,202 @@ function generateCSS(options: Required<TemplateOptions>): string {
     .mt-2 { margin-top: 20px !important; }
     .mt-3 { margin-top: 30px !important; }
 
+    /* Alert and highlight styles */
     .highlight {
-        background-color: #fff3cd;
-        padding: 15px;
-        border-left: 4px solid #ffc107;
-        margin: 15px 0;
+        background-color: #fff3cd !important;
+        padding: 15px !important;
+        border-left: 4px solid #ffc107 !important;
+        margin: 15px 0 !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif !important;
     }
 
     .alert {
-        padding: 15px;
-        margin: 15px 0;
-        border-radius: 4px;
+        padding: 15px !important;
+        margin: 15px 0 !important;
+        border-radius: 4px !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif !important;
     }
 
     .alert-info {
-        background-color: #d1ecf1;
-        border: 1px solid #bee5eb;
-        color: #0c5460;
+        background-color: #d1ecf1 !important;
+        border: 1px solid #bee5eb !important;
+        color: #0c5460 !important;
     }
 
     .alert-success {
-        background-color: #d4edda;
-        border: 1px solid #c3e6cb;
-        color: #155724;
+        background-color: #d4edda !important;
+        border: 1px solid #c3e6cb !important;
+        color: #155724 !important;
     }
 
     .alert-warning {
-        background-color: #fff3cd;
-        border: 1px solid #ffeaa7;
-        color: #856404;
+        background-color: #fff3cd !important;
+        border: 1px solid #ffeaa7 !important;
+        color: #856404 !important;
     }
 
     .alert-danger {
-        background-color: #f8d7da;
-        border: 1px solid #f5c6cb;
-        color: #721c24;
+        background-color: #f8d7da !important;
+        border: 1px solid #f5c6cb !important;
+        color: #721c24 !important;
     }
+
+    /* Mobile responsive styles */
+    @media only screen and (max-width: 600px) {
+        .email-container {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+        }
+
+        .content {
+            padding: 20px !important;
+        }
+
+        .content h1 {
+            font-size: 24px !important;
+            line-height: 1.2 !important;
+        }
+
+        .content h2 {
+            font-size: 20px !important;
+            line-height: 1.2 !important;
+        }
+
+        .content h3 {
+            font-size: 18px !important;
+            line-height: 1.2 !important;
+        }
+
+        .content p, .content li {
+            font-size: 16px !important;
+            line-height: 1.6 !important;
+        }
+
+        .btn {
+            display: block !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 10px 0 !important;
+            padding: 15px 20px !important;
+            font-size: 16px !important;
+            text-align: center !important;
+        }
+
+        /* Mobile-specific table adjustments */
+        table[class="email-container"] {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        td[class="content"] {
+            padding: 20px !important;
+        }
+
+        td[class="header"] {
+            padding: 15px !important;
+        }
+
+        td[class="footer"] {
+            padding: 15px !important;
+        }
+
+        /* Mobile logo adjustments */
+        img[class="logo"] {
+            max-width: 180px !important;
+            height: auto !important;
+        }
+    }
+
+    /* Dark mode support for email clients that support it */
+    @media (prefers-color-scheme: dark) {
+        .content {
+            background-color: #ffffff !important;
+        }
+        
+        .content p, .content h1, .content h2, .content h3, .content li {
+            color: ${options.textColor} !important;
+        }
+    }
+
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+        .btn {
+            border-width: 3px !important;
+        }
+        
+        a {
+            text-decoration: underline !important;
+        }
+    }
+
+    /* Outlook-specific styles */
+    <!--[if mso]>
+    <style type="text/css">
+        .email-container {
+            width: 600px !important;
+        }
+        
+        .content {
+            padding: 30px !important;
+        }
+        
+        .btn {
+            mso-style-priority: 100 !important;
+            mso-padding-alt: 12px 24px !important;
+        }
+        
+        .content p, .content h1, .content h2, .content h3 {
+            mso-line-height-rule: exactly !important;
+        }
+    </style>
+    <![endif]-->
   `;
 }
+
+/**
+ * Export the optimized logo function for use in other templates
+ */
+export { generateOptimizedLogo };
 
 /**
  * Template utility functions for common email elements
  */
 export const TemplateUtils = {
   /**
-   * Creates a call-to-action button
+   * Creates a call-to-action button optimized for email clients
    * @param text - Button text
    * @param url - Button URL
    * @param style - Button style
-   * @returns HTML button element
+   * @returns HTML button element optimized for email clients
    */
   createButton(text: string, url: string, style: 'primary' | 'secondary' | 'outline' = 'primary'): string {
-    return `<a href="${url}" class="btn btn-${style}">${text}</a>`;
+    const buttonStyles = {
+      primary: 'background-color: #dc2626; color: #ffffff; border: 2px solid #dc2626;',
+      secondary: 'background-color: transparent; color: #dc2626; border: 2px solid #dc2626;',
+      outline: 'background-color: transparent; color: #374151; border: 2px solid #374151;'
+    };
+
+    return `
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td style="border-radius: 6px; ${buttonStyles[style]}">
+            <a href="${url}" 
+               style="
+                 display: inline-block;
+                 padding: 12px 24px;
+                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif;
+                 font-size: 16px;
+                 font-weight: 600;
+                 text-decoration: none;
+                 border-radius: 6px;
+                 ${buttonStyles[style]}
+               "
+               class="btn btn-${style}">${text}</a>
+          </td>
+        </tr>
+      </table>
+    `;
   },
 
   /**
