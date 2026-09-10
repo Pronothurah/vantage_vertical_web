@@ -4,6 +4,8 @@
 
 This guide covers the complete email functionality implementation for Vantage Vertical, including setup, testing, monitoring, and troubleshooting. The system features automatic email validation, typo correction, async processing, and comprehensive error handling.
 
+> **Current deployment status:** The site builds as a static export (`output: 'export'` in `next.config.js`) with no Node server in production, so the `src/app/api/*` routes described here only run under `npm run dev`. Everything below is accurate for local development and testing; none of it is currently reachable on the deployed site.
+
 ## 🔧 Complete Setup Process
 
 ### Step 1: Fix Gmail Authentication
@@ -238,7 +240,7 @@ Email processed successfully: email_123456789_abc123 (1200ms)
 
 ## 🎯 Production Readiness
 
-Once testing is successful, your async email system is ready for production with:
+**This section describes the system's design qualities, not its current deployment state** — see the note at the top of this guide. Once the `/api/*` routes are actually reachable in production (e.g. via a Netlify Function or a non-static deployment target), the async email system is built with:
 
 - **Rate Limiting**: Respects Gmail's 25 emails/minute limit
 - **Retry Logic**: Automatic retries with exponential backoff

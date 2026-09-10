@@ -17,7 +17,7 @@ This comprehensive guide covers the complete development workflow for the Vantag
 
 ### Prerequisites
 
-- **Node.js**: 18.0.0 or higher
+- **Node.js**: 20.9.0 or higher
 - **npm**: 8.0.0 or higher
 - **Git**: Latest version
 - **Code Editor**: VS Code recommended with TypeScript support

@@ -139,44 +139,44 @@ For one-time deployments or testing:
 
 ### Build Configuration
 
-Create a `netlify.toml` file in your project root for advanced configuration:
+The project root already includes a `netlify.toml` with the working configuration:
 
 ```toml
 [build]
-  command = "npm run build"
   publish = "out"
+  command = "npm run build"
 
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "20.9.0"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[context.production.environment]
+  NEXT_TELEMETRY_DISABLED = "1"
 
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
+    Referrer-Policy = "origin-when-cross-origin"
+    X-XSS-Protection = "1; mode=block"
 
 [[headers]]
-  for = "/api/*"
-  [headers.values]
-    Cache-Control = "no-cache"
-
-[[headers]]
-  for = "/*.js"
+  for = "/_next/static/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
-  for = "/*.css"
+  for = "/images/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
+    Cache-Control = "public, max-age=31536000"
 ```
+
+**Important:** `src/app/api/*` routes are not deployed — this is a static export with no Node server, so there is no Netlify Functions redirect for them. Form submissions do not currently reach a backend in production; treat any `/api/*` code as dev/test-only until that gap is addressed separately.
 
 ## Custom Domain Setup
 
@@ -308,7 +308,7 @@ cp -r out/ backup/$(date +%Y%m%d)/
    rm -rf node_modules package-lock.json
    npm install
    
-   # Check Node.js version (should be 18+)
+   # Check Node.js version (should be 20.9.0+)
    node --version
    ```
 

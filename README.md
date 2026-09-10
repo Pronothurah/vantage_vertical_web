@@ -4,10 +4,10 @@ Professional drone services website featuring aerial photography, mapping, surve
 
 ## 🚀 Technology Stack
 
-- **Framework**: Next.js 14 with App Router and Static Export
+- **Framework**: Next.js 16 with App Router and Static Export
 - **Language**: TypeScript for full type safety
 - **Styling**: Tailwind CSS with custom brand configuration
-- **Fonts**: Inter (body text) and Poppins (headings)
+- **Fonts**: Urbanist (body text and headings)
 - **Image Optimization**: Next.js Image component with static optimization
 - **Email**: Nodemailer for contact form functionality
 - **Testing**: Jest with React Testing Library
@@ -61,7 +61,7 @@ vantage_vertical_web/
 
 ### Prerequisites
 
-- Node.js 18.0.0 or higher
+- Node.js 20.9.0 or higher
 - npm 8.0.0 or higher
 
 ### Quick Start
@@ -86,8 +86,8 @@ npm run dev
 ```bash
 # Development
 npm run dev          # Start development server with hot reload
-npm run build        # Create optimized production build
-npm run start        # Start production server (after build)
+npm run build        # Create the static export (outputs to out/)
+npm run start        # Serve the built out/ directory locally (run build first)
 
 # Code Quality
 npm run lint         # Run ESLint for code quality
@@ -96,9 +96,15 @@ npm test             # Run Jest test suite
 npm run test:watch   # Run tests in watch mode
 npm run test:coverage # Run tests with coverage report
 
+# Email
+npm run test:email        # Send a real test email using the configured SMTP settings
+npm run test:email-config # Validate SMTP configuration without sending an email
+
 # Deployment
 npm run netlify-build # Build for Netlify deployment
 ```
+
+> **Note:** This app uses `output: 'export'` (static export), so `next start` cannot run it as a server. `npm start` instead serves the static `out/` directory with [serve](https://github.com/vercel/serve) — the same output Netlify deploys.
 
 ### Development Server
 
@@ -106,7 +112,9 @@ The development server will be available at [http://localhost:3000](http://local
 - Hot module replacement for instant updates
 - TypeScript compilation
 - Tailwind CSS processing
-- API routes for contact forms
+- API routes for contact forms (dev-server only — see note below)
+
+> **Note:** The `src/app/api/*` routes only run under `npm run dev`. The production site is a static export (`output: 'export'`) with no Node server, so these routes are not deployed and form submissions do not currently reach them in production.
 
 ## 🎯 Features
 
@@ -157,7 +165,7 @@ npm run build
 
 - **Build Command**: `npm run build`
 - **Publish Directory**: `out`
-- **Node Version**: 18
+- **Node Version**: 20.9.0 (set via `NODE_VERSION` in `netlify.toml`)
 - **Static Export**: Enabled for optimal performance
 
 ### Environment Variables

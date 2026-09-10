@@ -38,7 +38,7 @@ version_compare() {
 if ! command -v node &> /dev/null; then
     echo "❌ Node.js is not installed."
     echo ""
-    echo "   📥 Please install Node.js 18.0.0 or higher:"
+    echo "   📥 Please install Node.js 20.9.0 or higher:"
     echo "   • Download from: https://nodejs.org/"
     echo "   • Recommended: Use Node Version Manager (nvm)"
     echo "     - Linux/macOS: https://github.com/nvm-sh/nvm"
@@ -49,7 +49,7 @@ fi
 
 # Check Node.js version
 NODE_VERSION=$(node --version | sed 's/v//')
-REQUIRED_NODE_VERSION="18.0.0"
+REQUIRED_NODE_VERSION="20.9.0"
 
 echo "🔍 Checking Node.js version..."
 echo "   Current: v$NODE_VERSION"
@@ -202,7 +202,7 @@ echo ""
 echo "4. 🛠️  Available commands:"
 echo "   • npm run dev      - Start development server"
 echo "   • npm run build    - Create production build"
-echo "   • npm run start    - Start production server"
+echo "   • npm run start    - Serve the built out/ directory (run build first)"
 echo "   • npm run lint     - Run ESLint"
 echo "   • npm run test     - Run tests"
 echo ""

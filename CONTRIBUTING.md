@@ -26,7 +26,7 @@ By participating in this project, you agree to abide by our Code of Conduct:
 
 ### Prerequisites
 
-- Node.js 18.0.0 or higher
+- Node.js 20.9.0 or higher
 - npm 8.0.0 or higher
 - Git
 - Code editor (VS Code recommended with TypeScript support)
@@ -72,7 +72,7 @@ The development server includes:
 - Hot module replacement for instant updates
 - TypeScript compilation and type checking
 - Tailwind CSS processing
-- API routes for contact forms
+- API routes for contact forms (dev-server only; the production static export does not run these routes)
 
 ## Making Changes
 
@@ -293,7 +293,7 @@ For security-related issues:
 # Development
 npm run dev          # Start development server with hot reload
 npm run build        # Create optimized production build (static export)
-npm run start        # Start production server (after build)
+npm run start        # Serve the built out/ directory locally (run build first)
 
 # Code Quality
 npm run lint         # Run ESLint for code quality
