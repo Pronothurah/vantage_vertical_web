@@ -71,6 +71,7 @@ export default function OptimizedImage({
   // Update src when prop changes
   useEffect(() => {
     if (src !== imgSrc && retryCount === 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- resets load state when the src prop changes, guarded so it can't cascade
       setImgSrc(src);
       setIsLoading(true);
       setHasError(false);

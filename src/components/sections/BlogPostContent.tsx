@@ -39,6 +39,7 @@ export default function BlogPostContent({ content }: BlogPostContentProps) {
       })
       .join('\n');
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- derives sanitized HTML from the content prop, not a render-cascade risk
     setProcessedContent(processed);
   }, [content]);
 

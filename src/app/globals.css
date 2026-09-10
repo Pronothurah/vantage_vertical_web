@@ -1,9 +1,9 @@
+/* Import performance-optimized mobile menu styles */
+@import '../styles/mobile-menu-performance.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Import performance-optimized mobile menu styles */
-@import '../styles/mobile-menu-performance.css';
 
 @layer base {
   :root {

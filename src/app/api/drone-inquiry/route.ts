@@ -7,6 +7,9 @@ import {
 } from '@/lib/email/templates/droneInquiry';
 import { isValidEmail } from '@/lib/email/utils';
 
+// Static export does not support dynamic API routes; this endpoint is a no-op in production builds.
+export const dynamic = 'force-static';
+
 export async function POST(request: NextRequest) {
   try {
     const data: DroneInquiryData = await request.json();

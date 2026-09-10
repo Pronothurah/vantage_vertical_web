@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { emailService } from '@/lib/email/emailService';
 import { isValidEmail } from '@/lib/email/utils';
 
+// Static export does not support dynamic API routes; this endpoint is a no-op in production builds.
+export const dynamic = 'force-static';
+
 /**
  * POST /api/email-test
  * Test endpoint for async email functionality

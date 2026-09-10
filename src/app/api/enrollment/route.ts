@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { emailService } from '../../../lib/email/emailService';
 import { EnrollmentData } from '../../../types/forms';
 
+// Static export does not support dynamic API routes; this endpoint is a no-op in production builds.
+export const dynamic = 'force-static';
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

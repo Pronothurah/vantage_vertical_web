@@ -5,6 +5,9 @@ import { emailService } from '@/lib/email/emailService';
 import { generateContactEmails } from '@/lib/email/templates/contact';
 import { EmailErrorType } from '@/lib/email/types';
 
+// Static export does not support dynamic API routes; this endpoint is a no-op in production builds.
+export const dynamic = 'force-static';
+
 // Rate limiting store (in production, use Redis or database)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 

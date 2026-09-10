@@ -191,6 +191,7 @@ export function useScrollState({
   // Performance-optimized debounced scroll handler
   const debouncedScrollHandler = useRef(
     performanceDebounce(
+      // eslint-disable-next-line react-hooks/refs -- callback runs later on the debounce timer, not during render
       (target: HTMLElement) => {
         // Record scroll event for performance monitoring
         performanceMonitorRef.current?.recordScrollEvent();
@@ -206,6 +207,7 @@ export function useScrollState({
         }
       },
       DEFAULT_CONFIG.debounceMs,
+      // eslint-disable-next-line react-hooks/refs -- onCall runs on the debounce timer, not during render
       {
         leading: false,
         trailing: true,

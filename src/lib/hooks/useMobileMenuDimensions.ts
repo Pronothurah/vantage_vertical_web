@@ -93,11 +93,13 @@ export function useMobileMenuDimensions({
   // Performance-optimized dimension update handler
   const debouncedDimensionUpdate = useRef(
     performanceDebounce(
+      // eslint-disable-next-line react-hooks/refs -- callback runs later on the debounce timer, not during render
       (newDimensions: MenuDimensions) => {
         performanceMonitorRef.current?.recordResizeEvent();
         setDimensions(newDimensions);
       },
       150, // 150ms debounce for resize events
+      // eslint-disable-next-line react-hooks/refs -- onCall runs on the debounce timer, not during render
       {
         leading: false,
         trailing: true,
@@ -198,6 +200,7 @@ export function useMobileMenuDimensions({
   }, [itemCount, config, enabled]);
 
   // Generate CSS properties with error handling
+  // eslint-disable-next-line react-hooks/refs -- errorBoundaryRef wraps a pure calculation; read is safe every render
   const cssProperties = errorBoundaryRef.current?.wrapFunction(
     () => getMenuCSSProperties(dimensions),
     'calculation',

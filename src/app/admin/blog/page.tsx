@@ -40,14 +40,15 @@ export default function BlogAdminPage() {
   const [formErrors, setFormErrors] = useState<string[]>([]);
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
   const loadData = () => {
     setStatistics(getBlogStatistics());
     setPosts(searchPosts('', { includeUnpublished: true }));
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time data load on mount, not a render-cascade risk
+    loadData();
+  }, []);
 
   const handleSearch = () => {
     const results = searchPosts(searchQuery, {

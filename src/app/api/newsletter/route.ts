@@ -3,6 +3,9 @@ import { emailService } from '@/lib/email/emailService';
 import { generateNewsletterEmails, NewsletterSubscriptionData } from '@/lib/email/templates/newsletter';
 import { EmailErrorType } from '@/lib/email/types';
 
+// Static export does not support dynamic API routes; this endpoint is a no-op in production builds.
+export const dynamic = 'force-static';
+
 // Rate limiting store for newsletter subscriptions
 const newsletterRateLimitStore = new Map<string, { count: number; resetTime: number }>();
 

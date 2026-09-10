@@ -51,6 +51,15 @@ interface TestResults {
   }>;
 }
 
+function StatusIndicator({ success, label }: { success: boolean; label: string }) {
+  return (
+    <div className="flex items-center space-x-2">
+      <div className={`w-3 h-3 rounded-full ${success ? 'bg-green-500' : 'bg-red-500'}`} />
+      <span className={success ? 'text-green-700' : 'text-red-700'}>{label}</span>
+    </div>
+  );
+}
+
 export default function EmailTestPage() {
   const [status, setStatus] = useState<EmailTestStatus | null>(null);
   const [testResults, setTestResults] = useState<TestResults | null>(null);
@@ -58,16 +67,11 @@ export default function EmailTestPage() {
   const [testRecipient, setTestRecipient] = useState('');
   const [error, setError] = useState<string | null>(null);
 
-  // Load initial status
-  useEffect(() => {
-    loadStatus();
-  }, []);
-
   const loadStatus = async () => {
     try {
       const response = await fetch('/api/email-test');
       const data = await response.json();
-      
+
       if (data.success) {
         setStatus(data.status);
       } else {
@@ -77,6 +81,12 @@ export default function EmailTestPage() {
       setError('Failed to connect to email service');
     }
   };
+
+  // Load initial status
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time status load on mount, not a render-cascade risk
+    loadStatus();
+  }, []);
 
   const runConfigTest = async () => {
     setLoading(true);
@@ -154,13 +164,6 @@ export default function EmailTestPage() {
       setError('Failed to clear development logs');
     }
   };
-
-  const StatusIndicator = ({ success, label }: { success: boolean; label: string }) => (
-    <div className="flex items-center space-x-2">
-      <div className={`w-3 h-3 rounded-full ${success ? 'bg-green-500' : 'bg-red-500'}`} />
-      <span className={success ? 'text-green-700' : 'text-red-700'}>{label}</span>
-    </div>
-  );
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">

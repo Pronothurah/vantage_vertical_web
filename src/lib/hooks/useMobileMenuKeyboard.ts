@@ -191,10 +191,12 @@ export function useMobileMenuKeyboard({
     }
   }, [isOpen, scrollContainer, focusElement]);
 
+  /* eslint-disable react-hooks/refs -- exposes the current mutable nav state snapshot to the caller by design */
   return {
     currentIndex: navigationStateRef.current.currentIndex,
     isScrollable: navigationStateRef.current.isScrollable,
     focusElement,
     handleArrowNavigation,
   };
+  /* eslint-enable react-hooks/refs */
 }

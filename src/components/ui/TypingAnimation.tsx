@@ -31,6 +31,7 @@ export default function TypingAnimation({
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     
     if (prefersReducedMotion) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time opt-out check on mount, guarded to run once
       setShouldAnimate(false);
       setDisplayText(text);
       return;

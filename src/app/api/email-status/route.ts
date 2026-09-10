@@ -3,6 +3,9 @@ import { emailService } from '@/lib/email/emailService';
 import { getAsyncEmailQueue } from '@/lib/email/asyncEmailQueue';
 import { templateCache } from '@/lib/email/templateCache';
 
+// Static export does not support dynamic API routes; this endpoint is a no-op in production builds.
+export const dynamic = 'force-static';
+
 /**
  * GET /api/email-status
  * Returns comprehensive email service status including async queue metrics
