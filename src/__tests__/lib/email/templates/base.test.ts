@@ -4,8 +4,8 @@ import {
   TemplateUtils,
   BaseTemplateData,
   TemplateOptions 
-} from '../base';
-import { EmailErrorType } from '../../types';
+} from '@/lib/email/templates/base';
+import { EmailErrorType } from '@/lib/email/types';
 
 describe('Base Email Template System', () => {
   const validTemplateData: BaseTemplateData = {

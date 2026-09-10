@@ -14,7 +14,7 @@ import {
   type ViewportDimensions,
   type MenuDimensions,
   type MobileMenuConfig,
-} from '../mobileMenuUtils';
+} from '@/lib/mobileMenuUtils';
 
 // Mock window object for testing
 const mockWindow = (width: number, height: number) => {

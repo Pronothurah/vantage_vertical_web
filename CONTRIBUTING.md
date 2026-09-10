@@ -183,7 +183,7 @@ npm run test:coverage
 
 ### Test Structure
 
-- Place tests in `src/__tests__/` or alongside components as `*.test.tsx`
+- Place all tests under `src/__tests__/`, mirroring the path of the code under test (e.g. a test for `src/components/ui/Button.tsx` goes in `src/__tests__/components/ui/Button.test.tsx`)
 - Use Jest and React Testing Library for component testing
 - Follow the Arrange-Act-Assert pattern
 - Use descriptive test names that explain the expected behavior

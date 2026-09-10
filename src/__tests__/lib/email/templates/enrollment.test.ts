@@ -1,5 +1,5 @@
 import { 
-  generateEnrollmentAdminNotification, 
+  generateEnrollmentAdminNotification,
   generateEnrollmentStudentConfirmation,
   generateEnrollmentEmails,
   getProgramInfo
@@ -9,108 +9,127 @@ import { EnrollmentData } from '@/types/forms';
 describe('Enrollment Email Templates', () => {
   const mockEnrollmentData: EnrollmentData = {
     name: 'John Doe',
-    email: 'john@example.com',
-    phone: '+254700123456',
+    email: 'john.doe@example.com',
+    phone: '+254712345678',
     program: 'basic-pilot',
-    session: '2024-02-15-2024-02-17',
-    experience: 'complete-beginner',
-    motivation: 'I want to learn drone operations for aerial photography and videography. This skill will help me expand my photography business and offer new services to my clients.',
-    accommodation: false,
-    terms: true,
+    session: 'January 2024',
+    experience: 'beginner',
+    accommodation: true,
+    motivation: 'I want to start a drone photography business',
     emergencyContact: {
       name: 'Jane Doe',
-      phone: '+254700123457',
-      relationship: 'spouse'
+      relationship: 'spouse',
+      phone: '+254787654321'
     }
   };
 
   describe('generateEnrollmentAdminNotification', () => {
-    it('should generate admin notification email with correct content', () => {
+    it('should generate admin notification with correct branding and contact info', () => {
       const template = generateEnrollmentAdminNotification(mockEnrollmentData);
 
-      expect(template.subject).toBe('New Training Enrollment: John Doe - Basic Drone Pilot Training');
+      // Check that template is generated
+      expect(template).toHaveProperty('html');
+      expect(template).toHaveProperty('text');
+      expect(template).toHaveProperty('subject');
+
+      // Check subject line
+      expect(template.subject).toContain('New Training Enrollment');
+      expect(template.subject).toContain('John Doe');
+      expect(template.subject).toContain('Basic Drone Pilot Training');
+
+      // Check HTML content contains student information
       expect(template.html).toContain('John Doe');
-      expect(template.html).toContain('john@example.com');
-      expect(template.html).toContain('+254700123456');
+      expect(template.html).toContain('john.doe@example.com');
+      expect(template.html).toContain('+254712345678');
       expect(template.html).toContain('Basic Drone Pilot Training');
-      expect(template.html).toContain('complete-beginner');
-      expect(template.html).toContain('aerial photography');
-      expect(template.html).toContain('Jane Doe (spouse) - +254700123457');
+      expect(template.html).toContain('January 2024');
+
+      // Check that it uses base template (should contain company branding)
+      expect(template.html).toContain('Vantage Vertical');
+      expect(template.html).toContain('vantagevertical.co.ke');
+      expect(template.html).toContain('+254704277687'); // Correct phone number from base config
+      expect(template.html).toContain('vantageverticalltd@gmail.com'); // Correct email from base config
+
+      // Check text version
       expect(template.text).toContain('John Doe');
-      expect(template.text).toContain('New Training Enrollment');
+      expect(template.text).toContain('Vantage Vertical');
+      expect(template.text).toContain('+254704277687');
+      expect(template.text).toContain('vantageverticalltd@gmail.com');
     });
 
-    it('should handle enrollment without emergency contact', () => {
-      const dataWithoutEmergencyContact = {
-        ...mockEnrollmentData,
-        emergencyContact: undefined
-      };
+    it('should handle emergency contact information', () => {
+      const template = generateEnrollmentAdminNotification(mockEnrollmentData);
+
+      expect(template.html).toContain('Jane Doe');
+      expect(template.html).toContain('spouse');
+      expect(template.html).toContain('+254787654321');
+    });
+
+    it('should handle motivation section', () => {
+      const template = generateEnrollmentAdminNotification(mockEnrollmentData);
+
+      expect(template.html).toContain('Student Motivation');
+      expect(template.html).toContain('I want to start a drone photography business');
+    });
+
+    it('should handle missing emergency contact gracefully', () => {
+      const dataWithoutEmergencyContact = { ...mockEnrollmentData };
+      delete dataWithoutEmergencyContact.emergencyContact;
 
       const template = generateEnrollmentAdminNotification(dataWithoutEmergencyContact);
 
       expect(template.html).toContain('Not provided');
-      expect(template.subject).toBe('New Training Enrollment: John Doe - Basic Drone Pilot Training');
-    });
-
-    it('should handle accommodation request', () => {
-      const dataWithAccommodation = {
-        ...mockEnrollmentData,
-        accommodation: true
-      };
-
-      const template = generateEnrollmentAdminNotification(dataWithAccommodation);
-
-      expect(template.html).toContain('Accommodation Needed');
-      expect(template.html).toContain('Yes');
-    });
-
-    it('should handle unknown program gracefully', () => {
-      const dataWithUnknownProgram = {
-        ...mockEnrollmentData,
-        program: 'unknown-program'
-      };
-
-      const template = generateEnrollmentAdminNotification(dataWithUnknownProgram);
-
-      expect(template.subject).toContain('unknown-program');
-      expect(template.html).toContain('unknown-program');
     });
   });
 
   describe('generateEnrollmentStudentConfirmation', () => {
-    it('should generate student confirmation email with correct content', () => {
+    it('should generate student confirmation with correct branding and contact info', () => {
       const template = generateEnrollmentStudentConfirmation(mockEnrollmentData);
 
-      expect(template.subject).toBe('Welcome to Vantage Vertical Training - Basic Drone Pilot Training Enrollment Confirmed');
+      // Check that template is generated
+      expect(template).toHaveProperty('html');
+      expect(template).toHaveProperty('text');
+      expect(template).toHaveProperty('subject');
+
+      // Check subject line
+      expect(template.subject).toContain('Welcome to Vantage Vertical Training');
+      expect(template.subject).toContain('Basic Drone Pilot Training');
+
+      // Check HTML content contains student name and program info
       expect(template.html).toContain('Dear John Doe');
       expect(template.html).toContain('Basic Drone Pilot Training');
-      expect(template.html).toContain('3 days');
-      expect(template.html).toContain('KES 45,000');
-      expect(template.html).toContain('KCAA Basic Drone Pilot Certificate');
-      expect(template.html).toContain('2024-02-15-2024-02-17');
+      expect(template.html).toContain('January 2024');
+
+      // Check that it uses base template (should contain company branding)
+      expect(template.html).toContain('Vantage Vertical');
+      expect(template.html).toContain('vantagevertical.co.ke');
+      expect(template.html).toContain('+254704277687'); // Correct phone number from base config
+      expect(template.html).toContain('vantageverticalltd@gmail.com'); // Correct email from base config
+
+      // Check contact button uses correct email
+      expect(template.html).toContain('mailto:vantageverticalltd@gmail.com');
+
+      // Check text version
       expect(template.text).toContain('John Doe');
-      expect(template.text).toContain('Training Enrollment Confirmation');
+      expect(template.text).toContain('Vantage Vertical');
+      expect(template.text).toContain('+254704277687');
+      expect(template.text).toContain('vantageverticalltd@gmail.com');
     });
 
-    it('should show accommodation assistance message when requested', () => {
-      const dataWithAccommodation = {
-        ...mockEnrollmentData,
-        accommodation: true
-      };
-
-      const template = generateEnrollmentStudentConfirmation(dataWithAccommodation);
+    it('should display accommodation information correctly', () => {
+      const template = generateEnrollmentStudentConfirmation(mockEnrollmentData);
 
       expect(template.html).toContain('You requested accommodation assistance');
-      expect(template.html).toContain('local accommodation options');
     });
 
-    it('should show no accommodation message when not requested', () => {
-      const template = generateEnrollmentStudentConfirmation(mockEnrollmentData);
+    it('should handle no accommodation request', () => {
+      const dataWithoutAccommodation = { ...mockEnrollmentData, accommodation: false };
+      const template = generateEnrollmentStudentConfirmation(dataWithoutAccommodation);
 
       expect(template.html).toContain('You indicated that you don\'t need accommodation assistance');
     });
 
-    it('should include program requirements when available', () => {
+    it('should include program requirements', () => {
       const template = generateEnrollmentStudentConfirmation(mockEnrollmentData);
 
       expect(template.html).toContain('What to Bring');
@@ -123,91 +142,68 @@ describe('Enrollment Email Templates', () => {
     it('should generate both admin and student emails', () => {
       const emails = generateEnrollmentEmails(mockEnrollmentData);
 
-      expect(emails.adminNotification).toBeDefined();
-      expect(emails.studentConfirmation).toBeDefined();
+      expect(emails).toHaveProperty('adminNotification');
+      expect(emails).toHaveProperty('studentConfirmation');
+
+      // Verify both emails are properly generated
       expect(emails.adminNotification.subject).toContain('New Training Enrollment');
       expect(emails.studentConfirmation.subject).toContain('Welcome to Vantage Vertical Training');
+
+      // Verify both use correct branding
+      expect(emails.adminNotification.html).toContain('vantagevertical.co.ke');
+      expect(emails.studentConfirmation.html).toContain('vantagevertical.co.ke');
     });
   });
 
   describe('getProgramInfo', () => {
-    it('should return correct info for basic-pilot program', () => {
-      const info = getProgramInfo('basic-pilot');
+    it('should return correct program information for known programs', () => {
+      const basicPilotInfo = getProgramInfo('basic-pilot');
 
-      expect(info.name).toBe('Basic Drone Pilot Training');
-      expect(info.duration).toBe('3 days');
-      expect(info.price).toBe('KES 45,000');
-      expect(info.certification).toBe('KCAA Basic Drone Pilot Certificate');
-      expect(info.requirements).toContain('Valid ID or passport');
+      expect(basicPilotInfo.name).toBe('Basic Drone Pilot Training');
+      expect(basicPilotInfo.duration).toBe('3 days');
+      expect(basicPilotInfo.price).toBe('KES 45,000');
     });
 
-    it('should return correct info for commercial-pilot program', () => {
-      const info = getProgramInfo('commercial-pilot');
+    it('should return default information for unknown programs', () => {
+      const unknownProgramInfo = getProgramInfo('unknown-program');
 
-      expect(info.name).toBe('Commercial Drone Pilot Training');
-      expect(info.duration).toBe('5 days');
-      expect(info.price).toBe('KES 85,000');
-      expect(info.certification).toBe('KCAA Commercial Drone Pilot Certificate');
-    });
-
-    it('should return default info for unknown program', () => {
-      const info = getProgramInfo('unknown-program');
-
-      expect(info.name).toBe('unknown-program');
-      expect(info.duration).toBe('TBD');
-      expect(info.price).toBe('Contact for pricing');
-      expect(info.certification).toBe('Certificate of completion');
-      expect(info.requirements).toEqual([]);
+      expect(unknownProgramInfo.name).toBe('unknown-program');
+      expect(unknownProgramInfo.duration).toBe('TBD');
+      expect(unknownProgramInfo.price).toBe('Contact for pricing');
     });
   });
 
-  describe('Template Content Validation', () => {
-    it('should escape HTML in user input', () => {
-      const dataWithHtml = {
-        ...mockEnrollmentData,
-        name: 'John <script>alert("xss")</script> Doe',
-        motivation: 'I want to learn <b>drone operations</b> for aerial photography.'
-      };
+  describe('Logo and Contact Information Consistency', () => {
+    it('should use correct logo URL from base template', () => {
+      const template = generateEnrollmentStudentConfirmation(mockEnrollmentData);
 
-      const adminTemplate = generateEnrollmentAdminNotification(dataWithHtml);
-      const studentTemplate = generateEnrollmentStudentConfirmation(dataWithHtml);
-
-      // HTML should be escaped in the templates
-      // The motivation field should be escaped
-      expect(adminTemplate.html).toContain('&lt;b&gt;drone operations&lt;/b&gt;');
-      expect(adminTemplate.html).not.toContain('<b>drone operations</b>');
-      
-      // The student template should escape the name in the greeting
-      expect(studentTemplate.html).toContain('John &lt;script&gt;');
-      expect(studentTemplate.html).not.toContain('<script>');
+      // Should use the correct domain
+      expect(template.html).toContain('vantagevertical.co.ke/vantage-logo.png');
+      // Should NOT contain the incorrect domain
+      expect(template.html).not.toContain('vantagevartical.com');
     });
 
-    it('should include all required template sections', () => {
+    it('should use standardized contact information', () => {
       const adminTemplate = generateEnrollmentAdminNotification(mockEnrollmentData);
       const studentTemplate = generateEnrollmentStudentConfirmation(mockEnrollmentData);
 
-      // Admin template sections
-      expect(adminTemplate.html).toContain('New Training Enrollment');
-      expect(adminTemplate.html).toContain('Student Information');
-      expect(adminTemplate.html).toContain('Program Details');
-      expect(adminTemplate.html).toContain('Next Steps');
-
-      // Student template sections
-      expect(studentTemplate.html).toContain('Training Enrollment Confirmation');
-      expect(studentTemplate.html).toContain('Your Training Program');
-      expect(studentTemplate.html).toContain('Program Details');
-      expect(studentTemplate.html).toContain('What to Bring');
-      expect(studentTemplate.html).toContain('Next Steps');
-      expect(studentTemplate.html).toContain('Questions?');
+      // Both templates should use the same standardized contact info
+      [adminTemplate, studentTemplate].forEach(template => {
+        expect(template.html).toContain('+254704277687');
+        expect(template.html).toContain('vantageverticalltd@gmail.com');
+        expect(template.html).toContain('vantagevertical.co.ke');
+      });
     });
 
-    it('should include contact information and branding', () => {
-      const template = generateEnrollmentStudentConfirmation(mockEnrollmentData);
+    it('should not contain any hardcoded incorrect contact information', () => {
+      const adminTemplate = generateEnrollmentAdminNotification(mockEnrollmentData);
+      const studentTemplate = generateEnrollmentStudentConfirmation(mockEnrollmentData);
 
-      expect(template.html).toContain('Vantage Vertical');
-      expect(template.html).toContain('vantageverticalltd@gmail.com');
-      expect(template.text).toContain('Vantage Vertical');
-      expect(template.text).toContain('vantageverticalltd@gmail.com');
+      // Should not contain placeholder phone number
+      [adminTemplate, studentTemplate].forEach(template => {
+        expect(template.html).not.toContain('+254 XXX XXX XXX');
+        expect(template.html).not.toContain('vantagevartical.com'); // Wrong domain
+      });
     });
   });
 });

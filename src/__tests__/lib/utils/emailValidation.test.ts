@@ -9,7 +9,7 @@ import {
   detectEmailTypos,
   validateAndCorrectEmail,
   isValidCompanyEmail
-} from '../emailValidation';
+} from '@/lib/utils/emailValidation';
 
 describe('Email Validation Utilities', () => {
   const CORRECT_EMAIL = 'vantageverticalltd@gmail.com';

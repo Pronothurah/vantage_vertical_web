@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import ContactForm from '../ContactForm';
+import ContactForm from '@/components/forms/ContactForm';
 
 // Mock the form validation hook
 const mockFormState = {

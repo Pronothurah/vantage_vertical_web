@@ -502,9 +502,9 @@ npm test -- --testNamePattern="should render"
 #### Component Testing
 
 ```typescript
-// src/components/ui/__tests__/Button.test.tsx
+// src/__tests__/components/ui/Button.test.tsx
 import { render, screen, fireEvent } from '@testing-library/react';
-import Button from '../Button';
+import Button from '@/components/ui/Button';
 
 describe('Button Component', () => {
   it('should render with correct text', () => {

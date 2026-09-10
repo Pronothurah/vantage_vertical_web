@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import ServiceCard, { ServiceGrid } from '../ServiceCard';
+import ServiceCard, { ServiceGrid } from '@/components/sections/ServiceCard';
 
 // Mock Next.js components
 jest.mock('next/image', () => ({

@@ -4,7 +4,7 @@ import {
   validateLogoUrl,
   checkLogoAccessibility,
   BaseTemplateData 
-} from '../base';
+} from '@/lib/email/templates/base';
 
 describe('Email Template Validation Functions', () => {
   const validData: BaseTemplateData = {

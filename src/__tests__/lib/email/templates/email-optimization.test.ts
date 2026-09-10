@@ -3,7 +3,7 @@ import {
   generateOptimizedLogo,
   BaseTemplateData,
   TemplateOptions 
-} from '../base';
+} from '@/lib/email/templates/base';
 
 describe('Email Template Optimization', () => {
   const mockTemplateData: BaseTemplateData = {

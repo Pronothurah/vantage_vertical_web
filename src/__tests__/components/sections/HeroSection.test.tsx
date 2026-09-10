@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import HeroSection from '../HeroSection';
+import HeroSection from '@/components/sections/HeroSection';
 
 // Mock Next.js Image component
 jest.mock('next/image', () => ({

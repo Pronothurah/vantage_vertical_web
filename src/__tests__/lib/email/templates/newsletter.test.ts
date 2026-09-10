@@ -6,7 +6,7 @@ import {
   generateNewsletterEmails,
   NewsletterSubscriptionData,
   NewsletterConfirmationData
-} from '../newsletter';
+} from '@/lib/email/templates/newsletter';
 
 describe('Newsletter Email Templates', () => {
   const mockSubscriptionData: NewsletterSubscriptionData = {

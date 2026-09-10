@@ -51,7 +51,7 @@ vantage_vertical_web/
 │   │   └── blog.ts       # Blog management
 │   ├── types/            # TypeScript type definitions
 │   ├── data/             # Static data and content
-│   └── __tests__/        # Test files
+│   └── __tests__/        # All Jest tests, mirroring the path of the code under test
 ├── public/               # Static assets (images, icons)
 ├── out/                  # Static export output (generated)
 └── .next/                # Next.js build cache (generated)

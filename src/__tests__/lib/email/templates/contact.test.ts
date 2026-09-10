@@ -1,4 +1,4 @@
-import { generateContactEmails } from '../contact';
+import { generateContactEmails } from '@/lib/email/templates/contact';
 import { ContactFormData } from '@/types/forms';
 
 // Mock the data imports

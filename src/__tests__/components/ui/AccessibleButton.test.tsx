@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import AccessibleButton from '../AccessibleButton';
+import AccessibleButton from '@/components/ui/AccessibleButton';
 
 // Mock the accessibility module
 jest.mock('@/lib/accessibility', () => ({

@@ -1,8 +1,8 @@
 import { 
   generateDroneInquiryAdminEmail,
   generateDroneInquiryCustomerEmail
-} from '../droneInquiry';
-import { DroneInquiryData } from '../../../../types/forms';
+} from '@/lib/email/templates/droneInquiry';
+import { DroneInquiryData } from '@/types/forms';
 
 describe('Drone Inquiry Email Templates', () => {
   const mockDroneInquiryData: DroneInquiryData = {

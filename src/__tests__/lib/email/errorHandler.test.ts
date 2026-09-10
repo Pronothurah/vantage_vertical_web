@@ -1,5 +1,5 @@
-import { EmailErrorHandler, emailErrorHandler } from '../errorHandler';
-import { EmailErrorType, EmailResult } from '../types';
+import { EmailErrorHandler, emailErrorHandler } from '@/lib/email/errorHandler';
+import { EmailErrorType, EmailResult } from '@/lib/email/types';
 
 describe('EmailErrorHandler', () => {
   let handler: EmailErrorHandler;

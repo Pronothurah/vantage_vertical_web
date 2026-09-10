@@ -3,8 +3,8 @@
  * Tests environment variable precedence, fallback behavior, and integration with email service
  */
 
-import { EMAIL_CONFIG, EmailConfigType } from '../email';
-import { validateCompanyEmail, getStandardizedEmail } from '../../utils/emailValidation';
+import { EMAIL_CONFIG, EmailConfigType } from '@/lib/config/email';
+import { validateCompanyEmail, getStandardizedEmail } from '@/lib/utils/emailValidation';
 
 // Mock environment variables for testing
 const originalEnv = process.env;
@@ -28,8 +28,8 @@ describe('Email Configuration Integration Tests', () => {
         process.env.CONTACT_EMAIL = 'custom@example.com';
         
         // Re-import to get fresh configuration
-        delete require.cache[require.resolve('../email')];
-        const { EMAIL_CONFIG: freshConfig } = require('../email');
+        delete require.cache[require.resolve('@/lib/config/email')];
+        const { EMAIL_CONFIG: freshConfig } = require('@/lib/config/email');
         
         expect(freshConfig.CONTACT_EMAIL).toBe('custom@example.com');
       });
@@ -39,8 +39,8 @@ describe('Email Configuration Integration Tests', () => {
         delete process.env.CONTACT_EMAIL;
         
         // Re-import to get fresh configuration
-        delete require.cache[require.resolve('../email')];
-        const { EMAIL_CONFIG: freshConfig } = require('../email');
+        delete require.cache[require.resolve('@/lib/config/email')];
+        const { EMAIL_CONFIG: freshConfig } = require('@/lib/config/email');
         
         expect(freshConfig.CONTACT_EMAIL).toBe('vantageverticalltd@gmail.com');
       });
@@ -48,8 +48,8 @@ describe('Email Configuration Integration Tests', () => {
       it('should fallback to default when CONTACT_EMAIL is empty string', () => {
         process.env.CONTACT_EMAIL = '';
         
-        delete require.cache[require.resolve('../email')];
-        const { EMAIL_CONFIG: freshConfig } = require('../email');
+        delete require.cache[require.resolve('@/lib/config/email')];
+        const { EMAIL_CONFIG: freshConfig } = require('@/lib/config/email');
         
         expect(freshConfig.CONTACT_EMAIL).toBe('vantageverticalltd@gmail.com');
       });
@@ -57,8 +57,8 @@ describe('Email Configuration Integration Tests', () => {
       it('should fallback to default when CONTACT_EMAIL is whitespace', () => {
         process.env.CONTACT_EMAIL = '   ';
         
-        delete require.cache[require.resolve('../email')];
-        const { EMAIL_CONFIG: freshConfig } = require('../email');
+        delete require.cache[require.resolve('@/lib/config/email')];
+        const { EMAIL_CONFIG: freshConfig } = require('@/lib/config/email');
         
         expect(freshConfig.CONTACT_EMAIL).toBe('vantageverticalltd@gmail.com');
       });
@@ -68,8 +68,8 @@ describe('Email Configuration Integration Tests', () => {
       it('should use environment variable when SMTP_FROM is set', () => {
         process.env.SMTP_FROM = 'smtp@example.com';
         
-        delete require.cache[require.resolve('../email')];
-        const { EMAIL_CONFIG: freshConfig } = require('../email');
+        delete require.cache[require.resolve('@/lib/config/email')];
+        const { EMAIL_CONFIG: freshConfig } = require('@/lib/config/email');
         
         expect(freshConfig.SMTP_FROM).toBe('smtp@example.com');
       });
@@ -77,8 +77,8 @@ describe('Email Configuration Integration Tests', () => {
       it('should fallback to default when SMTP_FROM is not set', () => {
         delete process.env.SMTP_FROM;
         
-        delete require.cache[require.resolve('../email')];
-        const { EMAIL_CONFIG: freshConfig } = require('../email');
+        delete require.cache[require.resolve('@/lib/config/email')];
+        const { EMAIL_CONFIG: freshConfig } = require('@/lib/config/email');
         
         expect(freshConfig.SMTP_FROM).toBe('vantageverticalltd@gmail.com');
       });
@@ -86,8 +86,8 @@ describe('Email Configuration Integration Tests', () => {
       it('should fallback to default when SMTP_FROM is empty', () => {
         process.env.SMTP_FROM = '';
         
-        delete require.cache[require.resolve('../email')];
-        const { EMAIL_CONFIG: freshConfig } = require('../email');
+        delete require.cache[require.resolve('@/lib/config/email')];
+        const { EMAIL_CONFIG: freshConfig } = require('@/lib/config/email');
         
         expect(freshConfig.SMTP_FROM).toBe('vantageverticalltd@gmail.com');
       });
@@ -108,8 +108,8 @@ describe('Email Configuration Integration Tests', () => {
             process.env[key] = (envConfig as any)[key];
           });
           
-          delete require.cache[require.resolve('../email')];
-          const { EMAIL_CONFIG: freshConfig } = require('../email');
+          delete require.cache[require.resolve('@/lib/config/email')];
+          const { EMAIL_CONFIG: freshConfig } = require('@/lib/config/email');
           
           expect(freshConfig.COMPANY_EMAIL).toBe('vantageverticalltd@gmail.com');
         });
@@ -133,8 +133,8 @@ describe('Email Configuration Integration Tests', () => {
         process.env.CONTACT_EMAIL = 'contact@custom.com';
         process.env.SMTP_FROM = 'smtp@custom.com';
         
-        delete require.cache[require.resolve('../email')];
-        const { EMAIL_CONFIG: freshConfig } = require('../email');
+        delete require.cache[require.resolve('@/lib/config/email')];
+        const { EMAIL_CONFIG: freshConfig } = require('@/lib/config/email');
         
         expect(freshConfig.CONTACT_EMAIL).toBe('contact@custom.com');
         expect(freshConfig.SMTP_FROM).toBe('smtp@custom.com');
@@ -145,8 +145,8 @@ describe('Email Configuration Integration Tests', () => {
         process.env.CONTACT_EMAIL = 'contact@custom.com';
         delete process.env.SMTP_FROM;
         
-        delete require.cache[require.resolve('../email')];
-        const { EMAIL_CONFIG: freshConfig } = require('../email');
+        delete require.cache[require.resolve('@/lib/config/email')];
+        const { EMAIL_CONFIG: freshConfig } = require('@/lib/config/email');
         
         expect(freshConfig.CONTACT_EMAIL).toBe('contact@custom.com');
         expect(freshConfig.SMTP_FROM).toBe('vantageverticalltd@gmail.com');
@@ -196,8 +196,8 @@ describe('Email Configuration Integration Tests', () => {
         delete process.env.CONTACT_EMAIL;
         delete process.env.SMTP_FROM;
         
-        delete require.cache[require.resolve('../email')];
-        const { EMAIL_CONFIG: freshConfig } = require('../email');
+        delete require.cache[require.resolve('@/lib/config/email')];
+        const { EMAIL_CONFIG: freshConfig } = require('@/lib/config/email');
         
         expect(freshConfig.CONTACT_EMAIL).toBe('vantageverticalltd@gmail.com');
         expect(freshConfig.SMTP_FROM).toBe('vantageverticalltd@gmail.com');
@@ -208,8 +208,8 @@ describe('Email Configuration Integration Tests', () => {
         delete process.env.CONTACT_EMAIL;
         delete process.env.SMTP_FROM;
         
-        delete require.cache[require.resolve('../email')];
-        const { EMAIL_CONFIG: freshConfig } = require('../email');
+        delete require.cache[require.resolve('@/lib/config/email')];
+        const { EMAIL_CONFIG: freshConfig } = require('@/lib/config/email');
         
         expect(validateCompanyEmail(freshConfig.CONTACT_EMAIL)).toBe(true);
         expect(validateCompanyEmail(freshConfig.SMTP_FROM)).toBe(true);
@@ -222,8 +222,8 @@ describe('Email Configuration Integration Tests', () => {
         delete process.env.CONTACT_EMAIL;
         delete process.env.SMTP_FROM;
         
-        delete require.cache[require.resolve('../email')];
-        const { EMAIL_CONFIG: freshConfig } = require('../email');
+        delete require.cache[require.resolve('@/lib/config/email')];
+        const { EMAIL_CONFIG: freshConfig } = require('@/lib/config/email');
         
         expect(freshConfig.CONTACT_EMAIL).toBe(standardizedEmail);
         expect(freshConfig.SMTP_FROM).toBe(standardizedEmail);
@@ -237,11 +237,11 @@ describe('Email Configuration Integration Tests', () => {
         delete process.env.CONTACT_EMAIL;
         delete process.env.SMTP_FROM;
         
-        delete require.cache[require.resolve('../email')];
-        const { EMAIL_CONFIG: config1 } = require('../email');
+        delete require.cache[require.resolve('@/lib/config/email')];
+        const { EMAIL_CONFIG: config1 } = require('@/lib/config/email');
         
-        delete require.cache[require.resolve('../email')];
-        const { EMAIL_CONFIG: config2 } = require('../email');
+        delete require.cache[require.resolve('@/lib/config/email')];
+        const { EMAIL_CONFIG: config2 } = require('@/lib/config/email');
         
         expect(config1.COMPANY_EMAIL).toBe(config2.COMPANY_EMAIL);
       });
@@ -251,8 +251,8 @@ describe('Email Configuration Integration Tests', () => {
         delete process.env.CONTACT_EMAIL;
         delete process.env.SMTP_FROM;
         
-        delete require.cache[require.resolve('../email')];
-        const { EMAIL_CONFIG: freshConfig } = require('../email');
+        delete require.cache[require.resolve('@/lib/config/email')];
+        const { EMAIL_CONFIG: freshConfig } = require('@/lib/config/email');
         
         const configs = Array.from({ length: 10 }, () => freshConfig);
         
@@ -304,8 +304,8 @@ describe('Email Configuration Integration Tests', () => {
         delete process.env.CONTACT_EMAIL;
         delete process.env.SMTP_FROM;
         
-        delete require.cache[require.resolve('../email')];
-        const { EMAIL_CONFIG: freshConfig } = require('../email');
+        delete require.cache[require.resolve('@/lib/config/email')];
+        const { EMAIL_CONFIG: freshConfig } = require('@/lib/config/email');
         
         // Test integration with validation functions
         const isContactEmailValid = validateCompanyEmail(freshConfig.CONTACT_EMAIL);
@@ -340,8 +340,8 @@ describe('Email Configuration Integration Tests', () => {
         delete process.env.CONTACT_EMAIL;
         delete process.env.SMTP_FROM;
         
-        delete require.cache[require.resolve('../email')];
-        const { EMAIL_CONFIG: freshConfig } = require('../email');
+        delete require.cache[require.resolve('@/lib/config/email')];
+        const { EMAIL_CONFIG: freshConfig } = require('@/lib/config/email');
         
         const standardizedEmail = getStandardizedEmail();
         
@@ -360,8 +360,8 @@ describe('Email Configuration Integration Tests', () => {
         process.env.CONTACT_EMAIL = 'invalid-email-format';
         process.env.SMTP_FROM = 'another-invalid-email';
         
-        delete require.cache[require.resolve('../email')];
-        const { EMAIL_CONFIG: freshConfig } = require('../email');
+        delete require.cache[require.resolve('@/lib/config/email')];
+        const { EMAIL_CONFIG: freshConfig } = require('@/lib/config/email');
         
         // Configuration should still load, even with invalid environment values
         expect(freshConfig.CONTACT_EMAIL).toBe('invalid-email-format');
@@ -379,8 +379,8 @@ describe('Email Configuration Integration Tests', () => {
         process.env.CONTACT_EMAIL = 'invalid';
         process.env.SMTP_FROM = 'also-invalid';
         
-        delete require.cache[require.resolve('../email')];
-        const { EMAIL_CONFIG: freshConfig } = require('../email');
+        delete require.cache[require.resolve('@/lib/config/email')];
+        const { EMAIL_CONFIG: freshConfig } = require('@/lib/config/email');
         
         // Services can always fall back to COMPANY_EMAIL
         const fallbackEmail = freshConfig.COMPANY_EMAIL;
@@ -396,8 +396,8 @@ describe('Email Configuration Integration Tests', () => {
         
         // Test 1: Set environment variable before module load
         process.env.CONTACT_EMAIL = 'runtime@example.com';
-        delete require.cache[require.resolve('../email')];
-        const { EMAIL_CONFIG: config1 } = require('../email');
+        delete require.cache[require.resolve('@/lib/config/email')];
+        const { EMAIL_CONFIG: config1 } = require('@/lib/config/email');
         
         expect(config1.CONTACT_EMAIL).toBe('runtime@example.com');
         expect(config1.COMPANY_EMAIL).toBe('vantageverticalltd@gmail.com');
@@ -435,8 +435,8 @@ describe('Email Configuration Integration Tests', () => {
             process.env[key] = value;
           });
           
-          delete require.cache[require.resolve('../email')];
-          const { EMAIL_CONFIG: freshConfig } = require('../email');
+          delete require.cache[require.resolve('@/lib/config/email')];
+          const { EMAIL_CONFIG: freshConfig } = require('@/lib/config/email');
           
           companyEmails.push(freshConfig.COMPANY_EMAIL);
         });
@@ -463,8 +463,8 @@ describe('Email Configuration Integration Tests', () => {
       delete process.env.CONTACT_EMAIL;
       delete process.env.SMTP_FROM;
       
-      delete require.cache[require.resolve('../email')];
-      const { EMAIL_CONFIG: freshConfig } = require('../email');
+      delete require.cache[require.resolve('@/lib/config/email')];
+      const { EMAIL_CONFIG: freshConfig } = require('@/lib/config/email');
       
       const startTime = Date.now();
       
@@ -484,8 +484,8 @@ describe('Email Configuration Integration Tests', () => {
     it('should not leak memory on module reloads', () => {
       // Simulate multiple module reloads
       for (let i = 0; i < 10; i++) {
-        delete require.cache[require.resolve('../email')];
-        const { EMAIL_CONFIG: freshConfig } = require('../email');
+        delete require.cache[require.resolve('@/lib/config/email')];
+        const { EMAIL_CONFIG: freshConfig } = require('@/lib/config/email');
         expect(freshConfig.COMPANY_EMAIL).toBe('vantageverticalltd@gmail.com');
       }
       
@@ -499,8 +499,8 @@ describe('Email Configuration Integration Tests', () => {
       process.env.CONTACT_EMAIL = undefined as any;
       process.env.SMTP_FROM = undefined as any;
       
-      delete require.cache[require.resolve('../email')];
-      const { EMAIL_CONFIG: freshConfig } = require('../email');
+      delete require.cache[require.resolve('@/lib/config/email')];
+      const { EMAIL_CONFIG: freshConfig } = require('@/lib/config/email');
       
       expect(freshConfig.CONTACT_EMAIL).toBe('vantageverticalltd@gmail.com');
       expect(freshConfig.SMTP_FROM).toBe('vantageverticalltd@gmail.com');
@@ -511,8 +511,8 @@ describe('Email Configuration Integration Tests', () => {
       process.env.CONTACT_EMAIL = null as any;
       process.env.SMTP_FROM = null as any;
       
-      delete require.cache[require.resolve('../email')];
-      const { EMAIL_CONFIG: freshConfig } = require('../email');
+      delete require.cache[require.resolve('@/lib/config/email')];
+      const { EMAIL_CONFIG: freshConfig } = require('@/lib/config/email');
       
       expect(freshConfig.CONTACT_EMAIL).toBe('vantageverticalltd@gmail.com');
       expect(freshConfig.SMTP_FROM).toBe('vantageverticalltd@gmail.com');
@@ -523,8 +523,8 @@ describe('Email Configuration Integration Tests', () => {
       const longEmail = 'a'.repeat(100) + '@' + 'b'.repeat(100) + '.com';
       process.env.CONTACT_EMAIL = longEmail;
       
-      delete require.cache[require.resolve('../email')];
-      const { EMAIL_CONFIG: freshConfig } = require('../email');
+      delete require.cache[require.resolve('@/lib/config/email')];
+      const { EMAIL_CONFIG: freshConfig } = require('@/lib/config/email');
       
       expect(freshConfig.CONTACT_EMAIL).toBe(longEmail);
       expect(freshConfig.COMPANY_EMAIL).toBe('vantageverticalltd@gmail.com');
@@ -534,8 +534,8 @@ describe('Email Configuration Integration Tests', () => {
       const specialEmail = 'test+special@example.com';
       process.env.CONTACT_EMAIL = specialEmail;
       
-      delete require.cache[require.resolve('../email')];
-      const { EMAIL_CONFIG: freshConfig } = require('../email');
+      delete require.cache[require.resolve('@/lib/config/email')];
+      const { EMAIL_CONFIG: freshConfig } = require('@/lib/config/email');
       
       expect(freshConfig.CONTACT_EMAIL).toBe(specialEmail);
       expect(freshConfig.COMPANY_EMAIL).toBe('vantageverticalltd@gmail.com');

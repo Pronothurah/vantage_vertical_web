@@ -1,6 +1,6 @@
-import { EmailService } from '../emailService';
-import { emailErrorHandler } from '../errorHandler';
-import { EmailErrorType, EmailError } from '../types';
+import { EmailService } from '@/lib/email/emailService';
+import { emailErrorHandler } from '@/lib/email/errorHandler';
+import { EmailErrorType, EmailError } from '@/lib/email/types';
 
 // Mock nodemailer
 const mockTransporter = {
@@ -204,7 +204,7 @@ describe('EmailService Integration with ErrorHandler', () => {
       };
 
       // Mock the contact template generation
-      const { generateContactEmails } = require('../templates/contact');
+      const { generateContactEmails } = require('@/lib/email/templates/contact');
       const emails = generateContactEmails(mockContactData);
 
       // Verify admin notification uses correct branding
@@ -240,7 +240,7 @@ describe('EmailService Integration with ErrorHandler', () => {
       };
 
       // Mock the enrollment template generation
-      const { generateEnrollmentEmails } = require('../templates/enrollment');
+      const { generateEnrollmentEmails } = require('@/lib/email/templates/enrollment');
       const emails = generateEnrollmentEmails(mockEnrollmentData);
 
       // Verify admin notification uses correct branding
@@ -277,7 +277,7 @@ describe('EmailService Integration with ErrorHandler', () => {
       };
 
       // Mock the drone inquiry template generation
-      const { generateDroneInquiryAdminEmail, generateDroneInquiryCustomerEmail } = require('../templates/droneInquiry');
+      const { generateDroneInquiryAdminEmail, generateDroneInquiryCustomerEmail } = require('@/lib/email/templates/droneInquiry');
       const adminEmail = generateDroneInquiryAdminEmail(mockDroneInquiryData);
       const customerEmail = generateDroneInquiryCustomerEmail(mockDroneInquiryData);
 
@@ -307,7 +307,7 @@ describe('EmailService Integration with ErrorHandler', () => {
       const confirmationUrl = 'https://vantagevertical.co.ke/newsletter/confirm?token=test-token-123';
 
       // Mock the newsletter template generation
-      const { generateNewsletterEmails } = require('../templates/newsletter');
+      const { generateNewsletterEmails } = require('@/lib/email/templates/newsletter');
       const emails = generateNewsletterEmails(mockNewsletterData, confirmationUrl);
 
       // Verify welcome email uses correct branding
@@ -334,7 +334,7 @@ describe('EmailService Integration with ErrorHandler', () => {
 
     it('should verify all email types render correctly with new branding', async () => {
       // Test that base template configuration is consistent across all email types
-      const { generateBaseTemplate, getLogoUrl, validateLogoUrl } = require('../templates/base');
+      const { generateBaseTemplate, getLogoUrl, validateLogoUrl } = require('@/lib/email/templates/base');
       
       // Test logo URL validation
       const correctLogoUrl = getLogoUrl('light');
@@ -363,7 +363,7 @@ describe('EmailService Integration with ErrorHandler', () => {
     });
 
     it('should validate contact information consistency across templates', async () => {
-      const { validateContactInfo, validateCompanyStandards } = require('../templates/base');
+      const { validateContactInfo, validateCompanyStandards } = require('@/lib/email/templates/base');
       
       const correctData = {
         companyName: 'Vantage Vertical',

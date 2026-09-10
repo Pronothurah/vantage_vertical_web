@@ -3,14 +3,14 @@
  * Verifies task 10 requirements: validation safeguards, automatic correction, logging
  */
 
-import { EmailService } from '../emailService';
-import { emailErrorHandler } from '../errorHandler';
-import { validateAndCorrectEmail } from '../../utils/emailValidation';
-import { isValidEmail } from '../utils';
+import { EmailService } from '@/lib/email/emailService';
+import { emailErrorHandler } from '@/lib/email/errorHandler';
+import { validateAndCorrectEmail } from '@/lib/utils/emailValidation';
+import { isValidEmail } from '@/lib/email/utils';
 
 // Mock dependencies
-jest.mock('../utils', () => ({
-  ...jest.requireActual('../utils'),
+jest.mock('@/lib/email/utils', () => ({
+  ...jest.requireActual('@/lib/email/utils'),
   isValidEmail: jest.fn(),
   isEmailTestMode: jest.fn(() => false),
   validateSMTPConfig: jest.fn(() => null), // Return null to prevent initialization
@@ -25,10 +25,10 @@ jest.mock('../utils', () => ({
   }))
 }));
 
-jest.mock('../../utils/emailValidation');
+jest.mock('@/lib/utils/emailValidation');
 
 // Mock the error handler module
-jest.mock('../errorHandler', () => ({
+jest.mock('@/lib/email/errorHandler', () => ({
   emailErrorHandler: {
     logOperation: jest.fn(),
     isCircuitBreakerOpen: jest.fn(() => false),
@@ -296,7 +296,7 @@ describe('EmailService Error Handling and Validation', () => {
       });
 
       // Mock EMAIL_CONFIG
-      jest.doMock('../../config/email', () => ({
+      jest.doMock('@/lib/config/email', () => ({
         EMAIL_CONFIG: {
           CONTACT_EMAIL: typoAdminEmail,
           SMTP_FROM: 'vantageverticalltd@gmail.com',

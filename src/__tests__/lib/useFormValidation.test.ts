@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react';
-import { useFormValidation } from '../useFormValidation';
+import { useFormValidation } from '@/lib/useFormValidation';
 import { ContactFormData } from '@/types/forms';
 
 // Mock the data module
